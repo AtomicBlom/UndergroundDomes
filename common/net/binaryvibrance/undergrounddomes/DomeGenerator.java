@@ -37,27 +37,95 @@ public class DomeGenerator implements IWorldGenerator {
 					generateSurface(world, random, chunkX * 16, chunkZ * 16, chunkGenerator, chunkProvider);
 				}
 				break;
-		}
-		
+		}		
 	}
 
 	private void generateSurface(World world, Random random, int x, int z, IChunkProvider generator, IChunkProvider provider) {
+		
+		int sphereChain = random.nextInt(14) + 2;
+		LinkedList<Sphere> generatedSpheres = new LinkedList<Sphere>();		
+		
 		int originX = random.nextInt(16) + x;
 		int originZ = random.nextInt(16) + z;
 		int originY = baseLevel + (random.nextInt(16) - 8);
-				
+		XYZTuple<Integer> origin = new XYZTuple<Integer>(originX, originY, originZ);
 		int diameter = random.nextInt(16) + 10;
-		float radius = diameter / 2;
+		
+		Sphere sphere = new Sphere(origin, diameter);
+		
+		provideChunks(sphere, provider);
+		generateSphere(sphere, world);
+		generatedSpheres.add(sphere);
+		
+		Sphere previousSphere = sphere;
+		
+		double twoPi = Math.PI * 2;
+		
+		for (int sphereIndex = 0; sphereIndex < sphereChain; ++sphereIndex) {
+			for (int tries = 0; tries < 10; ++tries) {
 				
+				double angle = random.nextDouble() * twoPi;
+				int spacing = (random.nextInt(5) + 1);
+				diameter = random.nextInt(16) + 10;
+				int distance = previousSphere.getDiameter() + (spacing) + diameter;
+								
+				originX = previousSphere.getLocation().x + (int)(Math.sin(angle) * distance);
+				originZ = previousSphere.getLocation().z + (int)(Math.cos(angle) * distance);
+				originY = previousSphere.getLocation().y + (random.nextInt(16) - 8);
+				
+				boolean canGenerate = true;
+				for (Sphere existingSphere : generatedSpheres) {
+					XYZTuple<Integer> location = existingSphere.getLocation();
+					double checkDistance = Math.pow(originX - location.x, 2) + Math.pow(originY - location.y, 2) + Math.pow(originZ - location.z, 2);
+					double minimumDistance = Math.pow(diameter + existingSphere.getDiameter(), 2);
+					if (checkDistance < minimumDistance) {
+						canGenerate = false;
+						break;
+					}					
+				}
+				
+				if (canGenerate) {
+					origin = new XYZTuple<Integer>(originX, originY, originZ);
+					sphere = new Sphere(origin, diameter);
+					
+					provideChunks(sphere, provider);
+					generateSphere(sphere, world);
+					generatedSpheres.add(sphere);
+				}						
+			}			
+		}	
+	}
+	
+	private void provideChunks(Sphere sphere, IChunkProvider provider) {
+		float radius = sphere.getDiameter() / 2;
+		XYZTuple<Integer> origin = sphere.getLocation();
+		int minChunkX = (int)(origin.x - radius) % 16;
+		int maxChunkX = (int)(origin.x + radius) % 16;
+		int minChunkZ = (int)(origin.z - radius) % 16;
+		int maxChunkZ = (int)(origin.z + radius) % 16;
+		
+		for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; ++chunkZ) {
+			for (int chunkX = minChunkX; chunkX <= maxChunkX; ++chunkX) {
+				provider.provideChunk(chunkX, chunkZ);
+			}
+		}
+	}
+	
+	private void generateSphere(Sphere sphere, World world) {
+		int diameter = sphere.getDiameter();
+		XYZTuple<Integer> origin = sphere.getLocation();
+		
+		float radius = diameter / 2;
+		
 		SphereParticle[][][] particles = new SphereParticle[diameter+1][diameter+1][diameter+1];
 		double desiredWidth = Math.pow(radius, 2);
-		XYZTuple<Float> origin = new XYZTuple<Float>(radius, radius, radius);
+		XYZTuple<Float> sphereCentre = new XYZTuple<Float>(radius, radius, radius);
 		LinkedList<SphereParticle> matchedParticles = new LinkedList<SphereParticle>();
 		//Pass 1: Determine Wall
 		for (int scanZ = 0; scanZ < diameter; ++scanZ) {
 			for (int scanY = 0; scanY < diameter; ++scanY) {
 				for (int scanX = 0; scanX < diameter; ++scanX) {
-					double dist = Math.pow(scanX - origin.x, 2) + Math.pow(scanY - origin.y, 2) + Math.pow(scanZ - origin.z, 2);
+					double dist = Math.pow(scanX - sphereCentre.x, 2) + Math.pow(scanY - sphereCentre.y, 2) + Math.pow(scanZ - sphereCentre.z, 2);
 					if (dist < desiredWidth) {
 						SphereParticle particle = new SphereParticle(ParticleType.Interior, scanX, scanY, scanZ);
 						particles[scanZ][scanY][scanX] = particle;
@@ -93,23 +161,12 @@ public class DomeGenerator implements IWorldGenerator {
 			}
 		}
 		
-		int minChunkX = (int)(originX - radius) % 16;
-		int maxChunkX = (int)(originX + radius) % 16;
-		int minChunkZ = (int)(originZ - radius) % 16;
-		int maxChunkZ = (int)(originZ + radius) % 16;
-		
-		for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; ++chunkZ) {
-			for (int chunkX = minChunkX; chunkX <= maxChunkX; ++chunkX) {
-				provider.provideChunk(chunkX, chunkZ);
-			}
-		}	
-		
 		//Pass 3: Apply to map
 		for (SphereParticle particle : matchedParticles) {
 			XYZTuple<Integer> location = particle.getLocation();
-			int blockLocationX = (int)(location.x - radius + x);
-			int blockLocationY = (int)(location.y - radius + baseLevel);
-			int blockLocationZ = (int)(location.z - radius + z);
+			int blockLocationX = (int)(location.x - radius + origin.x);
+			int blockLocationY = (int)(location.y - radius + origin.y);
+			int blockLocationZ = (int)(location.z - radius + origin.z);
 			
 			int blockId = 0;
 			switch (particle.getParticleType()) {
@@ -122,6 +179,32 @@ public class DomeGenerator implements IWorldGenerator {
 			}		
 			
 			world.setBlockAndMetadataWithNotify(blockLocationX, blockLocationY, blockLocationZ, blockId, 0, 0);
+		}
+	}
+	
+	private class Sphere {
+		private XYZTuple<Integer> location;
+		private int diameter;
+		
+		public Sphere(XYZTuple<Integer> location, int diameter) {
+			this.setLocation(location);
+			this.setDiameter(diameter);
+		}
+
+		public XYZTuple<Integer> getLocation() {
+			return location;
+		}
+
+		public void setLocation(XYZTuple<Integer> location) {
+			this.location = location;
+		}
+
+		public int getDiameter() {
+			return diameter;
+		}
+
+		public void setDiameter(int diameter) {
+			this.diameter = diameter;
 		}
 	}
 	

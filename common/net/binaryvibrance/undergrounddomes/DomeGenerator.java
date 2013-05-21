@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Logger;
 
-import net.binaryvibrance.undergrounddomes.generation.CubicSpline;
 import net.binaryvibrance.undergrounddomes.generation.Sphere;
 import net.binaryvibrance.undergrounddomes.generation.SphereParticle;
 import net.binaryvibrance.undergrounddomes.generation.XYZTuple;
@@ -77,24 +76,36 @@ public class DomeGenerator implements IWorldGenerator {
 
 		Sphere previousSphere = sphere;
 
-		double twoPi = Math.PI * 2;
-
 		for (int sphereIndex = 0; sphereIndex < sphereChain; ++sphereIndex) {
 			for (int tries = 0; tries < 10; ++tries) {
 				// FIXME: Attempt to generate AWAY from players.
-				double angle = random.nextDouble() * twoPi;
-				int spacing = (random.nextInt(5) + 1);
 				diameter = random.nextInt(16) + 10;
-				int distance = (int) (previousSphere.getDiameter() / 2.0f
-						+ (spacing) + diameter / 2.0f);
+				diameter = diameter + diameter % 2;
+				double radius = diameter / 2.0f;
+				double touchingDistance = (previousSphere.getDiameter() / 2.0f + radius);
 
-				originX = previousSphere.getLocation().x
-						+ (int) (Math.sin(angle) * distance);
-				originZ = previousSphere.getLocation().z
-						+ (int) (Math.cos(angle) * distance);
-				originY = previousSphere.getLocation().y
-						+ (random.nextInt(16) - 8);
-
+				int prevX = previousSphere.getLocation().x;
+				int prevZ = previousSphere.getLocation().z;
+				
+				int xDirection = random.nextBoolean() ? -1 : 1;
+				int zDirection = random.nextBoolean() ? -1 : 1;
+				boolean firstDirectionIsXAxis = random.nextBoolean();
+				
+				int minCoridorSpacing = 6;
+				
+				if (firstDirectionIsXAxis) {
+					double zOffset = (radius + random.nextInt(12));
+					originZ = (int)( prevZ + (zOffset + minCoridorSpacing) * zDirection);
+					originX = (int)( prevX + (minCoridorSpacing + Math.sqrt(Math.pow(touchingDistance, 2) - Math.pow(zOffset, 2)) + random.nextInt(8)) * xDirection);
+				} else {
+					double xOffset = (radius + random.nextInt(12));
+					originX = (int)( prevX + (xOffset + minCoridorSpacing) * xDirection);
+					
+					//double xOffset = (radius + minCoridorSpacing + random.nextInt(12)) * xDirection;
+					//originX = (int)( prevX + xOffset);
+					originZ = (int)( prevZ + (minCoridorSpacing + Math.sqrt(Math.pow(touchingDistance, 2) - Math.pow(xOffset, 2)) + random.nextInt(8)) * zDirection);
+				}				
+				
 				boolean canGenerate = true;
 				for (Sphere existingSphere : generatedSpheres) {
 					XYZTuple<Integer> location = existingSphere.getLocation();
@@ -110,50 +121,46 @@ public class DomeGenerator implements IWorldGenerator {
 				}
 
 				if (canGenerate) {
+					boolean preferX = random.nextBoolean();
 					origin = new XYZTuple<Integer>(originX, originY, originZ);
 					sphere = new Sphere(origin, diameter);
 
 					provideChunks(sphere, provider);
 					generateSphere(sphere, world);
 					generatedSpheres.add(sphere);
-					generateWalkway(sphere, previousSphere, world);					
+					generateWalkway(sphere.getLocation(), previousSphere.getLocation(), world, preferX);		
+					
+					previousSphere = sphere;
+					break;
 				}
 			}
 		}
 	}
 	
-	private void generateWalkway(Sphere sphere, Sphere previousSphere,
-			World world) {
+	private void generateWalkway(XYZTuple<Integer> sphere, XYZTuple<Integer> previousSphere, World world, boolean preferX) {
+		int x, z, step;
 		
-		
-		float[] xPoints = {sphere.getLocation().x, sphere.getLocation().x, previousSphere.getLocation().x };
-		float[] zPoints = {sphere.getLocation().z, previousSphere.getLocation().z, previousSphere.getLocation().z };
-		float[] interpolatedXPoints = getXs(xPoints, 20);
-		
-		CubicSpline spline = new CubicSpline();
-		try {
-			float[] interpolatedZPoints = spline.fitAndEval(xPoints, zPoints, interpolatedXPoints, true);
-			
-			for (int x3 = 0; x3 < interpolatedXPoints.length; ++x3) {
-				world.setBlockAndMetadataWithNotify((int)interpolatedXPoints[x3], previousSphere.getLocation().y, (int)interpolatedZPoints[x3], Block.blockSteel.blockID, 0, 0);
+		if (preferX) {
+			step = previousSphere.x < sphere.x ? 1 : -1;
+			for (x = previousSphere.x, z = previousSphere.z; x != sphere.x; x += step) {
+				world.setBlockAndMetadataWithNotify(x, sphere.y, z, Block.blockGold.blockID, 0, 0);
 			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-
-	private float[] getXs(float[] x, int n) {
-		// Create the upsampled X values to interpolate
-		float[] xs = new float[n];
-		float stepSize = (x[x.length - 1] - x[0]) / (n - 1);
-
-		for (int i = 0; i < n; i++)
-		{
-			xs[i] = x[0] + i * stepSize;
-		}
-		return xs;
+			
+			step = previousSphere.z < sphere.z ? 1 : -1;
+			for (z = previousSphere.z, x = sphere.x; z != sphere.z; z += step) {
+				world.setBlockAndMetadataWithNotify(x, sphere.y, z, Block.blockDiamond.blockID, 0, 0);
+			}
+		} else {
+			step = previousSphere.z < sphere.z ? 1 : -1;
+			for (z = previousSphere.z, x = previousSphere.x; z != sphere.z; z += step) {
+				world.setBlockAndMetadataWithNotify(x, sphere.y, z, Block.blockGold.blockID, 0, 0);
+			}
+			
+			step = previousSphere.x < sphere.x ? 1 : -1;
+			for (x = previousSphere.x, z = sphere.z; x != sphere.x; x += step) {
+				world.setBlockAndMetadataWithNotify(x, sphere.y, z, Block.blockDiamond.blockID, 0, 0);
+			}			
+		}	
 	}
 
 	private void provideChunks(Sphere sphere, IChunkProvider provider) {

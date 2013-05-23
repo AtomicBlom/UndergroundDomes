@@ -62,4 +62,12 @@ public class SphereInstance extends IntegralVector3 {
 		}
 		return false;
 	}
+	
+	public int getFloorLevel(int index) {
+		return floors.get(index);
+	}
+	
+	public int getTranslatedFloorLevel(int index) {
+		return (int)(y - radius + floors.get(index));
+	}
 }

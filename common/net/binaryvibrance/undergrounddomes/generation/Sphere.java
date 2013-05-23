@@ -5,10 +5,9 @@ import java.util.LinkedList;
 import net.binaryvibrance.undergrounddomes.generation.maths.IntegralVector3;
 import net.binaryvibrance.undergrounddomes.generation.maths.Vector3;
 
-public class Sphere {
-	
+public class Sphere {	
 	private int diameter;
-
+	
 	public Sphere(int diameter) {
 		this.diameter = diameter;
 		calculateAtoms(diameter);
@@ -18,8 +17,12 @@ public class Sphere {
 		return diameter;
 	}
 	
-	public LinkedList<SphereAtom> getAtoms() {
+	/*public LinkedList<SphereAtom> getAtoms() {
 		return matchedAtoms;
+	}*/
+	
+	public SphereAtom[][][] getAtoms() {
+		return atoms;
 	}
 	
 	protected SphereAtom[][][] atoms;
@@ -31,7 +34,8 @@ public class Sphere {
 		double desiredWidth = Math.pow(radius, 2);
 		Vector3 sphereCentre = new Vector3(radius, radius, radius);
 		matchedAtoms = new LinkedList<SphereAtom>();
-		// Pass 1: Determine Wall
+		
+		// Pass 1: Determine Sphere Atoms
 		for (int scanZ = 0; scanZ < diameter; ++scanZ) {
 			for (int scanY = 0; scanY < diameter; ++scanY) {
 				for (int scanX = 0; scanX < diameter; ++scanX) {
@@ -47,7 +51,8 @@ public class Sphere {
 				}
 			}
 		}
-		// Pass 2: Determine Interior
+		
+		// Pass 2: Determine Exterior Wall
 		for (SphereAtom atom : matchedAtoms) {
 			int neighboursSet = 0;
 			int neighboursNotSet = 0;

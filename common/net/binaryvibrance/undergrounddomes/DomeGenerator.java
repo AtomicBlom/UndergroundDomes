@@ -50,7 +50,8 @@ public class DomeGenerator implements IWorldGenerator {
 		log.info(String.format("First Sphere @ (%d,%d,%d) d:%d", originX, originY, originZ, diameter));
 		
 		SphereInstance sphere = new SphereInstance(origin, diameter);
-
+		sphere.createFloors(random);
+		
 		provideChunks(sphere, provider);
 		generateSphere(sphere, world);
 		generatedSpheres.add(sphere);
@@ -104,7 +105,7 @@ public class DomeGenerator implements IWorldGenerator {
 					boolean preferX = random.nextBoolean();
 					origin = new IntegralVector3(originX, originY, originZ);
 					sphere = new SphereInstance(origin, diameter);
-
+					sphere.createFloors(random);
 					provideChunks(sphere, provider);
 					generateSphere(sphere, world);
 					generatedSpheres.add(sphere);
@@ -173,24 +174,36 @@ public class DomeGenerator implements IWorldGenerator {
 			log.info(String.format("Precalculation for diameter %d complete", diameter));
 		}
 		
-		// Pass 3: Apply to map
-		for (SphereAtom atom : sphere.getAtoms()) {
-			int blockLocationX = (int) (atom.x - radius + sphereInstance.x);
-			int blockLocationY = (int) (atom.y - radius + sphereInstance.y);
-			int blockLocationZ = (int) (atom.z - radius + sphereInstance.z);
+		
+		SphereAtom[][][] atoms = sphere.getAtoms();
+		for (int z = 0; z < diameter; ++z){
+			for (int y = 0; y < diameter; ++y) {
+				boolean isFloor = sphereInstance.isFloorLevel(y);
+				for (int x = 0; x < diameter; ++x) {
+					SphereAtom atom = atoms[z][y][x];
+					if (atom == null) {
+						continue;
+					}
+					
+					int blockLocationX = (int) (x - radius + sphereInstance.x);
+					int blockLocationY = (int) (y - radius + sphereInstance.y);
+					int blockLocationZ = (int) (z - radius + sphereInstance.z);
 
-			int blockId = 0;
-			switch (atom.getParticleType()) {
-			case Wall:
-				blockId = Block.blockSteel.blockID;
-				break;
-			default:
-				blockId = 0;
-				break;
+					int blockId;
+					
+					switch (atom.getParticleType()) {
+					case Wall:
+						blockId = Block.blockSteel.blockID;
+						break;
+					default:
+						blockId = isFloor ? Block.glowStone.blockID : 0 ;
+						break;
+					}
+
+					world.setBlockAndMetadataWithNotify(blockLocationX, blockLocationY,
+							blockLocationZ, blockId, 0, 0);
+				}
 			}
-
-			world.setBlockAndMetadataWithNotify(blockLocationX, blockLocationY,
-					blockLocationZ, blockId, 0, 0);
 		}
 	}
 }

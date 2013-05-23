@@ -118,28 +118,30 @@ public class DomeGenerator implements IWorldGenerator {
 		}
 	}
 	
-	private void generateWalkway(IntegralVector3 sphere, IntegralVector3 previousSphere, World world, boolean preferX) {
+	private void generateWalkway(SphereInstance sphere, IntegralVector3 previousSphere, World world, boolean preferX) {
 		int x, z, step;
+		
+		int y = sphere.getTranslatedFloorLevel(0);
 		
 		if (preferX) {
 			step = previousSphere.x < sphere.x ? 1 : -1;
 			for (x = previousSphere.x, z = previousSphere.z; x != sphere.x; x += step) {
-				world.setBlockAndMetadataWithNotify(x, sphere.y, z, Block.blockGold.blockID, 0, 0);
+				world.setBlockAndMetadataWithNotify(x, y, z, Block.blockGold.blockID, 0, 0);
 			}
 			
 			step = previousSphere.z < sphere.z ? 1 : -1;
 			for (z = previousSphere.z, x = sphere.x; z != sphere.z; z += step) {
-				world.setBlockAndMetadataWithNotify(x, sphere.y, z, Block.blockDiamond.blockID, 0, 0);
+				world.setBlockAndMetadataWithNotify(x, y, z, Block.blockDiamond.blockID, 0, 0);
 			}
 		} else {
 			step = previousSphere.z < sphere.z ? 1 : -1;
 			for (z = previousSphere.z, x = previousSphere.x; z != sphere.z; z += step) {
-				world.setBlockAndMetadataWithNotify(x, sphere.y, z, Block.blockGold.blockID, 0, 0);
+				world.setBlockAndMetadataWithNotify(x, y, z, Block.blockGold.blockID, 0, 0);
 			}
 			
 			step = previousSphere.x < sphere.x ? 1 : -1;
 			for (x = previousSphere.x, z = sphere.z; x != sphere.x; x += step) {
-				world.setBlockAndMetadataWithNotify(x, sphere.y, z, Block.blockDiamond.blockID, 0, 0);
+				world.setBlockAndMetadataWithNotify(x, y, z, Block.blockDiamond.blockID, 0, 0);
 			}			
 		}	
 	}

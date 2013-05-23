@@ -22,15 +22,16 @@ public class SphereInstance extends IntegralVector3 {
 	}
 	
 	public void createFloors(Random random) {
-		ArrayList<Integer> definedFloors = new ArrayList<Integer>(); 
-		int available = (int)(diameter * 0.75);
+		ArrayList<Integer> definedFloors = new ArrayList<Integer>();
+		//
+		int available = (int)((diameter - 2) * 0.75); //Don't include walls
 		int maxFloors = (int)Math.floor(available / (float)floorSize);
 		log.info("MaxFloors: " + maxFloors);
-		int actualFloors = maxFloors == 1 ? 1 : random.nextInt(maxFloors - 1) + 1;
+		int actualFloors = maxFloors;// == 1 ? 1 : random.nextInt(maxFloors - 1) + 1;
 		int interval = (int)Math.ceil(available / actualFloors);
 		int variance = interval - floorSize;
 		
-		int baseHeight = diameter - available;
+		int baseHeight = diameter - available -2;
 		definedFloors.add(baseHeight);
 		log.info(String.format("Floor 0 at level %d", baseHeight));
 		for (int floor = 1; floor < actualFloors; ++floor) {

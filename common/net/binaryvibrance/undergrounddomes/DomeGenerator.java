@@ -199,7 +199,8 @@ public class DomeGenerator implements IWorldGenerator {
 						blockId = isFloor ? Block.glowStone.blockID : 0 ;
 						break;
 					}
-
+					blockId = isFloor ? Block.glowStone.blockID : blockId ;
+					
 					world.setBlockAndMetadataWithNotify(blockLocationX, blockLocationY,
 							blockLocationZ, blockId, 0, 0);
 				}

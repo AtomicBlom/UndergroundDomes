@@ -3,6 +3,9 @@ package net.binaryvibrance.undergrounddomes;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.binaryvibrance.undergrounddomes.generation.DomeGenerator;
+import net.binaryvibrance.undergrounddomes.proxy.CommonProxy;
+import net.minecraft.block.Block;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.IWorldGenerator;
 import cpw.mods.fml.common.Mod;
@@ -18,14 +21,16 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid=Constants.Mod.MOD_ID, name=Constants.Mod.MOD_NAME, version=Constants.Mod.MOD_VERSION)
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
-public class ModEntry {
+public class UndergroundDomes {
 	private static Logger log = FMLLog.getLogger();
 	
 	@cpw.mods.fml.common.Mod.Instance(Constants.Mod.MOD_ID)
-	public static ModEntry Instance;
+	public static UndergroundDomes Instance;
 	
 	@SidedProxy(clientSide = Constants.Mod.CLIENT_SIDE_PROXY, serverSide=Constants.Mod.SERVER_SIDE_PROXY)
 	public static CommonProxy proxy;
+	
+	public static Block lightReceptor;
 	
 	IWorldGenerator worldGenerator = new DomeGenerator(); 
 	
@@ -37,6 +42,9 @@ public class ModEntry {
     @Init
     public void load(FMLInitializationEvent event) {
     	GameRegistry.registerWorldGenerator(worldGenerator);
+
+    	Constants.Blocks.LightReceptor.selfRegister();
+    	
     }
     
     @PostInit

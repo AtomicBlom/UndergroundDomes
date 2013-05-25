@@ -1,13 +1,10 @@
-package net.binaryvibrance.undergrounddomes;
+package net.binaryvibrance.undergrounddomes.generation;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Logger;
 
-import net.binaryvibrance.undergrounddomes.generation.Sphere;
-import net.binaryvibrance.undergrounddomes.generation.SphereAtom;
-import net.binaryvibrance.undergrounddomes.generation.SphereInstance;
 import net.binaryvibrance.undergrounddomes.generation.maths.IntegralVector3;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
@@ -15,6 +12,7 @@ import net.minecraft.world.chunk.IChunkProvider;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.IWorldGenerator;
 
+//TODO: Split this into Dome Generation and walkway generation.
 public class DomeGenerator implements IWorldGenerator {
 
 	private static Logger log = FMLLog.getLogger();

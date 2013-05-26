@@ -1,103 +1,23 @@
-package net.binaryvibrance.undergrounddomes.tileentitity.renderer;
+package net.binaryvibrance.undergrounddomes.client.renderer.tileentity;
+
+import org.lwjgl.opengl.GL11;
 
 import net.binaryvibrance.undergrounddomes.Constants;
-import net.binaryvibrance.undergrounddomes.block.ModelLightReceptor;
+import net.binaryvibrance.undergrounddomes.client.model.ModelLightReceptor;
 import net.binaryvibrance.undergrounddomes.tileentitity.TileLightReceptor;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.client.IItemRenderer;
 
-import org.lwjgl.opengl.GL11;
+public class TileEntityLightReceptorRenderer extends TileEntitySpecialRenderer {
 
-import cpw.mods.fml.client.FMLClientHandler;
-
-public class LightReceptorRenderer extends TileEntitySpecialRenderer implements
-		IItemRenderer {
-
-	public ModelLightReceptor model;
-
-	public LightReceptorRenderer() {
-		model = new ModelLightReceptor();
-	}
-
-	@Override
-	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		return true;
-	}
-
-	@Override
-	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item,
-			ItemRendererHelper helper) {
-		return true;
-	}
-
-	/*public void renderTileEntityAt(TileEntity tileentity, double d, double d1,
-			double d2, float f) {
-		if (tileentity instanceof TileLightReceptor) {
-			GL11.glPushMatrix();
-			GL11.glDisable(GL11.GL_LIGHTING);
-
-			// Scale, Translate, Rotate
-			GL11.glScalef(1, 1, 1);
-			GL11.glTranslatef((float) d, (float) d1, (float) d2);
-			GL11.glRotatef(-90F, 1F, 0, 0);
-
-			FMLClientHandler.instance().getClient().renderEngine
-					.func_98187_b(Constants.Textures.MODEL_LIGHT_RECEPTOR);
-			model.render(0.0f);
-			GL11.glEnable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
-		}
-	}*/
-
-	@Override
-	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-		float x, y, z;
-
-		switch (type) {
-		case ENTITY:
-			x = -0.5f;
-			y = 0.0f;
-			z = 0.5f;
-			break;
-
-		case EQUIPPED: {
-			x = 0.0f;
-			y = 0.0f;
-			z = 1.0f;
-			break;
-		}
-		/*
-		 * case EQUIPPED_FIRST_PERSON: { x = 0.0f; y = 0.0f; z = 1.0f; return; }
-		 */
-		case INVENTORY: {
-			x = 0.0f;
-			y = -0.1f;
-			z = 1.0f;
-			break;
-		}
-		default:
-			break;
-		}
-
-		x = y = z = 0;
-		// TODO Auto-generated method stub
-		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Constants.Textures.MODEL_LIGHT_RECEPTOR);
-		// bindTextureByName(Constants.Textures.MODEL_LIGHT_RECEPTOR);//
-		GL11.glPushMatrix(); // start
-		GL11.glTranslatef(x, y, z); // size
-		GL11.glRotatef(180, 1, 0, 0);
-		GL11.glRotatef(-90, 0, 1, 0);
-		model.render(0);
-		GL11.glPopMatrix(); // end
-	}
+	private ModelLightReceptor model = new ModelLightReceptor();
 	
+	@Override
 	 //This method is called when minecraft renders a tile entity
     public void renderTileEntityAt(TileEntity tileEntity, double d, double d1, double d2, float f) {
         GL11.glPushMatrix();
@@ -139,4 +59,5 @@ public class LightReceptorRenderer extends TileEntitySpecialRenderer implements
          
         GL11.glPopMatrix();
     }
+
 }

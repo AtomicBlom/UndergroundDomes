@@ -1,7 +1,6 @@
 package net.binaryvibrance.undergrounddomes.proxy;
 
 import net.binaryvibrance.undergrounddomes.Constants;
-import net.binaryvibrance.undergrounddomes.block.BlockLightReceptor;
 import net.binaryvibrance.undergrounddomes.tileentitity.TileLightReceptor;
 import cpw.mods.fml.common.registry.GameRegistry;
 

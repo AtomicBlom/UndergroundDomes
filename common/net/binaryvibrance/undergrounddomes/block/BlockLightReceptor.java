@@ -52,7 +52,6 @@ public class BlockLightReceptor extends BVBlock {
     
     @Override
     public int getRenderType() {
-
         return RenderIds.LightReceptorRenderId;
     }
 	

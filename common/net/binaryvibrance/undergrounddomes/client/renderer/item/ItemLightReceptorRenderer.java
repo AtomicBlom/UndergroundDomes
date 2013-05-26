@@ -55,8 +55,8 @@ public class ItemLightReceptorRenderer implements IItemRenderer {
 
 		// Scale, Translate, Rotate
 		GL11.glScalef(scale, scale, scale);
-		GL11.glTranslatef(x, y, z);
-		GL11.glRotatef(-90F, 1F, 0, 0);
+		GL11.glTranslatef(x + 1f, y + 2, z);
+		GL11.glRotatef(180F, 1F, 0, 0);
 
 		// Bind texture
 		FMLClientHandler.instance().getClient().renderEngine

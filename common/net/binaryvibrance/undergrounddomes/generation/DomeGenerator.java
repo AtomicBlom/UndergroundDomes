@@ -124,22 +124,22 @@ public class DomeGenerator implements IWorldGenerator {
 		if (preferX) {
 			step = previousSphere.x < sphere.x ? 1 : -1;
 			for (x = previousSphere.x, z = previousSphere.z; x != sphere.x; x += step) {
-				world.setBlockAndMetadataWithNotify(x, y, z, Block.blockGold.blockID, 0, 0);
+				world.setBlock(x, y, z, Block.blockGold.blockID, 0, 0);
 			}
 			
 			step = previousSphere.z < sphere.z ? 1 : -1;
 			for (z = previousSphere.z, x = sphere.x; z != sphere.z; z += step) {
-				world.setBlockAndMetadataWithNotify(x, y, z, Block.blockDiamond.blockID, 0, 0);
+				world.setBlock(x, y, z, Block.blockDiamond.blockID, 0, 0);
 			}
 		} else {
 			step = previousSphere.z < sphere.z ? 1 : -1;
 			for (z = previousSphere.z, x = previousSphere.x; z != sphere.z; z += step) {
-				world.setBlockAndMetadataWithNotify(x, y, z, Block.blockGold.blockID, 0, 0);
+				world.setBlock(x, y, z, Block.blockGold.blockID, 0, 0);
 			}
 			
 			step = previousSphere.x < sphere.x ? 1 : -1;
 			for (x = previousSphere.x, z = sphere.z; x != sphere.x; x += step) {
-				world.setBlockAndMetadataWithNotify(x, y, z, Block.blockDiamond.blockID, 0, 0);
+				world.setBlock(x, y, z, Block.blockDiamond.blockID, 0, 0);
 			}			
 		}	
 	}
@@ -193,7 +193,7 @@ public class DomeGenerator implements IWorldGenerator {
 					
 					switch (atom.getParticleType()) {
 					case Wall:
-						blockId = Block.blockSteel.blockID;
+						blockId = Block.blockIron.blockID;
 						break;
 					default:
 						blockId = isFloor ? Block.glowStone.blockID : 0 ;
@@ -201,7 +201,7 @@ public class DomeGenerator implements IWorldGenerator {
 					}
 					blockId = isFloor ? Block.glowStone.blockID : blockId ;
 					
-					world.setBlockAndMetadataWithNotify(blockLocationX, blockLocationY,
+					world.setBlock(blockLocationX, blockLocationY,
 							blockLocationZ, blockId, 0, 0);
 				}
 			}

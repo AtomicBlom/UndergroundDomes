@@ -1,6 +1,5 @@
 package net.binaryvibrance.undergrounddomes;
 
-import net.binaryvibrance.undergrounddomes.block.BVBlock;
 import net.binaryvibrance.undergrounddomes.block.BlockLightReceptor;
 
 public final class Constants {
@@ -12,6 +11,14 @@ public final class Constants {
 		public static final String SERVER_SIDE_PROXY = "net.binaryvibrance.undergrounddomes.proxy.ServerProxy";
 	}
 	public final static class Blocks {
-		public static final BVBlock LightReceptor = new BlockLightReceptor();
+		public static final BlockLightReceptor LightReceptor = new BlockLightReceptor();
 	}
+	public final static class Textures {
+		public static final String MODEL_SHEET_LOCATION= "/mods/BV.Domes/textures/models/";
+		
+		public static final String MODEL_LIGHT_RECEPTOR = MODEL_SHEET_LOCATION + "lightReceptor.png";
+		
+		
+	}
+	
 }

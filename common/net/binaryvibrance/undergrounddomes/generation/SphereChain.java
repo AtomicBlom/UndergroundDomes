@@ -14,14 +14,14 @@ import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 import net.minecraft.world.World;
 
 public class SphereChain {
-	private static final Logger log = LogHelper.getLogger();
+	private static final Logger LOG = LogHelper.getLogger();
 
 	private int sphereChainLength;
 	private final List<SphereInstance> chain;
-	private Random random;
+	private final Random random;
 
-	private int startX;
-	private int startZ;
+	private final int startX;
+	private final int startZ;
 
 	private int heightOffset;
 
@@ -50,7 +50,7 @@ public class SphereChain {
 				continue;
 			}
 			sphere.createFloors(random);
-			log.info(String.format("Sphere %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, sphereChainLength, sphere.x, sphere.y,
+			LOG.info(String.format("Sphere %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, sphereChainLength, sphere.x, sphere.y,
 					sphere.z, sphere.getDiameter()));
 			chain.add(sphere);
 				
@@ -60,6 +60,8 @@ public class SphereChain {
 			buildLength++;
 		}
 		
+		sphereChainLength = chain.size();
+		
 		if (DeveloperOptions.RENDER_ABOVE_GROUND) {
 			heightOffset += 96;
 		}
@@ -67,8 +69,6 @@ public class SphereChain {
 	}
 
 	private boolean isValid(SphereInstance sphere) {
-		// TODO Auto-generated method stub
-
 		for (SphereInstance existingSphere : chain) {
 			double checkDistance = Math.pow(sphere.x - existingSphere.x, 2) + Math.pow(sphere.y - existingSphere.y, 2)
 					+ Math.pow(sphere.z - existingSphere.z, 2);
@@ -109,18 +109,18 @@ public class SphereChain {
 			originX = (int) (previousSphereX + (minCoridorSpacing
 					+ Math.sqrt(Math.pow(Math.max(touchingDistance, firstDimensionOffset + 1), 2) - Math.pow(firstDimensionOffset, 2)) + newSpacing)
 					* xDirection);
-			log.finer(String.format("originX: %d, prevX: %d, touch: %f, offset: %f, spacing: %d", originX, previousSphereX,
+			LOG.finer(String.format("originX: %d, prevX: %d, touch: %f, offset: %f, spacing: %d", originX, previousSphereX,
 					touchingDistance, firstDimensionOffset, newSpacing));
 		} else {
 			originX = (int) (previousSphereX + (firstDimensionOffset + minCoridorSpacing) * xDirection);
 			originZ = (int) (previousSphereZ + (minCoridorSpacing
 					+ Math.sqrt(Math.pow(Math.max(touchingDistance, firstDimensionOffset + 1), 2) - Math.pow(firstDimensionOffset, 2)) + newSpacing)
 					* zDirection);
-			log.finer(String.format("originZ: %d, prevZ: %d, touch: %f, offset: %f, spacing: %d", originZ, previousSphereZ,
+			LOG.finer(String.format("originZ: %d, prevZ: %d, touch: %f, offset: %f, spacing: %d", originZ, previousSphereZ,
 					touchingDistance, firstDimensionOffset, newSpacing));
 		}
 
-		log.info(String.format("Sphere @ (%d,%d,%d) d:%d", originX, 0, originZ, diameter));
+		LOG.info(String.format("Sphere @ (%d,%d,%d) d:%d", originX, 0, originZ, diameter));
 		SphereInstance sphere = new SphereInstance(new Point3D(originX, 0, originZ), diameter);
 		return sphere;
 	}
@@ -152,7 +152,7 @@ public class SphereChain {
 		int chainLength = chain.size();
 		int current = 1;
 		for (SphereInstance sphere : chain) {
-			log.info(String.format("Rendering Sphere %d/%d at (%d,%d,%d) diameter %d", current++, chainLength, sphere.x + startX, this.heightOffset, sphere.z + startZ, sphere.getDiameter()));
+			LOG.info(String.format("Rendering Sphere %d/%d at (%d,%d,%d) diameter %d", current++, chainLength, sphere.x + startX, this.heightOffset, sphere.z + startZ, sphere.getDiameter()));
 			sphere.render(world, new Vector3(startX, this.heightOffset, startZ));
 		}
 	}

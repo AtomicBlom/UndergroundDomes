@@ -13,8 +13,8 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void initRenderingAndTextures() {
-		RenderIds.LightReceptorRenderId = RenderingRegistry.getNextAvailableRenderId();
-		MinecraftForgeClient.registerItemRenderer(BlockLightReceptor.BlockId, new ItemLightReceptorRenderer());
+		RenderIds.LIGHT_RECEPTOR_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+		MinecraftForgeClient.registerItemRenderer(BlockLightReceptor.BLOCK_ID, new ItemLightReceptorRenderer());
 	}
 	
 	@Override

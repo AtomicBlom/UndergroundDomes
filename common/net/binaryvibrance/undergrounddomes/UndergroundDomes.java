@@ -19,7 +19,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class UndergroundDomes {
 	@Mod.Instance(Constants.Mod.MOD_ID)
-	public static UndergroundDomes Instance;
+	public static UndergroundDomes instance;
 	
 	@SidedProxy(clientSide = Constants.Mod.CLIENT_SIDE_PROXY, serverSide=Constants.Mod.SERVER_SIDE_PROXY)
 	public static CommonProxy proxy;
@@ -34,7 +34,7 @@ public class UndergroundDomes {
     @Init
     public void load(FMLInitializationEvent event) {
     	GameRegistry.registerWorldGenerator(worldGenerator);
-    	Constants.Blocks.LightReceptor.selfRegister();
+    	Constants.Blocks.LIGHT_RECEPTOR.selfRegister();
     	proxy.registerTileEntities();
     	proxy.initRenderingAndTextures();    	
     }

@@ -8,17 +8,17 @@ import net.binaryvibrance.undergrounddomes.DeveloperOptions;
 import cpw.mods.fml.common.FMLLog;
 
 public class LogHelper {
-    private static final Logger logger = Logger.getLogger(Constants.Mod.MOD_ID);
+    private static final Logger LOGGER = Logger.getLogger(Constants.Mod.MOD_ID);
 
     public static void init() {
 
-        logger.setParent(FMLLog.getLogger());
+        LOGGER.setParent(FMLLog.getLogger());
         if (DeveloperOptions.DETAILED_LOGGING) {
-        	logger.setLevel(Level.ALL);
+        	LOGGER.setLevel(Level.ALL);
         }
     }
 
     public static Logger getLogger() {
-    	return logger;
+    	return LOGGER;
     }
 }

@@ -11,14 +11,14 @@ import net.minecraft.world.World;
 
 public class BlockLightReceptor extends BVBlock implements ITileEntityProvider {
 
-	public static final String UnlocalizedName = "lightReceptor";
-	public static final String Name = "Light Receptor";
-	public static final int BlockId = 2376;
+	public static final String UNLOCALIZED_NAME = "lightReceptor";
+	public static final String NAME = "Light Receptor";
+	public static final int BLOCK_ID = 2376;
 	
 	public BlockLightReceptor() {
-		super(BlockId, Material.sand);
+		super(BLOCK_ID, Material.sand);
 		setCreativeTab(CreativeTabs.tabBlock);
-		this.setUnlocalizedName(UnlocalizedName);
+		this.setUnlocalizedName(UNLOCALIZED_NAME);
 		setHardness(10.0f);
 		setResistance(1f);
 	}
@@ -52,13 +52,13 @@ public class BlockLightReceptor extends BVBlock implements ITileEntityProvider {
     
     @Override
     public int getRenderType() {
-        return RenderIds.LightReceptorRenderId;
+        return RenderIds.LIGHT_RECEPTOR_RENDER_ID;
     }
 
 	@Override
 	protected String getBlockName() {
 		// TODO Auto-generated method stub
-		return Name;
+		return NAME;
 	}
 
 

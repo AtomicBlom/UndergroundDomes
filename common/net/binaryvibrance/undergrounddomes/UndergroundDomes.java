@@ -1,11 +1,8 @@
 package net.binaryvibrance.undergrounddomes;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import net.binaryvibrance.undergrounddomes.generation.DomeGenerator;
+import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 import net.binaryvibrance.undergrounddomes.proxy.CommonProxy;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.IWorldGenerator;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -21,9 +18,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 @Mod(modid=Constants.Mod.MOD_ID, name=Constants.Mod.MOD_NAME, version=Constants.Mod.MOD_VERSION)
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class UndergroundDomes {
-	private static Logger log = FMLLog.getLogger();
-	
-	@cpw.mods.fml.common.Mod.Instance(Constants.Mod.MOD_ID)
+	@Mod.Instance(Constants.Mod.MOD_ID)
 	public static UndergroundDomes Instance;
 	
 	@SidedProxy(clientSide = Constants.Mod.CLIENT_SIDE_PROXY, serverSide=Constants.Mod.SERVER_SIDE_PROXY)
@@ -33,7 +28,7 @@ public class UndergroundDomes {
 	
 	@PreInit
     public void preInit(FMLPreInitializationEvent event) {
-		log.setLevel(Level.ALL);
+		LogHelper.init();
     }
     
     @Init

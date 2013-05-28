@@ -5,20 +5,25 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
-import net.binaryvibrance.undergrounddomes.generation.maths.IntegralVector3;
-import cpw.mods.fml.common.FMLLog;
+import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
+import net.binaryvibrance.undergrounddomes.generation.maths.Vector3;
+import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
+import net.minecraft.block.Block;
+import net.minecraft.world.World;
 
-public class SphereInstance extends IntegralVector3 {
-	private static final Logger log = FMLLog.getLogger();
+public class SphereInstance extends Point3D {
+	private static final Logger log = LogHelper.getLogger();
 	private static final int floorSize = 5;
-	private int diameter;
-	private float radius;
+	private final int diameter;
+	private final float radius;
 	private List<Integer> floors;
+	private final Sphere sphereAtoms;
 
-	public SphereInstance(IntegralVector3 location, int diameter) {
+	public SphereInstance(Point3D location, int diameter) {
 		super(location.x,location.y,location.z);
 		this.diameter = diameter;
 		this.radius = diameter / 2.0f;
+		sphereAtoms = Sphere.construct(diameter);
 	}
 	
 	public void createFloors(Random random) {
@@ -51,10 +56,6 @@ public class SphereInstance extends IntegralVector3 {
 	public double getRadius() {
 		return radius;
 	}
-	
-	public void setDiameter(int diameter) {
-		this.diameter = diameter;
-	}
 
 	public boolean isFloorLevel(int y) {
 		for (Integer floorLevel : floors) {
@@ -69,5 +70,42 @@ public class SphereInstance extends IntegralVector3 {
 	
 	public int getTranslatedFloorLevel(int index) {
 		return (int)(y - radius + floors.get(index));
+	}
+
+	public void render(World world, Vector3 offset) {
+		int xOffset = offset.x;
+		int yOffset = offset.y;
+		int zOffset = offset.z;
+		
+		SphereAtom[][][] atoms = sphereAtoms.getAtoms();
+		for (int z = 0; z < diameter; ++z) {
+			for (int y = 0; y < diameter; ++y) {
+				boolean isFloor = isFloorLevel(y);
+				for (int x = 0; x < diameter; ++x) {
+					SphereAtom atom = atoms[z][y][x];
+					if (atom == null) {
+						continue;
+					}
+
+					final int blockLocationX = (int) (x - radius + this.x + xOffset);
+					final int blockLocationY = (int) (y - radius + this.y + yOffset);
+					final int blockLocationZ = (int) (z - radius + this.z + zOffset);
+
+					int blockId;
+
+					switch (atom.getParticleType()) {
+					case Wall:
+						blockId = Block.blockIron.blockID;
+						break;
+					default:
+						blockId = isFloor ? Block.glowStone.blockID : 0;//Block.oreEmerald.blockID;
+						break;
+					}
+					blockId = isFloor ? Block.glowStone.blockID : blockId;
+
+					world.setBlock(blockLocationX, blockLocationY, blockLocationZ, blockId, 0, 0);
+				}
+			}
+		}
 	}
 }

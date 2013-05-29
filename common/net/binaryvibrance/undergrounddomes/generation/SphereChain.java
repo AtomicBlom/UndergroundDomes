@@ -40,14 +40,25 @@ public class SphereChain {
 
 	private void buildChain() {
 		int buildLength = 0;
-		int errors = 0;
 
 		SphereInstance previousSphere = null;
-		while (buildLength < sphereChainLength && errors < 10) {
-			SphereInstance sphere = getHypotheticalSphere(previousSphere);
-			if (!isValid(sphere)) {
-				errors++;
-				continue;
+		while (buildLength < sphereChainLength) {
+			//ArrayList<SphereInstance> validPotentialSpheres = new ArrayList<SphereInstance>();
+			SphereInstance sphere = null;
+			int sphereScore = Integer.MIN_VALUE;
+			for (int i = 0; i < 10; i++) {
+				SphereInstance potentialSphere = getPotentialSphere(previousSphere);
+				if (!isValid(potentialSphere)) {
+					continue;
+				}
+				int potentialSphereScore = getSphereScore(potentialSphere);
+				if (potentialSphereScore > sphereScore) {
+					sphere = potentialSphere;
+					sphereScore = potentialSphereScore;
+				}
+			}
+			if (sphere == null) {
+				break;
 			}
 			sphere.createFloors(random);
 			LOG.info(String.format("Sphere %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, sphereChainLength, sphere.x, sphere.y,
@@ -68,6 +79,29 @@ public class SphereChain {
 		
 	}
 
+	private int getSphereScore(SphereInstance potentialSphere) {
+		long x = potentialSphere.x;
+		long y = potentialSphere.y;
+		long z = potentialSphere.z;
+		int count = 1;
+		
+		for (SphereInstance sphere : chain) {
+			x += sphere.x;
+			y += sphere.y;
+			z += sphere.z;
+			count++;
+		}
+		
+		float offsetX = x / count;
+		float offsetY = y / count;
+		float offsetZ = z / count;
+		
+		float distance = -(float) Math.sqrt(Math.pow(offsetX, 2) + Math.pow(offsetY, 2) + Math.pow(offsetZ, 2));
+				
+		// TODO Auto-generated method stub
+		return (int)distance;
+	}
+
 	private boolean isValid(SphereInstance sphere) {
 		for (SphereInstance existingSphere : chain) {
 			double checkDistance = Math.pow(sphere.x - existingSphere.x, 2) + Math.pow(sphere.y - existingSphere.y, 2)
@@ -81,7 +115,7 @@ public class SphereChain {
 		return true;
 	}
 
-	private SphereInstance getHypotheticalSphere(SphereInstance previousSphere) {
+	private SphereInstance getPotentialSphere(SphereInstance previousSphere) {
 		// FIXME: Attempt to generate AWAY from players.
 		int originX;
 		int originZ;

@@ -34,11 +34,9 @@ public class SphereChain {
 
 		// Create up to 16 spheres.
 		sphereChainLength = random.nextInt(14) + 2;
-
-		buildChain();
 	}
 
-	private void buildChain() {
+	public void buildChain() {
 		int buildLength = 0;
 
 		SphereInstance previousSphere = null;
@@ -104,8 +102,9 @@ public class SphereChain {
 
 	private boolean isValid(SphereInstance sphere) {
 		for (SphereInstance existingSphere : chain) {
-			double checkDistance = Math.pow(sphere.x - existingSphere.x, 2) + Math.pow(sphere.y - existingSphere.y, 2)
-					+ Math.pow(sphere.z - existingSphere.z, 2);
+			double checkDistance = sphere.distance(existingSphere);
+			/*double checkDistance = Math.pow(sphere.x - existingSphere.x, 2) + Math.pow(sphere.y - existingSphere.y, 2)
+					+ Math.pow(sphere.z - existingSphere.z, 2);*/
 			double minimumDistance = Math.pow(sphere.getRadius() + existingSphere.getRadius(), 2);
 			if (checkDistance < minimumDistance) {
 				return false;

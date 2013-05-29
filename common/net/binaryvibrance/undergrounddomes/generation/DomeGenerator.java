@@ -25,12 +25,19 @@ public class DomeGenerator implements IWorldGenerator {
 	}
 
 	private void generateSurface(World world, Random random, int x, int z, IChunkProvider generator, IChunkProvider provider) {
-
+		//TODO: allow the SphereChain to be aware of chunks that have yet to be created.
 		SphereChain sphereChain2 = new SphereChain(random, x, z);
+		sphereChain2.buildChain();
+		
+		CorridorGen corridorGen = new CorridorGen(sphereChain2);
+		corridorGen.generateCorridor();
+		
+		//TODO: Calculate SphereChain bounds
 		for (Point3D chunk : sphereChain2.getRequiredChunks()) {
 			provider.provideChunk(chunk.x, chunk.z);
 		}
 		sphereChain2.renderSpheres(world);
+		corridorGen.renderCorridor(world);
 	}
 
 	/*private void generateWalkway(SphereInstance sphere, Point3D previousSphere, World world, boolean preferX) {

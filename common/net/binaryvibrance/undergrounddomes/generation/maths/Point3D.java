@@ -27,7 +27,33 @@ public class Point3D {
 	public Point3D add(Vector3 vector) {
 		return new Point3D(x + vector.x, y + vector.y, z + vector.z, world);
 	}
+	
+	public Vector3 subtract(Point3D point) {
+		return new Vector3(x - point.x, y - point.y, z - point.z);
+	}
+	
+	public double distance(Point3D point) {
+		return Math.pow(x - point.x, 2) + Math.pow(y - point.y, 2) + Math.pow(z - point.z, 2);
+	}
 
+	public static Point3D average(Point3D... points) {
+		double count = points.length;
+		long xSum = 0;
+		long ySum = 0;
+		long zSum = 0;
+		for (Point3D point : points) {
+			xSum += point.x;
+			ySum += point.y;
+			zSum += point.z;
+		}
+		
+		return new Point3D(
+				(int)(xSum / count),
+				(int)(ySum / count),
+				(int)(zSum / count)
+				);		
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -1,5 +1,6 @@
 package net.binaryvibrance.undergrounddomes.tileentitity;
 
+import net.binaryvibrance.undergrounddomes.block.BlockLightReceptor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
@@ -25,4 +26,17 @@ public class TileLightReceptor extends TileEntity {
 	public void readFromNBT(NBTTagCompound par1) {
 		super.readFromNBT(par1);
 	}
+	
+	@Override
+	public void updateEntity() {
+		if (this.worldObj != null && !this.worldObj.isRemote && this.worldObj.getTotalWorldTime() % 20L == 0L)
+        {
+            this.blockType = this.getBlockType();
+
+            if (this.blockType != null && this.blockType instanceof BlockLightReceptor)
+            {
+                ((BlockLightReceptor)this.blockType).updateLightLevel(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+            }
+        }
+	}	
 }

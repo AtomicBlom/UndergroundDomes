@@ -52,6 +52,7 @@ public class CorridorGen {
 		//Box b = null;
 		
 		if (northDistance <= southDistance && northDistance <= eastDistance && northDistance <= westDistance) {
+			//a = new Line()
 			//a = new Box(northPoint.add(new Vector3(-2, 0, 0)), new Point3D(northPoint.x + 2, 6, averagePoint.z + 2));
 			//b = new Box(new Point3D(northPoint.x - 2, 0, averagePoint.z - 2), averagePoint.add(new Vector3(0, 6, 2)));
 		} else if (southDistance <= northDistance && southDistance <= eastDistance && southDistance <= westDistance) {

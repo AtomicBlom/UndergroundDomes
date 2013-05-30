@@ -17,7 +17,7 @@ public class BlockLightReceptor extends BVBlock implements ITileEntityProvider, 
 	public static final String UNLOCALIZED_NAME = "lightReceptor";
 	public static final String NAME = "Light Receptor";
 	public static final int BLOCK_ID = 2376;
-	
+
 	public BlockLightReceptor() {
 		super(BLOCK_ID, Material.sand);
 		setCreativeTab(CreativeTabs.tabBlock);
@@ -26,44 +26,40 @@ public class BlockLightReceptor extends BVBlock implements ITileEntityProvider, 
 		setResistance(1f);
 	}
 
+	@Override
+	public TileEntity createTileEntity(World world, int metadata) {
 
-    @Override
-    public TileEntity createTileEntity(World world, int metadata) {
+		return new TileLightReceptor();
+	}
 
-        return new TileLightReceptor();
-    }
+	@Override
+	public boolean renderAsNormalBlock() {
 
-    @Override
-    public boolean renderAsNormalBlock() {
+		return false;
+	}
 
-        return false;
-    }
+	@Override
+	public boolean isOpaqueCube() {
 
-    @Override
-    public boolean isOpaqueCube() {
+		return false;
+	}
 
-        return false;
-    }
-    
-  //This will tell minecraft not to render any side of our cube.
-    @Override
-    public boolean shouldSideBeRendered(IBlockAccess iblockaccess, int i, int j, int k, int l)
-    {
-       return false;
-    }
+	// This will tell minecraft not to render any side of our cube.
+	@Override
+	public boolean shouldSideBeRendered(IBlockAccess iblockaccess, int i, int j, int k, int l) {
+		return false;
+	}
 
-    
-    @Override
-    public int getRenderType() {
-        return RenderIds.LIGHT_RECEPTOR_RENDER_ID;
-    }
+	@Override
+	public int getRenderType() {
+		return RenderIds.LIGHT_RECEPTOR_RENDER_ID;
+	}
 
 	@Override
 	protected String getBlockName() {
 		// TODO Auto-generated method stub
 		return NAME;
 	}
-
 
 	@Override
 	public TileEntity createNewTileEntity(World world) {
@@ -73,13 +69,12 @@ public class BlockLightReceptor extends BVBlock implements ITileEntityProvider, 
 
 	public void updateLightLevel(Point3D location) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void GetPhotonLevel(Direction inverseDirection, float powerLevel) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

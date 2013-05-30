@@ -5,12 +5,12 @@ import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
-import net.binaryvibrance.undergrounddomes.generation.maths.Point3DF;
 import net.binaryvibrance.undergrounddomes.generation.maths.Vector3;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
+import net.minecraft.util.Vec3;
 
 public class Sphere {
-	private int diameter;
+	private final int diameter;
 
 	private Sphere(int diameter) {
 		this.diameter = diameter;
@@ -49,7 +49,7 @@ public class Sphere {
 		atoms = new SphereAtom[diameter + 1][diameter + 1][diameter + 1];
 		float radius = diameter / 2;
 		double desiredWidth = Math.pow(radius, 2);
-		Point3DF sphereCentre = new Point3DF(radius, radius, radius);
+		Point3D sphereCentre = new Point3D(radius, radius, radius);
 		matchedAtoms = new LinkedList<SphereAtom>();
 
 		// Pass 1: Determine Sphere Atoms
@@ -72,11 +72,11 @@ public class Sphere {
 			int neighboursSet = 0;
 			int neighboursNotSet = 0;
 
-			for (Vector3 vector : Vector3.NEIGHBOURS) {
+			for (Vec3 vector : Vector3.NEIGHBOURS) {
 				Point3D check = atom.add(vector);
 
 				if (check.x >= 0 && check.x <= diameter && check.y >= 0 && check.y <= diameter && check.z >= 0 && check.z <= diameter) {
-					SphereAtom checkParticle = atoms[check.z][check.y][check.x];
+					SphereAtom checkParticle = atoms[check.zCoord][check.yCoord][check.xCoord];
 					if (checkParticle == null) {
 						neighboursNotSet++;
 					} else {

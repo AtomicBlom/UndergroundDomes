@@ -9,21 +9,21 @@ import java.util.logging.Logger;
 
 import net.binaryvibrance.undergrounddomes.DeveloperOptions;
 import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
-import net.binaryvibrance.undergrounddomes.generation.maths.Vector3;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class SphereChain {
 	private static final Logger LOG = LogHelper.getLogger();
 
-	private int sphereChainLength;
+	int sphereChainLength;
 	private final List<SphereInstance> chain;
 	private final Random random;
 
-	private final int startX;
-	private final int startZ;
+	final int startX;
+	final int startZ;
 
-	private int heightOffset;
+	int heightOffset;
 
 	public SphereChain(Random random, int startX, int startZ) {
 		this.random = random;
@@ -41,7 +41,6 @@ public class SphereChain {
 
 		SphereInstance previousSphere = null;
 		while (buildLength < sphereChainLength) {
-			//ArrayList<SphereInstance> validPotentialSpheres = new ArrayList<SphereInstance>();
 			SphereInstance sphere = null;
 			int sphereScore = Integer.MIN_VALUE;
 			for (int i = 0; i < 10; i++) {
@@ -59,56 +58,58 @@ public class SphereChain {
 				break;
 			}
 			sphere.createFloors(random);
-			LOG.info(String.format("Sphere %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, sphereChainLength, sphere.x, sphere.y,
-					sphere.z, sphere.getDiameter()));
+			LOG.info(String.format("Sphere %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, sphereChainLength, sphere.xCoord, sphere.yCoord,
+					sphere.zCoord, sphere.getDiameter()));
 			chain.add(sphere);
-				
-			heightOffset = Math.max(heightOffset, (int)sphere.getRadius() + 1);
-			
+
+			heightOffset = Math.max(heightOffset, (int) sphere.getRadius() + 1);
+
 			previousSphere = sphere;
 			buildLength++;
 		}
-		
+
 		sphereChainLength = chain.size();
-		
+
 		if (DeveloperOptions.RENDER_ABOVE_GROUND) {
 			heightOffset += 96;
 		}
-		
+
 	}
 
 	private int getSphereScore(SphereInstance potentialSphere) {
-		long x = potentialSphere.x;
-		long y = potentialSphere.y;
-		long z = potentialSphere.z;
+		double x = potentialSphere.x;
+		double y = potentialSphere.y;
+		double z = potentialSphere.z;
 		int count = 1;
-		
+
 		for (SphereInstance sphere : chain) {
 			x += sphere.x;
 			y += sphere.y;
 			z += sphere.z;
 			count++;
 		}
-		
-		float offsetX = x / count;
-		float offsetY = y / count;
-		float offsetZ = z / count;
-		
-		float distance = -(float) Math.sqrt(Math.pow(offsetX, 2) + Math.pow(offsetY, 2) + Math.pow(offsetZ, 2));
-				
+
+		double offsetX = x / count;
+		double offsetY = y / count;
+		double offsetZ = z / count;
+
+		double distance = -Math.sqrt(Math.pow(offsetX, 2) + Math.pow(offsetY, 2) + Math.pow(offsetZ, 2));
+
 		// TODO Auto-generated method stub
-		return (int)distance;
+		return (int) distance;
 	}
 
 	private boolean isValid(SphereInstance sphere) {
 		for (SphereInstance existingSphere : chain) {
 			double checkDistance = sphere.distance(existingSphere);
-			/*double checkDistance = Math.pow(sphere.x - existingSphere.x, 2) + Math.pow(sphere.y - existingSphere.y, 2)
-					+ Math.pow(sphere.z - existingSphere.z, 2);*/
+			/*
+			 * double checkDistance = Math.pow(sphere.x - existingSphere.x, 2) +
+			 * Math.pow(sphere.y - existingSphere.y, 2) + Math.pow(sphere.z -
+			 * existingSphere.z, 2);
+			 */
 			double minimumDistance = Math.pow(sphere.getRadius() + existingSphere.getRadius(), 2);
-			if (checkDistance < minimumDistance) {
+			if (checkDistance < minimumDistance)
 				return false;
-			}
 		}
 
 		return true;
@@ -126,14 +127,14 @@ public class SphereChain {
 		final int xDirection = random.nextBoolean() ? -1 : 1;
 		final int zDirection = random.nextBoolean() ? -1 : 1;
 		final boolean firstDirectionIsXAxis = random.nextBoolean();
-		final double firstDimensionOffset = (radius + random.nextInt(12));
+		final double firstDimensionOffset = radius + random.nextInt(12);
 		final int newSpacing = random.nextInt(8);
 
 		final int previousSphereDiameter = previousSphere != null ? previousSphere.getDiameter() : 0;
-		final int previousSphereX = previousSphere != null ? previousSphere.x : 0;
-		final int previousSphereZ = previousSphere != null ? previousSphere.z : 0;
+		final int previousSphereX = previousSphere != null ? previousSphere.xCoord : 0;
+		final int previousSphereZ = previousSphere != null ? previousSphere.zCoord : 0;
 
-		final double touchingDistance = (previousSphereDiameter / 2.0f + radius);
+		final double touchingDistance = previousSphereDiameter / 2.0f + radius;
 
 		final int minCoridorSpacing = 6;
 
@@ -180,13 +181,14 @@ public class SphereChain {
 		}
 		return requiredChunks;
 	}
-	
+
 	public void renderSpheres(World world) {
 		int chainLength = chain.size();
 		int current = 1;
 		for (SphereInstance sphere : chain) {
-			LOG.info(String.format("Rendering Sphere %d/%d at (%d,%d,%d) diameter %d", current++, chainLength, sphere.x + startX, this.heightOffset, sphere.z + startZ, sphere.getDiameter()));
-			sphere.render(world, new Vector3(startX, this.heightOffset, startZ));
+			LOG.info(String.format("Rendering Sphere %d/%d at (%d,%d,%d) diameter %d", current++, chainLength, sphere.xCoord + startX,
+					heightOffset, sphere.zCoord + startZ, sphere.getDiameter()));
+			sphere.render(world, Vec3.createVectorHelper(startX, heightOffset, startZ));
 		}
 	}
 }

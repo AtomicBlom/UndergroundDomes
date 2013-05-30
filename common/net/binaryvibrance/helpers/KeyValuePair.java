@@ -8,6 +8,5 @@ public class KeyValuePair<TKey, TValue> {
 		this.key = key;
 		this.value = value;
 	}
-	
-	
+
 }

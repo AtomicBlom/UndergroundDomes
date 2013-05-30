@@ -11,6 +11,6 @@ public abstract class CommonProxy {
 
 	public void initRenderingAndTextures() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

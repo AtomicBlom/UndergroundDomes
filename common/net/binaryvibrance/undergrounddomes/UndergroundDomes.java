@@ -15,33 +15,33 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid=Constants.Mod.MOD_ID, name=Constants.Mod.MOD_NAME, version=Constants.Mod.MOD_VERSION)
+@Mod(modid = Constants.Mod.MOD_ID, name = Constants.Mod.MOD_NAME, version = Constants.Mod.MOD_VERSION)
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class UndergroundDomes {
 	@Mod.Instance(Constants.Mod.MOD_ID)
 	public static UndergroundDomes instance;
-	
-	@SidedProxy(clientSide = Constants.Mod.CLIENT_SIDE_PROXY, serverSide=Constants.Mod.SERVER_SIDE_PROXY)
-	public static CommonProxy proxy;
-			
-	IWorldGenerator worldGenerator = new DomeGenerator(); 
-	
-	@PreInit
-    public void preInit(FMLPreInitializationEvent event) {
-		LogHelper.init();
-    }
-    
-    @Init
-    public void load(FMLInitializationEvent event) {
-    	GameRegistry.registerWorldGenerator(worldGenerator);
-    	Constants.Blocks.LIGHT_RECEPTOR.selfRegister();
-    	proxy.registerTileEntities();
-    	proxy.initRenderingAndTextures();    	
-    }
-    
-    @PostInit
-    public void postInit(FMLPostInitializationEvent event) {
 
-    }
-	
+	@SidedProxy(clientSide = Constants.Mod.CLIENT_SIDE_PROXY, serverSide = Constants.Mod.SERVER_SIDE_PROXY)
+	public static CommonProxy proxy;
+
+	IWorldGenerator worldGenerator = new DomeGenerator();
+
+	@PreInit
+	public void preInit(FMLPreInitializationEvent event) {
+		LogHelper.init();
+	}
+
+	@Init
+	public void load(FMLInitializationEvent event) {
+		GameRegistry.registerWorldGenerator(worldGenerator);
+		Constants.Blocks.LIGHT_RECEPTOR.selfRegister();
+		proxy.registerTileEntities();
+		proxy.initRenderingAndTextures();
+	}
+
+	@PostInit
+	public void postInit(FMLPostInitializationEvent event) {
+
+	}
+
 }

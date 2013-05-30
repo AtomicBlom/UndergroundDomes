@@ -1,10 +1,10 @@
 package net.binaryvibrance.undergrounddomes.block;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.binaryvibrance.undergrounddomes.Constants;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public abstract class BVBlock extends Block {
 
@@ -12,12 +12,12 @@ public abstract class BVBlock extends Block {
 		super(id, material);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	protected abstract String getBlockName();
-	
+
 	public void selfRegister() {
 		GameRegistry.registerBlock(this, getModLocalizedName());
-    	LanguageRegistry.addName(this, getBlockName());
+		LanguageRegistry.addName(this, getBlockName());
 	}
 
 	public String getModLocalizedName() {

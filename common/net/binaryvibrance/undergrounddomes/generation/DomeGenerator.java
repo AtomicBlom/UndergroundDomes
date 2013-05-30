@@ -25,46 +25,41 @@ public class DomeGenerator implements IWorldGenerator {
 	}
 
 	private void generateSurface(World world, Random random, int x, int z, IChunkProvider generator, IChunkProvider provider) {
-		//TODO: allow the SphereChain to be aware of chunks that have yet to be created.
+		// TODO: allow the SphereChain to be aware of chunks that have yet to be
+		// created.
 		SphereChain sphereChain2 = new SphereChain(random, x, z);
 		sphereChain2.buildChain();
-		
+
 		CorridorGen corridorGen = new CorridorGen(sphereChain2);
 		corridorGen.generateCorridor();
-		
-		//TODO: Calculate SphereChain bounds
+
+		// TODO: Calculate SphereChain bounds
 		for (Point3D chunk : sphereChain2.getRequiredChunks()) {
-			provider.provideChunk(chunk.x, chunk.z);
+			provider.provideChunk(chunk.xCoord, chunk.zCoord);
 		}
 		sphereChain2.renderSpheres(world);
 		corridorGen.renderCorridor(world);
 	}
 
-	/*private void generateWalkway(SphereInstance sphere, Point3D previousSphere, World world, boolean preferX) {
-		int x, z, step;
-
-		int y = sphere.getTranslatedFloorLevel(0);
-
-		if (preferX) {
-			step = previousSphere.x < sphere.x ? 1 : -1;
-			for (x = previousSphere.x, z = previousSphere.z; x != sphere.x; x += step) {
-				world.setBlock(x, y, z, Block.blockGold.blockID, 0, 2);
-			}
-
-			step = previousSphere.z < sphere.z ? 1 : -1;
-			for (z = previousSphere.z, x = sphere.x; z != sphere.z; z += step) {
-				world.setBlock(x, y, z, Block.blockDiamond.blockID, 0, 2);
-			}
-		} else {
-			step = previousSphere.z < sphere.z ? 1 : -1;
-			for (z = previousSphere.z, x = previousSphere.x; z != sphere.z; z += step) {
-				world.setBlock(x, y, z, Block.blockGold.blockID, 0, 2);
-			}
-
-			step = previousSphere.x < sphere.x ? 1 : -1;
-			for (x = previousSphere.x, z = sphere.z; x != sphere.x; x += step) {
-				world.setBlock(x, y, z, Block.blockDiamond.blockID, 0, 2);
-			}
-		}
-	}*/
+	/*
+	 * private void generateWalkway(SphereInstance sphere, Point3D
+	 * previousSphere, World world, boolean preferX) { int x, z, step;
+	 * 
+	 * int y = sphere.getTranslatedFloorLevel(0);
+	 * 
+	 * if (preferX) { step = previousSphere.x < sphere.x ? 1 : -1; for (x =
+	 * previousSphere.x, z = previousSphere.z; x != sphere.x; x += step) {
+	 * world.setBlock(x, y, z, Block.blockGold.blockID, 0, 2); }
+	 * 
+	 * step = previousSphere.z < sphere.z ? 1 : -1; for (z = previousSphere.z, x
+	 * = sphere.x; z != sphere.z; z += step) { world.setBlock(x, y, z,
+	 * Block.blockDiamond.blockID, 0, 2); } } else { step = previousSphere.z <
+	 * sphere.z ? 1 : -1; for (z = previousSphere.z, x = previousSphere.x; z !=
+	 * sphere.z; z += step) { world.setBlock(x, y, z, Block.blockGold.blockID,
+	 * 0, 2); }
+	 * 
+	 * step = previousSphere.x < sphere.x ? 1 : -1; for (x = previousSphere.x, z
+	 * = sphere.z; x != sphere.x; x += step) { world.setBlock(x, y, z,
+	 * Block.blockDiamond.blockID, 0, 2); } } }
+	 */
 }

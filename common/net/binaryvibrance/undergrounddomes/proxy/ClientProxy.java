@@ -10,13 +10,13 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends CommonProxy {
-	
+
 	@Override
 	public void initRenderingAndTextures() {
 		RenderIds.LIGHT_RECEPTOR_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 		MinecraftForgeClient.registerItemRenderer(BlockLightReceptor.BLOCK_ID, new ItemLightReceptorRenderer());
 	}
-	
+
 	@Override
 	public void registerTileEntities() {
 		super.registerTileEntities();

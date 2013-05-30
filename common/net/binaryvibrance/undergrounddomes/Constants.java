@@ -10,15 +10,16 @@ public final class Constants {
 		public static final String CLIENT_SIDE_PROXY = "net.binaryvibrance.undergrounddomes.proxy.ClientProxy";
 		public static final String SERVER_SIDE_PROXY = "net.binaryvibrance.undergrounddomes.proxy.ServerProxy";
 	}
+
 	public final static class Blocks {
 		public static final BlockLightReceptor LIGHT_RECEPTOR = new BlockLightReceptor();
 	}
+
 	public final static class Textures {
-		public static final String MODEL_SHEET_LOCATION= "/mods/BV.Domes/textures/models/";
-		
+		public static final String MODEL_SHEET_LOCATION = "/mods/BV.Domes/textures/models/";
+
 		public static final String MODEL_LIGHT_RECEPTOR = MODEL_SHEET_LOCATION + "lightReceptor.png";
-		
-		
+
 	}
-	
+
 }

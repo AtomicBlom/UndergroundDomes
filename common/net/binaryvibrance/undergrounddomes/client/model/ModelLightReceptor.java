@@ -4,11 +4,6 @@
 // Keep in mind that you still need to fill in some blanks
 // - ZeuX
 
-
-
-
-
-
 package net.binaryvibrance.undergrounddomes.client.model;
 
 import net.minecraft.client.model.ModelBase;
@@ -18,100 +13,96 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelLightReceptor extends ModelBase
-{
-  //fields
-    ModelRenderer Layer_1;
-    ModelRenderer Layer_2;
-    ModelRenderer Layer_3;
-    ModelRenderer Layer_4;
-    ModelRenderer Layer_5;
-    ModelRenderer Layer_6;
-    ModelRenderer Layer_7;
-  
-  public ModelLightReceptor()
-  {
-    textureWidth = 64;
-    textureHeight = 64;
-    
-      Layer_1 = new ModelRenderer(this, 0, 0);
-      Layer_1.addBox(0F, 0F, 0F, 16, 4, 16);
-      Layer_1.setRotationPoint(-8F, 20F, -8F);
-      Layer_1.setTextureSize(64, 64);
-      Layer_1.mirror = true;
-      setRotation(Layer_1, 0F, 0F, 0F);
-      Layer_2 = new ModelRenderer(this, 0, 20);
-      Layer_2.addBox(0F, 0F, 0F, 14, 1, 14);
-      Layer_2.setRotationPoint(-7F, 19F, -7F);
-      Layer_2.setTextureSize(64, 64);
-      Layer_2.mirror = true;
-      setRotation(Layer_2, 0F, 0F, 0F);
-      Layer_3 = new ModelRenderer(this, 0, 35);
-      Layer_3.addBox(0F, 0F, 0F, 12, 1, 12);
-      Layer_3.setRotationPoint(-6F, 18F, -6F);
-      Layer_3.setTextureSize(64, 64);
-      Layer_3.mirror = true;
-      setRotation(Layer_3, 0F, 0F, 0F);
-      Layer_4 = new ModelRenderer(this, 0, 48);
-      Layer_4.addBox(0F, 0F, 0F, 8, 1, 8);
-      Layer_4.setRotationPoint(-4F, 17F, -4F);
-      Layer_4.setTextureSize(64, 64);
-      Layer_4.mirror = true;
-      setRotation(Layer_4, 0F, 0F, 0F);
-      Layer_5 = new ModelRenderer(this, 32, 48);
-      Layer_5.addBox(-3F, 0F, -3F, 6, 2, 6);
-      Layer_5.setRotationPoint(0F, 15F, 0F);
-      Layer_5.setTextureSize(64, 64);
-      Layer_5.mirror = true;
-      setRotation(Layer_5, 0F, 0F, 0F);
-      Layer_6 = new ModelRenderer(this, 32, 56);
-      Layer_6.addBox(0F, 0F, 0F, 4, 3, 4);
-      Layer_6.setRotationPoint(-2F, 12F, -2F);
-      Layer_6.setTextureSize(64, 64);
-      Layer_6.mirror = true;
-      setRotation(Layer_6, 0F, 0F, 0F);
-      Layer_7 = new ModelRenderer(this, 48, 56);
-      Layer_7.addBox(0F, 0F, 0F, 2, 4, 2);
-      Layer_7.setRotationPoint(-1F, 8F, -1F);
-      Layer_7.setTextureSize(64, 64);
-      Layer_7.mirror = true;
-      setRotation(Layer_7, 0F, 0F, 0F);
-  }
-  
-  public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
-  {
-    super.render(entity, f, f1, f2, f3, f4, f5);
-    setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-    Layer_1.render(f5);
-    Layer_2.render(f5);
-    Layer_3.render(f5);
-    Layer_4.render(f5);
-    Layer_5.render(f5);
-    Layer_6.render(f5);
-    Layer_7.render(f5);
-  }
-  
-  public void render(float f5)
-  {
-    Layer_1.render(f5);
-    Layer_2.render(f5);
-    Layer_3.render(f5);
-    Layer_4.render(f5);
-    Layer_5.render(f5);
-    Layer_6.render(f5);
-    Layer_7.render(f5);
-  }
-  
-  private void setRotation(ModelRenderer model, float x, float y, float z)
-  {
-    model.rotateAngleX = x;
-    model.rotateAngleY = y;
-    model.rotateAngleZ = z;
-  }
-  
-  public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity)
-  {
-    super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-  }
+public class ModelLightReceptor extends ModelBase {
+	// fields
+	ModelRenderer Layer_1;
+	ModelRenderer Layer_2;
+	ModelRenderer Layer_3;
+	ModelRenderer Layer_4;
+	ModelRenderer Layer_5;
+	ModelRenderer Layer_6;
+	ModelRenderer Layer_7;
+
+	public ModelLightReceptor() {
+		textureWidth = 64;
+		textureHeight = 64;
+
+		Layer_1 = new ModelRenderer(this, 0, 0);
+		Layer_1.addBox(0F, 0F, 0F, 16, 4, 16);
+		Layer_1.setRotationPoint(-8F, 20F, -8F);
+		Layer_1.setTextureSize(64, 64);
+		Layer_1.mirror = true;
+		setRotation(Layer_1, 0F, 0F, 0F);
+		Layer_2 = new ModelRenderer(this, 0, 20);
+		Layer_2.addBox(0F, 0F, 0F, 14, 1, 14);
+		Layer_2.setRotationPoint(-7F, 19F, -7F);
+		Layer_2.setTextureSize(64, 64);
+		Layer_2.mirror = true;
+		setRotation(Layer_2, 0F, 0F, 0F);
+		Layer_3 = new ModelRenderer(this, 0, 35);
+		Layer_3.addBox(0F, 0F, 0F, 12, 1, 12);
+		Layer_3.setRotationPoint(-6F, 18F, -6F);
+		Layer_3.setTextureSize(64, 64);
+		Layer_3.mirror = true;
+		setRotation(Layer_3, 0F, 0F, 0F);
+		Layer_4 = new ModelRenderer(this, 0, 48);
+		Layer_4.addBox(0F, 0F, 0F, 8, 1, 8);
+		Layer_4.setRotationPoint(-4F, 17F, -4F);
+		Layer_4.setTextureSize(64, 64);
+		Layer_4.mirror = true;
+		setRotation(Layer_4, 0F, 0F, 0F);
+		Layer_5 = new ModelRenderer(this, 32, 48);
+		Layer_5.addBox(-3F, 0F, -3F, 6, 2, 6);
+		Layer_5.setRotationPoint(0F, 15F, 0F);
+		Layer_5.setTextureSize(64, 64);
+		Layer_5.mirror = true;
+		setRotation(Layer_5, 0F, 0F, 0F);
+		Layer_6 = new ModelRenderer(this, 32, 56);
+		Layer_6.addBox(0F, 0F, 0F, 4, 3, 4);
+		Layer_6.setRotationPoint(-2F, 12F, -2F);
+		Layer_6.setTextureSize(64, 64);
+		Layer_6.mirror = true;
+		setRotation(Layer_6, 0F, 0F, 0F);
+		Layer_7 = new ModelRenderer(this, 48, 56);
+		Layer_7.addBox(0F, 0F, 0F, 2, 4, 2);
+		Layer_7.setRotationPoint(-1F, 8F, -1F);
+		Layer_7.setTextureSize(64, 64);
+		Layer_7.mirror = true;
+		setRotation(Layer_7, 0F, 0F, 0F);
+	}
+
+	@Override
+	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+		super.render(entity, f, f1, f2, f3, f4, f5);
+		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+		Layer_1.render(f5);
+		Layer_2.render(f5);
+		Layer_3.render(f5);
+		Layer_4.render(f5);
+		Layer_5.render(f5);
+		Layer_6.render(f5);
+		Layer_7.render(f5);
+	}
+
+	public void render(float f5) {
+		Layer_1.render(f5);
+		Layer_2.render(f5);
+		Layer_3.render(f5);
+		Layer_4.render(f5);
+		Layer_5.render(f5);
+		Layer_6.render(f5);
+		Layer_7.render(f5);
+	}
+
+	private void setRotation(ModelRenderer model, float x, float y, float z) {
+		model.rotateAngleX = x;
+		model.rotateAngleY = y;
+		model.rotateAngleZ = z;
+	}
+
+	@Override
+	public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
+		super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+	}
 
 }

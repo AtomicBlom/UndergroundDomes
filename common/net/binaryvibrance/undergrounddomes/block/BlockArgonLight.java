@@ -7,7 +7,7 @@ public class BlockArgonLight extends BVBlock {
 	public static final String UNLOCALIZED_NAME = "argonLight";
 	public static final String NAME = "Argon Light";
 	public static final int BLOCK_ID = 2376;
-	
+
 	public BlockArgonLight() {
 		super(BLOCK_ID, Material.glass);
 		setCreativeTab(CreativeTabs.tabBlock);

@@ -1,8 +1,8 @@
 package net.binaryvibrance.undergrounddomes.generation;
 
-import net.binaryvibrance.undergrounddomes.generation.maths.IntegralVector3;
+import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
 
-public class SphereAtom extends IntegralVector3 {
+public class SphereAtom extends Point3D {
 	private ParticleType particleType;
 
 	public SphereAtom(ParticleType initialType, int x, int y, int z) {

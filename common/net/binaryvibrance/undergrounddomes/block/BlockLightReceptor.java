@@ -1,7 +1,6 @@
 package net.binaryvibrance.undergrounddomes.block;
 
 import net.binaryvibrance.net.undergrounddomes.api.IPhotonEmitter;
-import net.binaryvibrance.undergrounddomes.Constants;
 import net.binaryvibrance.undergrounddomes.RenderIds;
 import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.tileentitity.TileLightReceptor;
@@ -15,14 +14,14 @@ import net.minecraft.world.World;
 
 public class BlockLightReceptor extends BVBlock implements ITileEntityProvider, IPhotonEmitter {
 
-	public static final String UnlocalizedName = "lightReceptor";
-	public static final String Name = "Light Receptor";
-	public static final int BlockId = 2376;
+	public static final String UNLOCALIZED_NAME = "lightReceptor";
+	public static final String NAME = "Light Receptor";
+	public static final int BLOCK_ID = 2376;
 	
 	public BlockLightReceptor() {
-		super(BlockId, Material.sand);
+		super(BLOCK_ID, Material.sand);
 		setCreativeTab(CreativeTabs.tabBlock);
-		this.setUnlocalizedName(UnlocalizedName);
+		this.setUnlocalizedName(UNLOCALIZED_NAME);
 		setHardness(10.0f);
 		setResistance(1f);
 	}
@@ -56,18 +55,13 @@ public class BlockLightReceptor extends BVBlock implements ITileEntityProvider, 
     
     @Override
     public int getRenderType() {
-        return RenderIds.LightReceptorRenderId;
+        return RenderIds.LIGHT_RECEPTOR_RENDER_ID;
     }
-	
-	public String getModLocalizedName() {
-		// TODO Auto-generated method stub
-		return Constants.Mod.MOD_ID + "." + UnlocalizedName;
-	}
 
 	@Override
 	protected String getBlockName() {
 		// TODO Auto-generated method stub
-		return Name;
+		return NAME;
 	}
 
 
@@ -77,8 +71,7 @@ public class BlockLightReceptor extends BVBlock implements ITileEntityProvider, 
 		return createTileEntity(world, 0);
 	}
 
-
-	public void updateLightLevel(World worldObj, Point3D location) {
+	public void updateLightLevel(Point3D location) {
 		// TODO Auto-generated method stub
 		
 	}

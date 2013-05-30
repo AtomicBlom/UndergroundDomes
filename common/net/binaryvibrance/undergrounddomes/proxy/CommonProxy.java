@@ -6,7 +6,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public abstract class CommonProxy {
 	public void registerTileEntities() {
-		GameRegistry.registerTileEntity(TileLightReceptor.class, Constants.Blocks.LightReceptor.getModLocalizedName());
+		GameRegistry.registerTileEntity(TileLightReceptor.class, Constants.Blocks.LIGHT_RECEPTOR.getModLocalizedName());
 	}
 
 	public void initRenderingAndTextures() {

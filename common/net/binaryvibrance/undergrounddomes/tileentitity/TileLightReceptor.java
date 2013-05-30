@@ -1,6 +1,7 @@
 package net.binaryvibrance.undergrounddomes.tileentitity;
 
 import net.binaryvibrance.undergrounddomes.block.BlockLightReceptor;
+import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
@@ -35,7 +36,7 @@ public class TileLightReceptor extends TileEntity {
 
             if (this.blockType != null && this.blockType instanceof BlockLightReceptor)
             {
-                ((BlockLightReceptor)this.blockType).updateLightLevel(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+                ((BlockLightReceptor)this.blockType).updateLightLevel(new Point3D(this.xCoord, this.yCoord, this.zCoord, this.worldObj));
             }
         }
 	}	

@@ -3,9 +3,9 @@ package net.binaryvibrance.undergrounddomes.generation.maths;
 import net.minecraft.world.World;
 
 public class Point3D {
-	public final int x;
-	public final int y;
-	public final int z;
+	public int x;
+	public int y;
+	public int z;
 	public final World world;
 	private final int dimension;
 	public Point3D(int x, int y, int z) {
@@ -22,6 +22,12 @@ public class Point3D {
 		this.z = z;
 		this.world = world;
 		dimension = world != null ? world.getWorldInfo().getDimension() : Integer.MIN_VALUE;
+	}
+	
+	public void move(Vector3 vector) {
+		x += vector.x;
+		y += vector.y;
+		z += vector.z;
 	}
 	
 	public Point3D add(Vector3 vector) {

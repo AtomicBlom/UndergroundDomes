@@ -16,7 +16,7 @@ public class SphereInstance extends Point3D {
 	private static final int MIN_FLOOR_SIZE = 5;
 	private final int diameter;
 	private final float radius;
-	private List<Integer> floors;
+	private List<SphereFloor> floors;
 	private final Sphere sphereAtoms;
 
 	public SphereInstance(Point3D location, int diameter) {
@@ -27,7 +27,7 @@ public class SphereInstance extends Point3D {
 	}
 	
 	public void createFloors(Random random) {
-		ArrayList<Integer> definedFloors = new ArrayList<Integer>();
+		ArrayList<SphereFloor> definedFloors = new ArrayList<SphereFloor>();
 		//
 		int available = (int)((diameter - 2) * 0.75); //Don't include walls
 		int maxFloors = (int)Math.floor(available / (float)MIN_FLOOR_SIZE);
@@ -37,13 +37,13 @@ public class SphereInstance extends Point3D {
 		int variance = interval - MIN_FLOOR_SIZE;
 		
 		int baseHeight = diameter - available -2;
-		definedFloors.add(baseHeight);
+		definedFloors.add(new SphereFloor(this, baseHeight));
 		LOG.info(String.format("Floor 0 at level %d", baseHeight));
 		for (int floor = 1; floor < actualFloors; ++floor) {
 			int floorVariance = random.nextBoolean() ? 1 : -1;
 			int floorStart = baseHeight + floor * interval + (variance * floorVariance);
 			LOG.info(String.format("Floor %d at level %d", floor, floorStart));
-			definedFloors.add(floorStart);
+			definedFloors.add(new SphereFloor(this, floorStart));
 		}
 		
 		floors = definedFloors;		
@@ -58,18 +58,18 @@ public class SphereInstance extends Point3D {
 	}
 
 	public boolean isFloorLevel(int y) {
-		for (Integer floorLevel : floors) {
-			if (floorLevel == y) return true;
+		for (SphereFloor floorLevel : floors) {
+			if (floorLevel.level == y) return true;
 		}
 		return false;
 	}
 	
-	public int getFloorLevel(int index) {
+	public SphereFloor getFloor(int index) {
 		return floors.get(index);
 	}
 	
 	public int getTranslatedFloorLevel(int index) {
-		return (int)(y - radius + floors.get(index));
+		return (int)(y - radius + floors.get(index).level);
 	}
 
 	public void render(World world, Vector3 offset) {
@@ -77,9 +77,11 @@ public class SphereInstance extends Point3D {
 		int yOffset = offset.y;
 		int zOffset = offset.z;
 		
+		int baseFloor = getFloor(0).level;
+		
 		SphereAtom[][][] atoms = sphereAtoms.getAtoms();
 		for (int z = 0; z < diameter; ++z) {
-			for (int y = 0; y < diameter; ++y) {
+			for (int y = baseFloor; y < diameter; ++y) {
 				boolean isFloor = isFloorLevel(y);
 				for (int x = 0; x < diameter; ++x) {
 					SphereAtom atom = atoms[z][y][x];

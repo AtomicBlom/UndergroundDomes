@@ -1,7 +1,8 @@
 package net.binaryvibrance.undergrounddomes.generation;
 
+import net.binaryvibrance.undergrounddomes.generation.maths.Line;
 import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
-import net.binaryvibrance.undergrounddomes.generation.maths.Vector3;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 public class CorridorGen {
@@ -32,25 +33,21 @@ public class CorridorGen {
 				boolean valid = true;
 				
 				Point3D averagePoint = Point3D.average(sphere, primary, secondary);
-				generateRects(sphere, averagePoint);			
+				generatePaths(sphere, averagePoint);			
 				
 				if (valid) break;
 			}			
 		}
 	}
 
-	private void generateRects(SphereInstance sphere, Point3D averagePoint) {
-		int radius = (int)sphere.getRadius();
-		//North
-		Point3D northPoint = sphere.add(new Vector3(0, 0, radius));
-		Point3D southPoint = sphere.add(new Vector3(0, 0, -radius));
-		Point3D eastPoint = sphere.add(new Vector3(radius, 0, 0));
-		Point3D westPoint = sphere.add(new Vector3(-radius, 0, 0));
-		double northDistance = averagePoint.distance(northPoint);
-		double southDistance = averagePoint.distance(southPoint);
-		double eastDistance = averagePoint.distance(eastPoint);
-		double westDistance = averagePoint.distance(westPoint);
+	private void generatePaths(SphereInstance sphere, Point3D averagePoint) {
+		SphereFloor baseFloor = sphere.getFloor(0);
+		double northDistance = averagePoint.distance(baseFloor.getEntrance(EnumFacing.NORTH).location);
+		double southDistance = averagePoint.distance(baseFloor.getEntrance(EnumFacing.SOUTH).location);
+		double eastDistance = averagePoint.distance(baseFloor.getEntrance(EnumFacing.EAST).location);
+		double westDistance = averagePoint.distance(baseFloor.getEntrance(EnumFacing.WEST).location);
 		
+		Line a = null;
 		//Box a = null;
 		//Box b = null;
 		

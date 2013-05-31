@@ -19,7 +19,7 @@ public class SphereFloor {
 	}
 
 	private void createEntrances(SphereInstance instance) {
-		double radius = instance.getRadius();
+		double radius = instance.getRadius() + 1;
 		Point3D entrance;
 		entrance = findEntranceLocation(instance.add(Vector3.multiply(Vector3.NORTH, radius)), Vector3.SOUTH);
 		entrances.put(EnumFacing.NORTH, new SphereEntrance(entrance));

@@ -54,6 +54,16 @@ public class Point3D {
 	public Point3D add(Vec3 vector) {
 		return new Point3D(x + vector.xCoord, y + vector.yCoord, z + vector.zCoord, world);
 	}
+	
+	public void set(Point3D point) {
+		set(point.x, point.y, point.z);
+	}
+	
+	public void set(double x, double y, double z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
 
 	public Vec3 subtract(Point3D point) {
 

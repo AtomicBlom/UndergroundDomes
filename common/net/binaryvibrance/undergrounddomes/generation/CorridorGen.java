@@ -96,7 +96,7 @@ public class CorridorGen {
 
 		Line a = null;
 		Line b = null;
-		Point3D join;
+		Point3D join = new Point3D(0,0,0);
 		Vec3 adjustmentVector = null;
 		if (northDistance <= southDistance && northDistance <= eastDistance && northDistance <= westDistance) {
 			if (northPoint.corridorPath != null) {

@@ -20,6 +20,7 @@ public class EntranceToCorridor {
 
 	public void markApplied() {
 		applied = true;			
+		a.start.set(entranceLocation);
 	}
 
 	public boolean isApplied() {

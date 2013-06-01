@@ -1,5 +1,6 @@
 package net.binaryvibrance.undergrounddomes.generation;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -42,39 +43,37 @@ public class CorridorGen {
 					primary = secondary;
 					continue;
 				}
-
+				
 				boolean valid = true;
 				List<Line> allPaths = new LinkedList<Line>();
 				Point3D averagePoint = Point3D.average(sphere, primary, secondary);
-				Thingo currentPaths = generatePaths(sphere, averagePoint);
-				allPaths.add(currentPaths.a);
-				allPaths.add(currentPaths.b);
-				Thingo primaryPaths = generatePaths(primary, averagePoint);
-				allPaths.add(primaryPaths.a);
-				allPaths.add(primaryPaths.b);
-				Thingo secondaryPaths = generatePaths(secondary, averagePoint);
-				allPaths.add(secondaryPaths.a);
-				allPaths.add(secondaryPaths.b);
-
-				// Check path validity
-				for (Line l : allPaths) {
-					if (sphere.intersectsLine(l)) {
-						LOG.info(String.format("Current %s intersects %s", l, sphere));
-						valid = false;
-						break;
-					}
-					if (primary.intersectsLine(l)) {
-						LOG.info(String.format("Primary %s intersects %s", l, sphere));
-						valid = false;
-						break;
-					}
-					if (secondary.intersectsLine(l)) {
-						LOG.info(String.format("Secondary %s intersects %s", l, sphere));
-						valid = false;
-						break;
+				List<SphereInstance> spheres = new LinkedList<SphereInstance>(Arrays.asList(new SphereInstance[] {sphere, primary, secondary }));
+				
+				for (SphereInstance theSphere : spheres) {
+					EntranceToCorridor currentPaths = generatePaths(theSphere, averagePoint);
+					if (!currentPaths.isApplied()) {
+						for (SphereInstance compareSphere : sphereChain.getChain()) {
+							if (compareSphere.intersectsLine(currentPaths.a)) {
+								LOG.info(String.format("Corridor %s intersects with sphere %s", currentPaths.a, compareSphere));
+								valid = false;
+								break;
+							}
+							if (compareSphere.intersectsLine(currentPaths.b)) {
+								LOG.info(String.format("Corridor %s intersects with sphere %s", currentPaths.b, compareSphere));
+								valid = false;
+								break;
+							}
+						}
+						if (!valid) {
+							break;
+						}
+						
+						allPaths.add(currentPaths.a);
+						allPaths.add(currentPaths.b);
+						currentPaths.markApplied();
 					}
 				}
-
+				
 				if (valid) {
 					corridorPaths.addAll(allPaths);
 					break;
@@ -83,45 +82,54 @@ public class CorridorGen {
 		}
 	}
 
-	private Thingo generatePaths(SphereInstance sphere, Point3D averagePoint) {
+	private EntranceToCorridor generatePaths(SphereInstance sphere, Point3D averagePoint) {
 		SphereFloor baseFloor = sphere.getFloor(0);
-		Point3D northPoint = baseFloor.getEntrance(EnumFacing.NORTH).location;
-		Point3D southPoint = baseFloor.getEntrance(EnumFacing.SOUTH).location;
-		Point3D eastPoint = baseFloor.getEntrance(EnumFacing.EAST).location;
-		Point3D westPoint = baseFloor.getEntrance(EnumFacing.WEST).location;
-		double northDistance = averagePoint.distance(northPoint);
-		double southDistance = averagePoint.distance(southPoint);
-		double eastDistance = averagePoint.distance(eastPoint);
-		double westDistance = averagePoint.distance(westPoint);
+		SphereEntrance northPoint = baseFloor.getEntrance(EnumFacing.NORTH);
+		SphereEntrance southPoint = baseFloor.getEntrance(EnumFacing.SOUTH);
+		SphereEntrance eastPoint = baseFloor.getEntrance(EnumFacing.EAST);
+		SphereEntrance westPoint = baseFloor.getEntrance(EnumFacing.WEST);
+		
+		double northDistance = averagePoint.distance(northPoint.location);
+		double southDistance = averagePoint.distance(southPoint.location);
+		double eastDistance = averagePoint.distance(eastPoint.location);
+		double westDistance = averagePoint.distance(westPoint.location);
 
 		Line a = null;
 		Line b = null;
 		Point3D join;
 		Vec3 adjustmentVector = null;
 		if (northDistance <= southDistance && northDistance <= eastDistance && northDistance <= westDistance) {
-			join = new Point3D(northPoint.x, 0, averagePoint.z);
-			a = new Line(northPoint, join);
+			if (northPoint.corridorPath != null) {
+				return northPoint.corridorPath;
+			}
+			join = new Point3D(northPoint.location.x, 0, averagePoint.z);
+			a = new Line(northPoint.location, join);
 			adjustmentVector = Vector3.SOUTH;
 		} else if (southDistance <= northDistance && southDistance <= eastDistance && southDistance <= westDistance) {
-			join = new Point3D(southPoint.x, 0, averagePoint.z);
-			a = new Line(southPoint, join);
+			if (southPoint.corridorPath != null) {
+				return southPoint.corridorPath;
+			}
+			join = new Point3D(southPoint.location.x, 0, averagePoint.z);
+			a = new Line(southPoint.location, join);
 			adjustmentVector = Vector3.NORTH;
 		} else if (eastDistance <= northDistance && eastDistance <= southDistance && eastDistance <= westDistance) {
-			join = new Point3D(averagePoint.x, 0, eastPoint.z);
-			a = new Line(eastPoint, join);
+			if (eastPoint.corridorPath != null) {
+				return eastPoint.corridorPath;
+			}
+			join = new Point3D(averagePoint.x, 0, eastPoint.location.z);
+			a = new Line(eastPoint.location, join);
 			adjustmentVector = Vector3.WEST;
 		} else {
-			join = new Point3D(averagePoint.x, 0, westPoint.z);
-			a = new Line(westPoint, join);
+			if (westPoint.corridorPath != null) {
+				return westPoint.corridorPath;
+			}
+			join = new Point3D(averagePoint.x, 0, westPoint.location.z);
+			a = new Line(westPoint.location, join);
 			adjustmentVector = Vector3.EAST;
 		}
 		b = new Line(join, averagePoint);
 
-		/*
-		 * List<Line> corridorLines = new ArrayList<Line>();
-		 * corridorLines.add(a); corridorLines.add(b);
-		 */
-		return new Thingo(a, b, adjustmentVector);
+		return new EntranceToCorridor(a, b, adjustmentVector);
 	}
 
 	public void renderCorridor(World world) {
@@ -144,20 +152,4 @@ public class CorridorGen {
 					Block.blockGold.blockID, 0, 0);
 		}
 	}
-
-	private class Thingo {
-		public final Line a;
-		public final Line b;
-		public final Object entranceLocation;
-		public final Point3D destinationLocation;
-
-		public Thingo(Line a, Line b, Vec3 entranceAdjustment) {
-			this.a = a;
-			this.b = b;
-			this.entranceLocation = a.start.add(entranceAdjustment);
-			this.destinationLocation = b.end;
-
-		}
-	}
-
 }

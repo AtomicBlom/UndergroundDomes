@@ -33,7 +33,7 @@ public class SphereChain {
 		chain = new LinkedList<SphereInstance>();
 
 		// Create up to 16 spheres.
-		sphereChainLength = random.nextInt(14) + 2;
+		sphereChainLength = random.nextInt(12) + 4;
 	}
 
 	public void buildChain() {
@@ -117,6 +117,7 @@ public class SphereChain {
 
 	private SphereInstance getPotentialSphere(SphereInstance previousSphere) {
 		// FIXME: Attempt to generate AWAY from players.
+		final int minCoridorSpacing = 6;
 		int originX;
 		int originZ;
 
@@ -128,16 +129,15 @@ public class SphereChain {
 		final int zDirection = random.nextBoolean() ? -1 : 1;
 		final boolean firstDirectionIsXAxis = random.nextBoolean();
 		final double firstDimensionOffset = radius + random.nextInt(12);
-		final int newSpacing = random.nextInt(8);
+		final int newSpacing = minCoridorSpacing + random.nextInt(8);
 
 		final int previousSphereDiameter = previousSphere != null ? previousSphere.getDiameter() : 0;
 		final int previousSphereX = previousSphere != null ? previousSphere.xCoord : 0;
 		final int previousSphereZ = previousSphere != null ? previousSphere.zCoord : 0;
 
 		final double touchingDistance = previousSphereDiameter / 2.0f + radius;
-
-		final int minCoridorSpacing = 6;
-
+		// FIXME: Do I even need to do this? Corridors aren't created here
+		// anymore.
 		if (firstDirectionIsXAxis) {
 			originZ = (int) (previousSphereZ + (firstDimensionOffset + minCoridorSpacing) * zDirection);
 			originX = (int) (previousSphereX + (minCoridorSpacing

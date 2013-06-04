@@ -16,6 +16,11 @@ public class Line {
 		this.end = end;
 	}
 
+	public Line() {
+		this.start = new Point3D(0, 0, 0);
+		this.end = new Point3D(0, 0, 0);
+	}
+
 	public Vec3 getRenderVector() {
 		Vec3 vector = end.subtract(start);
 		return vector.normalize();

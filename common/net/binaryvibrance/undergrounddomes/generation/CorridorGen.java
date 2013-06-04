@@ -43,23 +43,26 @@ public class CorridorGen {
 					primary = secondary;
 					continue;
 				}
-				
+
 				boolean valid = true;
 				List<Line> allPaths = new LinkedList<Line>();
 				Point3D averagePoint = Point3D.average(sphere, primary, secondary);
-				List<SphereInstance> spheres = new LinkedList<SphereInstance>(Arrays.asList(new SphereInstance[] {sphere, primary, secondary }));
-				
+				List<SphereInstance> spheres = new LinkedList<SphereInstance>(Arrays.asList(new SphereInstance[] { sphere, primary,
+						secondary }));
+
 				for (SphereInstance theSphere : spheres) {
-					EntranceToCorridor currentPaths = generatePaths(theSphere, averagePoint);
-					if (!currentPaths.isApplied()) {
+					EntranceToCorridor corridorEntrance = generateCorridorEntrance(theSphere, averagePoint);
+					if (!corridorEntrance.isApplied()) {
 						for (SphereInstance compareSphere : sphereChain.getChain()) {
-							if (compareSphere.intersectsLine(currentPaths.a)) {
-								LOG.info(String.format("Corridor %s intersects with sphere %s", currentPaths.a, compareSphere));
+							if (compareSphere.intersectsLine(corridorEntrance.lineToCorridor)) {
+								LOG.info(String.format("Corridor %s intersects with sphere %s", corridorEntrance.lineToCorridor,
+										compareSphere));
 								valid = false;
 								break;
 							}
-							if (compareSphere.intersectsLine(currentPaths.b)) {
-								LOG.info(String.format("Corridor %s intersects with sphere %s", currentPaths.b, compareSphere));
+							if (compareSphere.intersectsLine(corridorEntrance.lineToOrigin)) {
+								LOG.info(String.format("Corridor %s intersects with sphere %s", corridorEntrance.lineToOrigin,
+										compareSphere));
 								valid = false;
 								break;
 							}
@@ -67,13 +70,13 @@ public class CorridorGen {
 						if (!valid) {
 							break;
 						}
-						
-						allPaths.add(currentPaths.a);
-						allPaths.add(currentPaths.b);
-						currentPaths.markApplied();
+
+						allPaths.add(corridorEntrance.lineToCorridor);
+						allPaths.add(corridorEntrance.lineToOrigin);
+						corridorEntrance.markApplied();
 					}
 				}
-				
+
 				if (valid) {
 					corridorPaths.addAll(allPaths);
 					break;
@@ -82,54 +85,56 @@ public class CorridorGen {
 		}
 	}
 
-	private EntranceToCorridor generatePaths(SphereInstance sphere, Point3D averagePoint) {
+	private EntranceToCorridor generateCorridorEntrance(SphereInstance sphere, Point3D averagePoint) {
 		SphereFloor baseFloor = sphere.getFloor(0);
 		SphereEntrance northPoint = baseFloor.getEntrance(EnumFacing.NORTH);
 		SphereEntrance southPoint = baseFloor.getEntrance(EnumFacing.SOUTH);
 		SphereEntrance eastPoint = baseFloor.getEntrance(EnumFacing.EAST);
 		SphereEntrance westPoint = baseFloor.getEntrance(EnumFacing.WEST);
-		
+
 		double northDistance = averagePoint.distance(northPoint.location);
 		double southDistance = averagePoint.distance(southPoint.location);
 		double eastDistance = averagePoint.distance(eastPoint.location);
 		double westDistance = averagePoint.distance(westPoint.location);
 
-		Line a = null;
-		Line b = null;
-		Point3D join = new Point3D(0,0,0);
-		Vec3 adjustmentVector = null;
+		EntranceToCorridor etc = new EntranceToCorridor();
+		etc.lineToOrigin.end.set(averagePoint);
+
 		if (northDistance <= southDistance && northDistance <= eastDistance && northDistance <= westDistance) {
 			if (northPoint.corridorPath != null) {
 				return northPoint.corridorPath;
 			}
-			join = new Point3D(northPoint.location.x, 0, averagePoint.z);
-			a = new Line(northPoint.location, join);
-			adjustmentVector = Vector3.SOUTH;
+			etc.setEntrance(northPoint);
+			etc.lineToCorridor.end.set(northPoint.location.x, 0, averagePoint.z);
+			etc.lineToCorridor.start.set(northPoint.location);
+			etc.setAdjustmentVector(Vector3.SOUTH);
 		} else if (southDistance <= northDistance && southDistance <= eastDistance && southDistance <= westDistance) {
 			if (southPoint.corridorPath != null) {
 				return southPoint.corridorPath;
 			}
-			join = new Point3D(southPoint.location.x, 0, averagePoint.z);
-			a = new Line(southPoint.location, join);
-			adjustmentVector = Vector3.NORTH;
+			etc.setEntrance(southPoint);
+			etc.lineToCorridor.end.set(southPoint.location.x, 0, averagePoint.z);
+			etc.lineToCorridor.start.set(southPoint.location);
+			etc.setAdjustmentVector(Vector3.NORTH);
 		} else if (eastDistance <= northDistance && eastDistance <= southDistance && eastDistance <= westDistance) {
 			if (eastPoint.corridorPath != null) {
 				return eastPoint.corridorPath;
 			}
-			join = new Point3D(averagePoint.x, 0, eastPoint.location.z);
-			a = new Line(eastPoint.location, join);
-			adjustmentVector = Vector3.WEST;
+			etc.setEntrance(eastPoint);
+			etc.lineToCorridor.end.set(averagePoint.x, 0, eastPoint.location.z);
+			etc.lineToCorridor.start.set(eastPoint.location);
+			etc.setAdjustmentVector(Vector3.WEST);
 		} else {
 			if (westPoint.corridorPath != null) {
 				return westPoint.corridorPath;
 			}
-			join = new Point3D(averagePoint.x, 0, westPoint.location.z);
-			a = new Line(westPoint.location, join);
-			adjustmentVector = Vector3.EAST;
+			etc.setEntrance(westPoint);
+			etc.lineToCorridor.end.set(averagePoint.x, 0, westPoint.location.z);
+			etc.lineToCorridor.start.set(westPoint.location);
+			etc.setAdjustmentVector(Vector3.EAST);
 		}
-		b = new Line(join, averagePoint);
 
-		return new EntranceToCorridor(a, b, adjustmentVector);
+		return etc;
 	}
 
 	public void renderCorridor(World world) {

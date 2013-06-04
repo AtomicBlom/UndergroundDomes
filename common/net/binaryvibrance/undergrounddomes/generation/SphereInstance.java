@@ -113,7 +113,7 @@ public class SphereInstance extends Point3D {
 					}
 					blockId = isFloor ? Block.glowStone.blockID : blockId;
 
-					world.setBlock(blockLocationX, blockLocationY, blockLocationZ, blockId, 0, 0);
+					world.setBlock(blockLocationX, blockLocationY, blockLocationZ, blockId, 0, 2);
 				}
 			}
 		}

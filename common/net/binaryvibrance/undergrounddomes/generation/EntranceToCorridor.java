@@ -42,4 +42,10 @@ public class EntranceToCorridor {
 		// TODO Auto-generated method stub
 		this.entrance = entrance;
 	}
+
+	public void setNewEndpoint(Point3D replacementJoin) {
+		// TODO Auto-generated method stub
+		Vec3 originalVector = lineToCorridor.getRenderVector();
+		
+	}
 }

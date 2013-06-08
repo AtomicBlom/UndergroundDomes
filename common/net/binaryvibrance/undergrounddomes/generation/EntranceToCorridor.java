@@ -47,5 +47,6 @@ public class EntranceToCorridor {
 		// TODO Auto-generated method stub
 		Vec3 originalVector = lineToCorridor.getRenderVector();
 		
+		
 	}
 }

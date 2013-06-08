@@ -71,7 +71,9 @@ public class CorridorGen {
 				
 				for (EntranceToCorridor entrance : entrances) {
 					if (entrance.isApplied()) continue;
-					if (appliedEntrances == 2 && !entrance.isApplied()) entrance.lineToOrigin.end.set(replacementJoin);
+					if (appliedEntrances == 2 && !entrance.isApplied()) {
+						entrance.setNewEndpoint(replacementJoin);
+					}
 					for (SphereInstance compareSphere : sphereChain) {
 						if (compareSphere.intersectsLine(entrance.lineToCorridor)) {
 							LOG.info(String.format("Corridor %s intersects with sphere %s", entrance.lineToCorridor,

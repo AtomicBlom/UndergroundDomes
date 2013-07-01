@@ -33,20 +33,17 @@ public class EntranceToCorridor {
 	}
 
 	public void setAdjustmentVector(Vec3 vector) {
-		// TODO Auto-generated method stub
 		entranceLocation.set(lineToCorridor.start);
 		entranceLocation.move(vector);
 	}
 
 	public void setEntrance(SphereEntrance entrance) {
-		// TODO Auto-generated method stub
 		this.entrance = entrance;
 	}
 
-	public void setNewEndpoint(Point3D replacementJoin) {
-		// TODO Auto-generated method stub
+	public void setNewEndpoint(Point3D newEndpoint) {
 		Vec3 originalVector = lineToCorridor.getRenderVector();
-		
-		
+		// TODO: This needs an implementation.
+		// What this needs to do is recalculate the join location
 	}
 }

@@ -38,13 +38,11 @@ class SphereNearestNeighbour implements Iterable<SphereInstance> {
 
 			@Override
 			public boolean hasNext() {
-				// TODO Auto-generated method stub
 				return internalIterator.hasNext();
 			}
 
 			@Override
 			public SphereInstance next() {
-				// TODO Auto-generated method stub
 				KeyValuePair<SphereInstance, Double> next = internalIterator.next();
 				return next.key;
 			}

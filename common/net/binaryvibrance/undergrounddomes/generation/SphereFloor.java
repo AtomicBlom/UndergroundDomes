@@ -35,7 +35,8 @@ public class SphereFloor {
 	}
 
 	private Point3D findEntranceLocation(Point3D startPoint, Vec3 searchVector) {
-		// FIXME: Implement this.
+		// TODO: This should ideally figure out how far back the entrance needs
+		// to go into the sphere.
 		return startPoint;
 	}
 

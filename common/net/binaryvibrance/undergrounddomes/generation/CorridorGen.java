@@ -28,9 +28,9 @@ public class CorridorGen {
 	public void generateCorridor() {
 		int currentSphere = 1;
 		int sphereCount = sphereChain.sphereChainLength;
-		
+
 		List<SphereInstance> sphereChain = this.sphereChain.getChain();
-		
+
 		for (SphereInstance sphere : sphereChain) {
 			LOG.info(String.format("Creating corridors for sphere %d/%d", currentSphere++, sphereCount));
 			// Calculate Nearest Neighbours
@@ -51,11 +51,12 @@ public class CorridorGen {
 				boolean valid = true;
 				List<Line> allPaths = new LinkedList<Line>();
 				Point3D averagePoint = Point3D.average(sphere, primary, secondary);
-				
+
 				EntranceToCorridor sphereCorridorEntrance = generateCorridorEntrance(sphere, averagePoint);
 				EntranceToCorridor primaryCorridorEntrance = generateCorridorEntrance(primary, averagePoint);
 				EntranceToCorridor secondaryCorridorEntrance = generateCorridorEntrance(secondary, averagePoint);
-				List<EntranceToCorridor> entrances = new ArrayList<EntranceToCorridor>(Arrays.asList(new EntranceToCorridor[] { sphereCorridorEntrance, primaryCorridorEntrance, secondaryCorridorEntrance}));
+				List<EntranceToCorridor> entrances = new ArrayList<EntranceToCorridor>(Arrays.asList(new EntranceToCorridor[] {
+						sphereCorridorEntrance, primaryCorridorEntrance, secondaryCorridorEntrance }));
 
 				int appliedEntrances = 0;
 				Point3D replacementJoin = null;
@@ -67,23 +68,21 @@ public class CorridorGen {
 						}
 					}
 				}
-				
-				
+
 				for (EntranceToCorridor entrance : entrances) {
-					if (entrance.isApplied()) continue;
+					if (entrance.isApplied())
+						continue;
 					if (appliedEntrances == 2 && !entrance.isApplied()) {
 						entrance.setNewEndpoint(replacementJoin);
 					}
 					for (SphereInstance compareSphere : sphereChain) {
 						if (compareSphere.intersectsLine(entrance.lineToCorridor)) {
-							LOG.info(String.format("Corridor %s intersects with sphere %s", entrance.lineToCorridor,
-									compareSphere));
+							LOG.info(String.format("Corridor %s intersects with sphere %s", entrance.lineToCorridor, compareSphere));
 							valid = false;
 							break;
 						}
 						if (compareSphere.intersectsLine(entrance.lineToOrigin)) {
-							LOG.info(String.format("Corridor %s intersects with sphere %s", entrance.lineToOrigin,
-									compareSphere));
+							LOG.info(String.format("Corridor %s intersects with sphere %s", entrance.lineToOrigin, compareSphere));
 							valid = false;
 							break;
 						}
@@ -96,38 +95,6 @@ public class CorridorGen {
 					allPaths.add(entrance.lineToOrigin);
 					entrance.markApplied();
 				}
-								
-				/*List<SphereInstance> spheres = new LinkedList<SphereInstance>(Arrays.asList(new SphereInstance[] { sphere, primary,
-						secondary }));
-
-				
-				
-				for (SphereInstance theSphere : spheres) {
-					EntranceToCorridor corridorEntrance = generateCorridorEntrance(theSphere, averagePoint);
-					if (!corridorEntrance.isApplied()) {
-						for (SphereInstance compareSphere : sphereChain.getChain()) {
-							if (compareSphere.intersectsLine(corridorEntrance.lineToCorridor)) {
-								LOG.info(String.format("Corridor %s intersects with sphere %s", corridorEntrance.lineToCorridor,
-										compareSphere));
-								valid = false;
-								break;
-							}
-							if (compareSphere.intersectsLine(corridorEntrance.lineToOrigin)) {
-								LOG.info(String.format("Corridor %s intersects with sphere %s", corridorEntrance.lineToOrigin,
-										compareSphere));
-								valid = false;
-								break;
-							}
-						}
-						if (!valid) {
-							break;
-						}
-
-						allPaths.add(corridorEntrance.lineToCorridor);
-						allPaths.add(corridorEntrance.lineToOrigin);
-						corridorEntrance.markApplied();
-					}
-				}*/
 
 				if (valid) {
 					corridorPaths.addAll(allPaths);

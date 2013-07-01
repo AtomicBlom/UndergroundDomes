@@ -7,7 +7,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import cpw.mods.fml.common.IWorldGenerator;
 
-//TODO: Split this into Dome Generation and walkway generation.
 public class DomeGenerator implements IWorldGenerator {
 
 	public final int baseLevel = 96;

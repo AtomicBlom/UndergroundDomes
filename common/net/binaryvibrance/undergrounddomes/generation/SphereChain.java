@@ -95,7 +95,6 @@ public class SphereChain {
 
 		double distance = -Math.sqrt(Math.pow(offsetX, 2) + Math.pow(offsetY, 2) + Math.pow(offsetZ, 2));
 
-		// TODO Auto-generated method stub
 		return (int) distance;
 	}
 
@@ -116,7 +115,6 @@ public class SphereChain {
 	}
 
 	private SphereInstance getPotentialSphere(SphereInstance previousSphere) {
-		// FIXME: Attempt to generate AWAY from players.
 		final int minCoridorSpacing = 6;
 		int originX;
 		int originZ;

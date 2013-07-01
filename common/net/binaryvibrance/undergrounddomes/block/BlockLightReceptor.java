@@ -57,24 +57,20 @@ public class BlockLightReceptor extends BVBlock implements ITileEntityProvider, 
 
 	@Override
 	protected String getBlockName() {
-		// TODO Auto-generated method stub
 		return NAME;
 	}
 
 	@Override
 	public TileEntity createNewTileEntity(World world) {
-		// TODO Auto-generated method stub
 		return createTileEntity(world, 0);
 	}
 
 	public void updateLightLevel(Point3D location) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void GetPhotonLevel(Direction inverseDirection, float powerLevel) {
-		// TODO Auto-generated method stub
 
 	}
 }

@@ -18,7 +18,6 @@ public class BlockArgonLight extends BVBlock {
 
 	@Override
 	protected String getBlockName() {
-		// TODO Auto-generated method stub
 		return NAME;
 	}
 }

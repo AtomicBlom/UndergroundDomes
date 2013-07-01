@@ -10,7 +10,6 @@ public abstract class BVBlock extends Block {
 
 	public BVBlock(int id, Material material) {
 		super(id, material);
-		// TODO Auto-generated constructor stub
 	}
 
 	protected abstract String getBlockName();
@@ -21,7 +20,6 @@ public abstract class BVBlock extends Block {
 	}
 
 	public String getModLocalizedName() {
-		// TODO Auto-generated method stub
 		return Constants.Mod.MOD_ID + "." + getUnlocalizedName2();
 	}
 }

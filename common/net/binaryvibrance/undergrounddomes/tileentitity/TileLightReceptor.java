@@ -52,13 +52,11 @@ public class TileLightReceptor extends TileEntity implements IPhotonPowered, IPh
 
 	@Override
 	public void GetPhotonLevel(Direction inverseDirection, float powerLevel) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void OnAdjacentPhotonLevelChanged(Direction direction, float powerLevel) {
-		// TODO Auto-generated method stub
 
 	}
 }

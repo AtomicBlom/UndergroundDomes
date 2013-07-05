@@ -34,7 +34,7 @@ public class EntranceToCorridor {
 		entrance.corridorPath = this;
 		Vec3 renderVector = lineToCorridor.getRenderVector();
 		Vec3 extensionVector = Vector3.multiply(renderVector, -1);
-		lineToCorridor.start.add(extensionVector);
+		lineToCorridor.start.move(extensionVector);
 	}
 
 	public boolean isApplied() {

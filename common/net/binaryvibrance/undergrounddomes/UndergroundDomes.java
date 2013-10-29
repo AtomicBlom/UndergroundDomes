@@ -5,9 +5,7 @@ import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 import net.binaryvibrance.undergrounddomes.proxy.CommonProxy;
 import cpw.mods.fml.common.IWorldGenerator;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
-import cpw.mods.fml.common.Mod.PostInit;
-import cpw.mods.fml.common.Mod.PreInit;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -26,12 +24,12 @@ public class UndergroundDomes {
 
 	IWorldGenerator worldGenerator = new DomeGenerator();
 
-	@PreInit
+	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		LogHelper.init();
 	}
 
-	@Init
+	@EventHandler
 	public void load(FMLInitializationEvent event) {
 		GameRegistry.registerWorldGenerator(worldGenerator);
 		Constants.Blocks.LIGHT_RECEPTOR.selfRegister();
@@ -39,7 +37,7 @@ public class UndergroundDomes {
 		proxy.initRenderingAndTextures();
 	}
 
-	@PostInit
+	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 
 	}

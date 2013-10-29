@@ -51,7 +51,7 @@ public class EntranceToCorridor {
 	}
 
 	public void setNewEndpoint(Point3D newEndpoint) {
-		Vec3 sphereVector = lineToCorridor.getRenderVector();
+		//Vec3 sphereVector = lineToCorridor.getRenderVector();
 		Vec3 originVector = lineToOrigin.getRenderVector();
 
 		double x = 0;

@@ -14,6 +14,7 @@ public class ItemLightReceptorRenderer implements IItemRenderer {
 
 	private final ModelLightReceptor model = new ModelLightReceptor();
 
+
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
 
@@ -58,7 +59,7 @@ public class ItemLightReceptorRenderer implements IItemRenderer {
 		GL11.glRotatef(180F, 1F, 0, 0);
 
 		// Bind texture
-		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Constants.Textures.MODEL_LIGHT_RECEPTOR);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Constants.Textures.MODEL_LIGHT_RECEPTOR);		
 
 		// Render
 		model.render((Entity) null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
@@ -66,5 +67,4 @@ public class ItemLightReceptorRenderer implements IItemRenderer {
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glPopMatrix();
 	}
-
 }

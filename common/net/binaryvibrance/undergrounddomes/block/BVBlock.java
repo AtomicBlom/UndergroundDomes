@@ -20,6 +20,6 @@ public abstract class BVBlock extends Block {
 	}
 
 	public String getModLocalizedName() {
-		return Constants.Mod.MOD_ID + "." + getUnlocalizedName2();
+		return Constants.Mod.MOD_ID + "." + this.getUnlocalizedName().substring(5);
 	}
 }

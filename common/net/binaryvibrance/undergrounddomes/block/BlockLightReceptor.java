@@ -1,11 +1,13 @@
 package net.binaryvibrance.undergrounddomes.block;
 
 import net.binaryvibrance.net.undergrounddomes.api.IPhotonEmitter;
+import net.binaryvibrance.undergrounddomes.Constants;
 import net.binaryvibrance.undergrounddomes.RenderIds;
 import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.tileentitity.TileLightReceptor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -13,6 +15,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockLightReceptor extends BVBlock implements ITileEntityProvider, IPhotonEmitter {
+
+	@Override
+	public void registerIcons(IconRegister iconRegister) {
+		// TODO Auto-generated method stub
+		iconRegister.registerIcon(Constants.Mod.MOD_ID + ":" + "textures/model/lightreceptor");
+	}
 
 	public static final String UNLOCALIZED_NAME = "lightReceptor";
 	public static final String NAME = "Light Receptor";
@@ -25,6 +33,8 @@ public class BlockLightReceptor extends BVBlock implements ITileEntityProvider, 
 		setHardness(10.0f);
 		setResistance(1f);
 	}
+	 
+	
 
 	@Override
 	public TileEntity createTileEntity(World world, int metadata) {

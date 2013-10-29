@@ -40,7 +40,7 @@ public class Point3D {
 		this.y = y;
 		this.z = z;
 		this.world = world;
-		dimension = world != null ? world.getWorldInfo().getDimension() : Integer.MIN_VALUE;
+		dimension = world != null ? world.getWorldInfo().getVanillaDimension() : Integer.MIN_VALUE;
 		setCoords();
 	}
 

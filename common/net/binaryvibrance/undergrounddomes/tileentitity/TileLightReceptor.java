@@ -26,7 +26,7 @@ public class TileLightReceptor extends TileEntity implements IPhotonPowered, IPh
 
 	@Override
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData packet) {
-		readFromNBT(packet.customParam1);
+		readFromNBT(packet.data);
 	}
 
 	@Override

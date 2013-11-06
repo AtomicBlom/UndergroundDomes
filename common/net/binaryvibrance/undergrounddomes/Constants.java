@@ -20,5 +20,4 @@ public final class Constants {
 		public static final String MODEL_SHEET_LOCATION = "textures/models/";
 		public static final ResourceLocation MODEL_LIGHT_RECEPTOR = new ResourceLocation(Mod.MOD_ID.toLowerCase(), MODEL_SHEET_LOCATION + "lightreceptor.png");
 	}
-
 }

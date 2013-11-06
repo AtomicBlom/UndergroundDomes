@@ -1,0 +1,32 @@
++ DomeSet
+? Encapsulates an operation to build domes
+	+ AtomField
+	? Represents a 3D field of Atoms that make up the domes to be generated
+
+	*List<Dome>
+	
+		+Dome
+		? A Dome 
+		
+			*List<DomeFloor>
+			
+				+DomeFloor
+				?A floor of a dome. Each Floor may have up to 4 entrances
+				
+					*Dictionary<CompassDirection, DomeEntrance>
+					
+						+CompassDirection
+						? An Enumeration, NORTH, SOUTH, EAST, WEST
+						
+						+DomeEntrance
+						? Represents a connection between a DomeFloor and a CorridorExit
+						
+			+DomePurpose
+			? An Enum that represents the contents of the dome
+	
+	*List<Corridor>
+	
+		+Corridor
+		?Represents a series of lines connecting domes together
+		
+			+

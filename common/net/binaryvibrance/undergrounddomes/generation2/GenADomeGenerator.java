@@ -5,22 +5,27 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
-import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
+import net.binaryvibrance.helpers.maths.Point3D;
+import net.binaryvibrance.undergrounddomes.generation2.contracts.IDomeGenerator;
 import net.binaryvibrance.undergrounddomes.generation2.model.Dome;
+import net.binaryvibrance.undergrounddomes.generation2.model.DomeFloor;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 
 
 public class GenADomeGenerator implements IDomeGenerator {
 	
 	private static final Logger LOG = LogHelper.getLogger();
+    private static final int MIN_FLOOR_SIZE = 5;
 	private Random random;
 
 	@Override
-	public void Generate() {
+	public List<Dome> Generate() {
 		List<Dome> domes;
 		domes = createDomeChain();
+		//Process Dome purpose
+		return domes;
 	}
-
+	
 	@Override
 	public void SetRandom(Random random) {
 		this.random = random;
@@ -51,9 +56,10 @@ public class GenADomeGenerator implements IDomeGenerator {
 			if (dome == null) {
 				break;
 			}
-			dome.createFloors(random);
-			LOG.info(String.format("Dome %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, domeChainLength, dome.xCoord, dome.yCoord,
-					dome.zCoord, dome.getDiameter()));
+			createFloors(dome);
+            Point3D location = dome.getLocation();
+			LOG.info(String.format("Dome %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, domeChainLength, location.xCoord, location.yCoord,
+                    location.zCoord, dome.getDiameter()));
 			chain.add(dome);
 
 			//heightOffset = Math.max(heightOffset, (int) dome.getRadius() + 1);
@@ -62,19 +68,22 @@ public class GenADomeGenerator implements IDomeGenerator {
 			buildLength++;
 		}
 
-		domeChainLength = chain.size();	
+		//domeChainLength = chain.size();
+        return chain;
 	}
 	
 	private int getDomeScore(Dome potentialDome, List<Dome> chain) {
-		double x = potentialDome.x;
-		double y = potentialDome.y;
-		double z = potentialDome.z;
+        Point3D potentialDomeLocation = potentialDome.getLocation();
+		double x = potentialDomeLocation.x;
+		double y = potentialDomeLocation.y;
+		double z = potentialDomeLocation.z;
 		int count = 1;
 
 		for (Dome dome : chain) {
-			x += dome.x;
-			y += dome.y;
-			z += dome.z;
+            Point3D domeLocation = dome.getLocation();
+			x += domeLocation.x;
+			y += domeLocation.y;
+			z += domeLocation.z;
 			count++;
 		}
 
@@ -89,7 +98,7 @@ public class GenADomeGenerator implements IDomeGenerator {
 
 	private boolean isValid(Dome dome, List<Dome> chain) {
 		for (Dome existingDome : chain) {
-			double checkDistance = dome.distance(existingDome);
+			double checkDistance = dome.getLocation().distance(existingDome.getLocation());
 			/*
 			 * double checkDistance = Math.pow(dome.x - existingDome.x, 2) +
 			 * Math.pow(dome.y - existingDome.y, 2) + Math.pow(dome.z -
@@ -119,12 +128,11 @@ public class GenADomeGenerator implements IDomeGenerator {
 		final int newSpacing = minCoridorSpacing + random.nextInt(8);
 
 		final int previousDomeDiameter = previousDome != null ? previousDome.getDiameter() : 0;
-		final int previousDomeX = previousDome != null ? previousDome.xCoord : 0;
-		final int previousDomeZ = previousDome != null ? previousDome.zCoord : 0;
+		final int previousDomeX = previousDome != null ? previousDome.getLocation().xCoord : 0;
+		final int previousDomeZ = previousDome != null ? previousDome.getLocation().zCoord : 0;
 
 		final double touchingDistance = previousDomeDiameter / 2.0f + radius;
-		// FIXME: Do I even need to do this? Corridors aren't created here
-		// anymore.
+		// FIXME: Do I even need to do this? Corridors aren't created here anymore.
 		if (firstDirectionIsXAxis) {
 			originZ = (int) (previousDomeZ + (firstDimensionOffset + minCoridorSpacing) * zDirection);
 			originX = (int) (previousDomeX + (minCoridorSpacing
@@ -145,6 +153,26 @@ public class GenADomeGenerator implements IDomeGenerator {
 		Dome dome = new Dome(new Point3D(originX, 0, originZ), diameter);
 		return dome;
 	}
+
+    public void createFloors(Dome dome) {
+        int available = (int) ((dome.getDiameter() - 2) * 0.75); // Don't include walls
+        int maxFloors = (int) Math.floor(available / (float) MIN_FLOOR_SIZE);
+        LOG.info("MaxFloors: " + maxFloors);
+        int actualFloors = maxFloors;// == 1 ? 1 : random.nextInt(maxFloors - 1)
+        // + 1;
+        int interval = (int) Math.ceil(available / actualFloors);
+        int variance = interval - MIN_FLOOR_SIZE;
+
+        int baseHeight = dome.getDiameter() - available - 2;
+        dome.addFloor(new DomeFloor(dome, baseHeight));
+        LOG.info(String.format("Floor 0 at level %d", baseHeight));
+        for (int floor = 1; floor < actualFloors; ++floor) {
+            int floorVariance = random.nextBoolean() ? 1 : -1;
+            int floorStart = baseHeight + floor * interval + variance * floorVariance;
+            LOG.info(String.format("Floor %d at level %d", floor, floorStart));
+            dome.addFloor(new DomeFloor(dome, floorStart));
+        }
+    }
 
 
 }

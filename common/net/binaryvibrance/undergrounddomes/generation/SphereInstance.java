@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
-import net.binaryvibrance.undergrounddomes.generation.maths.Line;
-import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
+import net.binaryvibrance.helpers.maths.Line;
+import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.util.Vec3;
@@ -34,7 +34,7 @@ public class SphereInstance extends Point3D {
 
 	public void createFloors(Random random) {
 		ArrayList<SphereFloor> definedFloors = new ArrayList<SphereFloor>();
-		//
+
 		int available = (int) ((diameter - 2) * 0.75); // Don't include walls
 		int maxFloors = (int) Math.floor(available / (float) MIN_FLOOR_SIZE);
 		LOG.info("MaxFloors: " + maxFloors);

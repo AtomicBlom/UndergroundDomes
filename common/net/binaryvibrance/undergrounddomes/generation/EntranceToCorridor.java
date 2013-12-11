@@ -2,9 +2,9 @@ package net.binaryvibrance.undergrounddomes.generation;
 
 import java.util.logging.Logger;
 
-import net.binaryvibrance.undergrounddomes.generation.maths.Line;
-import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
-import net.binaryvibrance.undergrounddomes.generation.maths.Vector3;
+import net.binaryvibrance.helpers.maths.Line;
+import net.binaryvibrance.helpers.maths.Point3D;
+import net.binaryvibrance.helpers.maths.Vector3;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 import net.minecraft.util.Vec3;
 

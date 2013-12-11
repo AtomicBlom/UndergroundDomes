@@ -1,6 +1,6 @@
 package net.binaryvibrance.undergrounddomes.generation;
 
-import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
+import net.binaryvibrance.helpers.maths.Point3D;
 
 public class SphereAtom extends Point3D {
 	private ParticleType particleType;

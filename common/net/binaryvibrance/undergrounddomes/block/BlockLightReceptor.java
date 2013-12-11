@@ -1,9 +1,9 @@
 package net.binaryvibrance.undergrounddomes.block;
 
+import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.net.undergrounddomes.api.IPhotonEmitter;
 import net.binaryvibrance.undergrounddomes.Constants;
 import net.binaryvibrance.undergrounddomes.RenderIds;
-import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.tileentitity.TileLightReceptor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;

@@ -2,10 +2,10 @@ package net.binaryvibrance.undergrounddomes.tileentitity;
 
 import java.util.HashMap;
 
+import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.net.undergrounddomes.api.IPhotonEmitter;
 import net.binaryvibrance.net.undergrounddomes.api.IPhotonPowered;
 import net.binaryvibrance.undergrounddomes.block.BlockLightReceptor;
-import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;

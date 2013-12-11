@@ -1,4 +1,4 @@
-package net.binaryvibrance.undergrounddomes.generation.maths;
+package net.binaryvibrance.helpers.maths;
 
 public class Box {
 

@@ -2,8 +2,8 @@ package net.binaryvibrance.undergrounddomes.generation;
 
 import java.util.HashMap;
 
-import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
-import net.binaryvibrance.undergrounddomes.generation.maths.Vector3;
+import net.binaryvibrance.helpers.maths.Point3D;
+import net.binaryvibrance.helpers.maths.Vector3;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 

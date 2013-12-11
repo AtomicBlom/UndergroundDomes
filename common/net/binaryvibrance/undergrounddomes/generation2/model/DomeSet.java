@@ -3,8 +3,10 @@ package net.binaryvibrance.undergrounddomes.generation2.model;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import net.binaryvibrance.undergrounddomes.generation2.ICorridorGenerator;
-import net.binaryvibrance.undergrounddomes.generation2.IDomeGenerator;
+import net.binaryvibrance.undergrounddomes.generation2.GenACorridorRenderer;
+import net.binaryvibrance.undergrounddomes.generation2.contracts.IAtomFieldRenderer;
+import net.binaryvibrance.undergrounddomes.generation2.contracts.ICorridorGenerator;
+import net.binaryvibrance.undergrounddomes.generation2.contracts.IDomeGenerator;
 
 public class DomeSet {
 	private AtomField atomField;
@@ -35,7 +37,11 @@ public class DomeSet {
 	}
 	
 	private void startGeneration() {
-		domeGenerator.Generate();
+		domes = domeGenerator.Generate();
+		corridors = corridorGenerator.generate(domes);
+		
+		IAtomFieldRenderer renderer = new GenACorridorRenderer(corridors);
+		renderer.RenderToAtomField(atomField);
 		
 		ready.set(true);
 	}

@@ -2,7 +2,7 @@ package net.binaryvibrance.undergrounddomes.generation;
 
 import java.util.Random;
 
-import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
+import net.binaryvibrance.helpers.maths.Point3D;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import cpw.mods.fml.common.IWorldGenerator;

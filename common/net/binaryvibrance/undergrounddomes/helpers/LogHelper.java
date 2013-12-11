@@ -3,8 +3,8 @@ package net.binaryvibrance.undergrounddomes.helpers;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.binaryvibrance.undergrounddomes.Constants;
 import net.binaryvibrance.undergrounddomes.DeveloperOptions;
+import net.binaryvibrance.undergrounddomes.Constants;
 import cpw.mods.fml.common.FMLLog;
 
 public class LogHelper {

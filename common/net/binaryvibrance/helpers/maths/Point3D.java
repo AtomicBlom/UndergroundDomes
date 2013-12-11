@@ -1,4 +1,4 @@
-package net.binaryvibrance.undergrounddomes.generation.maths;
+package net.binaryvibrance.helpers.maths;
 
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;

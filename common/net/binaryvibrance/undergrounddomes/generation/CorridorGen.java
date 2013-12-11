@@ -6,9 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.binaryvibrance.undergrounddomes.generation.maths.Line;
-import net.binaryvibrance.undergrounddomes.generation.maths.Point3D;
-import net.binaryvibrance.undergrounddomes.generation.maths.Vector3;
+import net.binaryvibrance.helpers.maths.Line;
+import net.binaryvibrance.helpers.maths.Point3D;
+import net.binaryvibrance.helpers.maths.Vector3;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.util.EnumFacing;

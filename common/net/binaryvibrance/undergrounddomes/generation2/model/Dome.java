@@ -15,7 +15,6 @@ public class Dome {
     public Dome(Point3D location, int diameter) {
         this.diameter = diameter;
         this.location = location;
-
     }
 
     public Point3D getLocation() {

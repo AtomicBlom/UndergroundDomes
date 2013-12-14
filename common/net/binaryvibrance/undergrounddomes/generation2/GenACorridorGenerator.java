@@ -69,18 +69,33 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 								domeCorridorEntrance,
 								primaryCorridorEntrance,
 								secondaryCorridorEntrance }));
-/*
+
 				int appliedEntrances = 0;
 				CorridorTerminus replacementJoin = null;
 				for (DomeEntrance entrance : entrances) {
 					if (entrance.isInUse()) {
 						++appliedEntrances;
-						if (replacementJoin == null) {
-							//replacementJoin = entrance.getTerminus().getCorridor().;
-							//FIXME: set the replacement join to a terminus in the corridor...
-						}
 					}
 				}
+				
+				switch (appliedEntrances) {
+				case 0:
+					on0AppliedEntrances(entrances, domes, averagePoint);
+					break;	
+				case 1:
+					//Create a corridor between the domes that don't have one and then link that corridor to the first
+					on1AppliedEntrance(entrances, domes);
+					break;
+				case 2:
+					//Create a corridor between the dome that doesn't have a corridor and the existing corridors
+					on2AppliedEntrances(entrances, domes);
+					break;
+				case 3:
+					//Ensure that the corridors are linked together in some way
+					on3AppliedEntrances(entrances, domes);
+					break;
+				}
+				
 
 				for (DomeEntrance entrance : entrances) {
 					if (entrance.isInUse())
@@ -122,6 +137,18 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 
 		return new ArrayList<Corridor>();
 	}
+	
+	//Create a brand new corridor
+	private void on0AppliedEntrances(List<DomeEntrance> entrances, List<Dome> domes, Point3D averagePoint) {
+		CorridorTerminus centrePointTerminus = new CorridorTerminus();
+		terminus.setLocation(averagePoint);
+
+		for (DomeEntrance entrance : entrances) {
+			CorridorTerminus entranceTerminus = new CorridorTerminus();
+			Corridor corridor = new Corridor(entranceTerminus, centrePointTerminus);
+		}
+		
+	}
 
 	private DomeEntrance getClosestCorridorEntrance(Dome sphere, Point3D averagePoint) {
 		DomeFloor baseFloor = sphere.getFloor(0);
@@ -140,47 +167,15 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 		double eastDistance = averagePoint.distance(eastPointLocation);
 		double westDistance = averagePoint.distance(westPointLocation);
 
-		
-		
-		//DomeEntrance etc = new DomeEntrance();
-		/*etc.lineToOrigin.end.set(averagePoint);
-
 		if (northDistance <= southDistance && northDistance <= eastDistance && northDistance <= westDistance) {
-			if (northPointEntrance.isInUse()) {
-				return northPointEntrance;
-			}
-			etc.setEntrance(northPointEntrance);
-			etc.lineToCorridor.end.set(northPointLocation.x, 0, averagePoint.z);
-			etc.lineToCorridor.start.set(northPointLocation);
-			etc.setAdjustmentVector(Vector3.SOUTH);
+			return northPointEntrance;
 		} else if (southDistance <= northDistance && southDistance <= eastDistance && southDistance <= westDistance) {
-			if (southPointEntrance.isInUse()) {
-				return southPointEntrance;
-			}
-			etc.setEntrance(southPointEntrance);
-			etc.lineToCorridor.end.set(southPointLocation.x, 0, averagePoint.z);
-			etc.lineToCorridor.start.set(southPointLocation);
-			etc.setAdjustmentVector(Vector3.NORTH);
+			return southPointEntrance;
 		} else if (eastDistance <= northDistance && eastDistance <= southDistance && eastDistance <= westDistance) {
-			if (eastPointEntrance.isInUse()) {
-				return eastPointEntrance;
-			}
-			etc.setEntrance(eastPointEntrance);
-			etc.lineToCorridor.end.set(averagePoint.x, 0, eastPointLocation.z);
-			etc.lineToCorridor.start.set(eastPointLocation);
-			etc.setAdjustmentVector(Vector3.WEST);
+			return eastPointEntrance;
 		} else {
-			if (westPointEntrance.isInUse()) {
-				return westPointEntrance;
-			}
-			etc.setEntrance(westPointEntrance);
-			etc.lineToCorridor.end.set(averagePoint.x, 0, westPointLocation.z);
-			etc.lineToCorridor.start.set(westPointLocation);
-			etc.setAdjustmentVector(Vector3.EAST);
+			return westPointEntrance;
 		}
-
-		return etc;*/
-		return null;
 	}
 	
 	class DomeNearestNeighbour implements Iterable<Dome> {

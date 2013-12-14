@@ -8,6 +8,7 @@ import net.binaryvibrance.undergrounddomes.generation2.model.Corridor;
 
 public class GenACorridorRenderer implements IAtomFieldRenderer {
 
+	@SuppressWarnings("unused")
 	private List<Corridor> corridors;
 
 	public GenACorridorRenderer(List<Corridor> corridors) {

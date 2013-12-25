@@ -4,16 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.logging.Logger;
 
 import net.binaryvibrance.helpers.KeyValuePair;
-import net.binaryvibrance.helpers.maths.GeometryHelper;
-import net.binaryvibrance.helpers.maths.Line;
 import net.binaryvibrance.helpers.maths.Point3D;
-import net.binaryvibrance.helpers.maths.Vector3;
 import net.binaryvibrance.undergrounddomes.generation2.contracts.ICorridorGenerator;
 import net.binaryvibrance.undergrounddomes.generation2.model.CompassDirection;
 import net.binaryvibrance.undergrounddomes.generation2.model.Corridor;
@@ -26,18 +22,15 @@ import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 public class GenACorridorGenerator implements ICorridorGenerator {
 
 	private static final Logger LOG = LogHelper.getLogger();
-	
+
 	@Override
 	public List<Corridor> generate(List<Dome> domes) {
 		int currentDome = 1;
-		//List<Dome> domeChain = this.domeChain.getChain();
+		// List<Dome> domeChain = this.domeChain.getChain();
 		int domeCount = domes.size();
 
-		
-
 		for (Dome dome : domes) {
-			LOG.info(String.format("Creating corridors for dome %d/%d",
-					currentDome++, domeCount));
+			LOG.info(String.format("Creating corridors for dome %d/%d", currentDome++, domeCount));
 			// Calculate Nearest Neighbours
 			DomeNearestNeighbour snn = new DomeNearestNeighbour(dome);
 			for (Dome neighbourDome : domes) {
@@ -53,101 +46,117 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 					continue;
 				}
 
-				boolean valid = true;
-				List<Line> allPaths = new LinkedList<Line>();
-				Point3D averagePoint = Point3D.average(
-						dome.getLocation(), 
-						primary.getLocation(),
-						secondary.getLocation());
+				Point3D averagePoint = Point3D.average(dome.getLocation(), primary.getLocation(), secondary.getLocation());
 
 				DomeEntrance domeCorridorEntrance = getClosestCorridorEntrance(dome, averagePoint);
 				DomeEntrance primaryCorridorEntrance = getClosestCorridorEntrance(primary, averagePoint);
 				DomeEntrance secondaryCorridorEntrance = getClosestCorridorEntrance(secondary, averagePoint);
-				
-				List<DomeEntrance> entrances = new ArrayList<DomeEntrance>(
-						Arrays.asList(new DomeEntrance[] {
-								domeCorridorEntrance,
-								primaryCorridorEntrance,
-								secondaryCorridorEntrance }));
+
+				List<DomeEntrance> entrances = new ArrayList<DomeEntrance>(Arrays.asList(new DomeEntrance[] { domeCorridorEntrance, primaryCorridorEntrance,
+						secondaryCorridorEntrance }));
 
 				int appliedEntrances = 0;
-				CorridorTerminus replacementJoin = null;
 				for (DomeEntrance entrance : entrances) {
 					if (entrance.isInUse()) {
 						++appliedEntrances;
 					}
 				}
-				
+
 				switch (appliedEntrances) {
 				case 0:
 					on0AppliedEntrances(entrances, domes, averagePoint);
-					break;	
+					break;
 				case 1:
-					//Create a corridor between the domes that don't have one and then link that corridor to the first
-					on1AppliedEntrance(entrances, domes);
+					// Create a corridor between the domes that don't have one
+					// and then link that corridor to the first
+					on1AppliedEntrance(entrances, domes, averagePoint);
 					break;
 				case 2:
-					//Create a corridor between the dome that doesn't have a corridor and the existing corridors
-					on2AppliedEntrances(entrances, domes);
+					// Create a corridor between the dome that doesn't have a
+					// corridor and the existing corridors
+					on2AppliedEntrances(entrances, domes, averagePoint);
 					break;
 				case 3:
-					//Ensure that the corridors are linked together in some way
-					on3AppliedEntrances(entrances, domes);
+					// Ensure that the corridors are linked together in some way
+					on3AppliedEntrances(entrances, domes, averagePoint);
 					break;
 				}
-				
-
-				for (DomeEntrance entrance : entrances) {
-					if (entrance.isInUse())
-						continue;
-					if (appliedEntrances == 2 && !entrance.isInUse()) {
-						entrance.setNewEndpoint(replacementJoin);
-					}
-					for (Dome compareDome : domes) {
-						if (GeometryHelper.lineIntersectsSphere(entrance.lineToCorridor, compareDome.getLocation(), compareDome.getRadius())) {
-							LOG.info(String.format(
-									"Corridor %s intersects with dome %s",
-									entrance.lineToCorridor, compareDome));
-							valid = false;
-							break;
-						}
-						if (GeometryHelper.lineIntersectsSphere(entrance.lineToOrigin, compareDome.getLocation(), compareDome.getRadius())) {
-							LOG.info(String.format(
-									"Corridor %s intersects with dome %s",
-									entrance.lineToOrigin, compareDome));
-							valid = false;
-							break;
-						}
-					}
-					if (!valid) {
-						break;
-					}
-
-					allPaths.add(entrance.lineToCorridor);
-					allPaths.add(entrance.lineToOrigin);
-					entrance.markApplied();
-				}
-
-				if (valid) {
-					corridorPaths.addAll(allPaths);
-					break;
-				}*/
+				/*
+				 * 
+				 * for (DomeEntrance entrance : entrances) { if
+				 * (entrance.isInUse()) continue; if (appliedEntrances == 2 &&
+				 * !entrance.isInUse()) {
+				 * entrance.setNewEndpoint(replacementJoin); } for (Dome
+				 * compareDome : domes) { if
+				 * (GeometryHelper.lineIntersectsSphere(entrance.lineToCorridor,
+				 * compareDome.getLocation(), compareDome.getRadius())) {
+				 * LOG.info(String.format(
+				 * "Corridor %s intersects with dome %s",
+				 * entrance.lineToCorridor, compareDome)); valid = false; break;
+				 * } if
+				 * (GeometryHelper.lineIntersectsSphere(entrance.lineToOrigin,
+				 * compareDome.getLocation(), compareDome.getRadius())) {
+				 * LOG.info(String.format(
+				 * "Corridor %s intersects with dome %s", entrance.lineToOrigin,
+				 * compareDome)); valid = false; break; } } if (!valid) { break;
+				 * }
+				 * 
+				 * allPaths.add(entrance.lineToCorridor);
+				 * allPaths.add(entrance.lineToOrigin); entrance.markApplied();
+				 * }
+				 * 
+				 * if (valid) { corridorPaths.addAll(allPaths); break; }
+				 */
 			}
 		}
 
 		return new ArrayList<Corridor>();
 	}
-	
-	//Create a brand new corridor
+
+	private void on3AppliedEntrances(List<DomeEntrance> entrances, List<Dome> domes, Point3D averagePoint) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void on2AppliedEntrances(List<DomeEntrance> entrances, List<Dome> domes, Point3D averagePoint) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void on1AppliedEntrance(List<DomeEntrance> entrances, List<Dome> domes, Point3D averagePoint) {
+		DomeEntrance existingEntrance;
+		for (DomeEntrance entrance : entrances) {
+			if (entrance.isInUse()) {
+				existingEntrance = entrance;
+				continue;
+			}
+			
+			
+		}
+	}
+
+	// Create a brand new corridor
 	private void on0AppliedEntrances(List<DomeEntrance> entrances, List<Dome> domes, Point3D averagePoint) {
 		CorridorTerminus centrePointTerminus = new CorridorTerminus();
-		terminus.setLocation(averagePoint);
+		centrePointTerminus.setLocation(averagePoint);
 
+		List<KeyValuePair<DomeEntrance, CorridorTerminus>> entriesToCreate = new ArrayList<KeyValuePair<DomeEntrance, CorridorTerminus>>();
+		boolean valid = true;
 		for (DomeEntrance entrance : entrances) {
 			CorridorTerminus entranceTerminus = new CorridorTerminus();
-			Corridor corridor = new Corridor(entranceTerminus, centrePointTerminus);
+			if (!Corridor.tryCreateBetween(entranceTerminus, centrePointTerminus, entrance.getCompassDirection(), domes)) {
+				entriesToCreate.add(new KeyValuePair<DomeEntrance, CorridorTerminus>(entrance, entranceTerminus));
+			} else {
+				valid = false;
+				break;
+			}
 		}
-		
+
+		if (valid) {
+			for (KeyValuePair<DomeEntrance, CorridorTerminus> kvp : entriesToCreate) {
+				kvp.key.setTerminus(kvp.value);
+			}
+		}
 	}
 
 	private DomeEntrance getClosestCorridorEntrance(Dome sphere, Point3D averagePoint) {
@@ -161,9 +170,9 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 		Point3D southPointLocation = southPointEntrance.getLocation();
 		Point3D eastPointLocation = eastPointEntrance.getLocation();
 		Point3D westPointLocation = westPointEntrance.getLocation();
-		
+
 		double northDistance = averagePoint.distance(northPointLocation);
-		double southDistance = averagePoint.distance(southPointLocation);	
+		double southDistance = averagePoint.distance(southPointLocation);
 		double eastDistance = averagePoint.distance(eastPointLocation);
 		double westDistance = averagePoint.distance(westPointLocation);
 
@@ -200,7 +209,7 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 
 			Point3D domeLocation = dome.getLocation();
 			Point3D otherDomeLocation = otherDome.getLocation();
-			
+
 			distances.add(new KeyValuePair<Dome, Double>(otherDome, domeLocation.distance(otherDomeLocation)));
 		}
 

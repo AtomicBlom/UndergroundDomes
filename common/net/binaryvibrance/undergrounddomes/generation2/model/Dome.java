@@ -1,11 +1,14 @@
 package net.binaryvibrance.undergrounddomes.generation2.model;
 
+import net.binaryvibrance.helpers.maths.GeometryHelper;
+import net.binaryvibrance.helpers.maths.Line;
 import net.binaryvibrance.helpers.maths.Point3D;
+import net.binaryvibrance.undergrounddomes.generation2.contracts.ILineIntersectable;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class Dome {
+public class Dome implements ILineIntersectable {
 	private List<DomeFloor> domeFloors = new LinkedList<DomeFloor>();
     private Point3D location;
     private int diameter;
@@ -36,4 +39,9 @@ public class Dome {
     public DomeFloor getFloor(int floor) {
     	return domeFloors.get(floor);
     }
+
+	@Override
+	public boolean intersects(Line line) {
+		return GeometryHelper.lineIntersectsSphere(line, location, getRadius());
+	}
 }

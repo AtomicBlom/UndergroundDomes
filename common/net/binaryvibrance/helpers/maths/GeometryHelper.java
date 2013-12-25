@@ -1,5 +1,6 @@
 package net.binaryvibrance.helpers.maths;
 
+import net.binaryvibrance.undergrounddomes.generation2.model.CompassDirection;
 import net.minecraft.util.Vec3;
 
 public class GeometryHelper {
@@ -55,5 +56,15 @@ public class GeometryHelper {
 		// no intn: FallShort, Past, CompletelyInside
 		return false;
 
+	}
+
+	public static Point3D getMidPoint(Point3D firstPoint, Point3D secondPoint, CompassDirection initialDirection) {
+		Vec3 vector = initialDirection.ToVec3().normalize();
+		Point3D maskedPoint = new Point3D(
+				(firstPoint.xCoord * (1 - Math.abs(vector.xCoord))) + vector.xCoord * secondPoint.xCoord,
+				(firstPoint.yCoord * (1 - Math.abs(vector.yCoord))) + vector.yCoord * secondPoint.yCoord, 
+				(firstPoint.zCoord * (1 - Math.abs(vector.zCoord))) + vector.zCoord * secondPoint.zCoord 
+			);
+		return maskedPoint;				
 	}
 }

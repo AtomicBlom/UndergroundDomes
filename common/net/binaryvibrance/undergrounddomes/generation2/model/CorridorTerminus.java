@@ -16,7 +16,9 @@ public class CorridorTerminus {
 		return location;
 	}
 	
-	public List<Corridor> getCorridors() {
-		return corridors;
+	public void addToCorridor(Corridor corridor) {
+		// TODO Auto-generated method stub
+		corridors.add(corridor);
+		
 	}
 }

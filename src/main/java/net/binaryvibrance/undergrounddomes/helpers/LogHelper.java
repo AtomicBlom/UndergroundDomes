@@ -12,7 +12,7 @@ public class LogHelper {
 
 	public static void init() {
 
-		LOGGER.setParent(FMLLog.getLogger());
+		//LOGGER.setParent(FMLLog.getLogger());
 		if (DeveloperOptions.DETAILED_LOGGING) {
 			LOGGER.setLevel(Level.ALL);
 		}

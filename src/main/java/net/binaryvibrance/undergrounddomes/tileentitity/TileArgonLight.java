@@ -1,14 +1,11 @@
 package net.binaryvibrance.undergrounddomes.tileentitity;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileArgonLight extends TileEntity {
 
-	@Override
+	/*@Override
 	public Packet getDescriptionPacket() {
 		NBTTagCompound nbtTag = new NBTTagCompound();
 		this.writeToNBT(nbtTag);
@@ -19,7 +16,7 @@ public class TileArgonLight extends TileEntity {
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData packet) {
 		readFromNBT(packet.data);
 	}
-
+*/
 	@Override
 	public void writeToNBT(NBTTagCompound par1) {
 		super.writeToNBT(par1);

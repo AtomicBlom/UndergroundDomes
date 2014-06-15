@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
+import cpw.mods.fml.common.registry.GameData;
 import net.binaryvibrance.helpers.maths.Line;
 import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
@@ -88,6 +89,11 @@ public class SphereInstance extends Point3D {
 		int baseFloor = getFloor(0).level;
 
 		SphereAtom[][][] atoms = sphereAtoms.getAtoms();
+
+        Block glowStoneBlock = GameData.getBlockRegistry().getObject("glowstone");
+        Block ironBlock = GameData.getBlockRegistry().getObject("iron_block");
+        Block airBlock = GameData.getBlockRegistry().getObject("air");
+
 		for (int z = 0; z < diameter; ++z) {
 			for (int y = baseFloor; y < diameter; ++y) {
 				boolean isFloor = isFloorLevel(y);
@@ -101,17 +107,16 @@ public class SphereInstance extends Point3D {
 					final int blockLocationY = (int) (y - radius + this.y + yOffset);
 					final int blockLocationZ = (int) (z - radius + this.z + zOffset);
 
-					int blockId;
-
-					switch (atom.getParticleType()) {
+					Block blockId;
+                    switch (atom.getParticleType()) {
 					case Wall:
-						blockId = Block.blockIron.blockID;
+						blockId = ironBlock;
 						break;
 					default:
-						blockId = isFloor ? Block.glowStone.blockID : 0;// Block.oreEmerald.blockID;
+						blockId = isFloor ? glowStoneBlock : airBlock;// Block.oreEmerald.blockID;
 						break;
 					}
-					blockId = isFloor ? Block.glowStone.blockID : blockId;
+					blockId = isFloor ? glowStoneBlock : blockId;
 
 					world.setBlock(blockLocationX, blockLocationY, blockLocationZ, blockId, 0, 2);
 				}

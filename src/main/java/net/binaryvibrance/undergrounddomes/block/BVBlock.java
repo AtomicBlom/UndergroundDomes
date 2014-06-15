@@ -8,15 +8,12 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public abstract class BVBlock extends Block {
 
-	public BVBlock(int id, Material material) {
-		super(id, material);
+	public BVBlock(Material material) {
+		super(material);
 	}
-
-	protected abstract String getBlockName();
 
 	public void selfRegister() {
 		GameRegistry.registerBlock(this, getModLocalizedName());
-		LanguageRegistry.addName(this, getBlockName());
 	}
 
 	public String getModLocalizedName() {

@@ -7,7 +7,7 @@ import net.binaryvibrance.undergrounddomes.RenderIds;
 import net.binaryvibrance.undergrounddomes.tileentitity.TileLightReceptor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -17,27 +17,29 @@ import net.minecraft.world.World;
 public class BlockLightReceptor extends BVBlock implements ITileEntityProvider, IPhotonEmitter {
 
 	@Override
-	public void registerIcons(IconRegister iconRegister) {
+	public void registerBlockIcons(IIconRegister iconRegister) {
 		// TODO Auto-generated method stub
 		iconRegister.registerIcon(Constants.Mod.MOD_ID + ":" + "textures/model/lightreceptor");
 	}
 
 	public static final String UNLOCALIZED_NAME = "lightReceptor";
-	public static final String NAME = "Light Receptor";
-	public static final int BLOCK_ID = 2376;
+	//public static final String NAME = "Light Receptor";
 
 	public BlockLightReceptor() {
-		super(BLOCK_ID, Material.sand);
+		super(Material.sand);
+        setBlockName(UNLOCALIZED_NAME);
 		setCreativeTab(CreativeTabs.tabBlock);
-		this.setUnlocalizedName(UNLOCALIZED_NAME);
 		setHardness(10.0f);
 		setResistance(1f);
 	}
-	 
-	
+
+    //@Override
+    //public TileEntity createNewTileEntity(World world) {
+    //    return createTileEntity(world, 0);
+    //}
 
 	@Override
-	public TileEntity createTileEntity(World world, int metadata) {
+	public TileEntity createNewTileEntity(World world, int metadata) {
 
 		return new TileLightReceptor();
 	}
@@ -63,16 +65,6 @@ public class BlockLightReceptor extends BVBlock implements ITileEntityProvider, 
 	@Override
 	public int getRenderType() {
 		return RenderIds.LIGHT_RECEPTOR_RENDER_ID;
-	}
-
-	@Override
-	protected String getBlockName() {
-		return NAME;
-	}
-
-	@Override
-	public TileEntity createNewTileEntity(World world) {
-		return createTileEntity(world, 0);
 	}
 
 	public void updateLightLevel(Point3D location) {

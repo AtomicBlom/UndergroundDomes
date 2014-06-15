@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import cpw.mods.fml.common.registry.GameData;
 import net.binaryvibrance.helpers.maths.Line;
 import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.helpers.maths.Vector3;
@@ -163,17 +164,20 @@ public class CorridorGen {
 
 		int currentLine = 1;
 		int maxLines = corridorPaths.size();
+
+        Block goldBlock = GameData.getBlockRegistry().getObject("gold_block");
+
 		for (Line path : corridorPaths) {
 			LOG.info(String.format("Creating Line %d/%d %s", currentLine++, maxLines, path.toString()));
 			Vec3 vector = path.getRenderVector();
 			Point3D currentPoint = path.start;
 			do {
 				world.setBlock(currentPoint.xCoord + offsetX, currentPoint.yCoord + offsetY, currentPoint.zCoord + offsetZ,
-						Block.blockGold.blockID, 0, 0);
+                        goldBlock, 0, 0);
 				currentPoint = currentPoint.add(vector);
 			} while (!currentPoint.equals(path.end));
 			world.setBlock(currentPoint.xCoord + offsetX, currentPoint.yCoord + offsetY, currentPoint.zCoord + offsetZ,
-					Block.blockGold.blockID, 0, 0);
+                    goldBlock, 0, 0);
 		}
 	}
 }

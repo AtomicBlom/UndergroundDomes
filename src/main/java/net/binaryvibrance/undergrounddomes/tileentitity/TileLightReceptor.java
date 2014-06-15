@@ -7,9 +7,6 @@ import net.binaryvibrance.net.undergrounddomes.api.IPhotonEmitter;
 import net.binaryvibrance.net.undergrounddomes.api.IPhotonPowered;
 import net.binaryvibrance.undergrounddomes.block.BlockLightReceptor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.EnumFacing;
@@ -17,17 +14,18 @@ import net.minecraft.util.EnumFacing;
 public class TileLightReceptor extends TileEntity implements IPhotonPowered, IPhotonEmitter {
 	HashMap<EnumFacing, Float> LightLevels = new HashMap<EnumFacing, Float>();
 
-	@Override
-	public Packet getDescriptionPacket() {
+
+	//@Override
+	/*public Packet getDescriptionPacket() {
 		NBTTagCompound nbtTag = new NBTTagCompound();
 		this.writeToNBT(nbtTag);
 		return new Packet132TileEntityData(xCoord, yCoord, zCoord, 1, nbtTag);
-	}
+	}*/
 
-	@Override
-	public void onDataPacket(INetworkManager net, Packet132TileEntityData packet) {
-		readFromNBT(packet.data);
-	}
+	//@Override
+	//public void onDataPacket(INetworkManager net, Packet132TileEntityData packet) {
+	//	readFromNBT(packet.data);
+	//}
 
 	@Override
 	public void writeToNBT(NBTTagCompound par1) {

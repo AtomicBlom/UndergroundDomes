@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import net.binaryvibrance.helpers.maths.Point3D;
+import net.binaryvibrance.undergrounddomes.Configuration;
 import net.binaryvibrance.undergrounddomes.DeveloperOptions;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 import net.minecraft.util.Vec3;
@@ -15,8 +16,9 @@ import net.minecraft.world.World;
 
 public class SphereChain {
 	private static final Logger LOG = LogHelper.getLogger();
+    private final Configuration _configuration;
 
-	int sphereChainLength;
+    int sphereChainLength;
 	private final List<SphereInstance> chain;
 	private final Random random;
 
@@ -34,7 +36,8 @@ public class SphereChain {
 
 		// Create up to 16 spheres.
 		sphereChainLength = random.nextInt(12) + 4;
-	}
+        _configuration = Configuration.getConfiguration();
+    }
 
 	public void buildChain() {
 		int buildLength = 0;
@@ -71,7 +74,7 @@ public class SphereChain {
 		sphereChainLength = chain.size();
 
 		if (DeveloperOptions.RENDER_ABOVE_GROUND) {
-			heightOffset += 96;
+			heightOffset += _configuration.getDomeHeight();
 		}
 
 	}
@@ -115,7 +118,7 @@ public class SphereChain {
 	}
 
 	private SphereInstance getPotentialSphere(SphereInstance previousSphere) {
-		final int minCoridorSpacing = 6;
+		final int minCorridorSpacing = 6;
 		int originX;
 		int originZ;
 
@@ -127,7 +130,7 @@ public class SphereChain {
 		final int zDirection = random.nextBoolean() ? -1 : 1;
 		final boolean firstDirectionIsXAxis = random.nextBoolean();
 		final double firstDimensionOffset = radius + random.nextInt(12);
-		final int newSpacing = minCoridorSpacing + random.nextInt(8);
+		final int newSpacing = minCorridorSpacing + random.nextInt(8);
 
 		final int previousSphereDiameter = previousSphere != null ? previousSphere.getDiameter() : 0;
 		final int previousSphereX = previousSphere != null ? previousSphere.xCoord : 0;
@@ -137,15 +140,15 @@ public class SphereChain {
 		// FIXME: Do I even need to do this? Corridors aren't created here
 		// anymore.
 		if (firstDirectionIsXAxis) {
-			originZ = (int) (previousSphereZ + (firstDimensionOffset + minCoridorSpacing) * zDirection);
-			originX = (int) (previousSphereX + (minCoridorSpacing
+			originZ = (int) (previousSphereZ + (firstDimensionOffset + minCorridorSpacing) * zDirection);
+			originX = (int) (previousSphereX + (minCorridorSpacing
 					+ Math.sqrt(Math.pow(Math.max(touchingDistance, firstDimensionOffset + 1), 2) - Math.pow(firstDimensionOffset, 2)) + newSpacing)
 					* xDirection);
 			LOG.finer(String.format("originX: %d, prevX: %d, touch: %f, offset: %f, spacing: %d", originX, previousSphereX,
 					touchingDistance, firstDimensionOffset, newSpacing));
 		} else {
-			originX = (int) (previousSphereX + (firstDimensionOffset + minCoridorSpacing) * xDirection);
-			originZ = (int) (previousSphereZ + (minCoridorSpacing
+			originX = (int) (previousSphereX + (firstDimensionOffset + minCorridorSpacing) * xDirection);
+			originZ = (int) (previousSphereZ + (minCorridorSpacing
 					+ Math.sqrt(Math.pow(Math.max(touchingDistance, firstDimensionOffset + 1), 2) - Math.pow(firstDimensionOffset, 2)) + newSpacing)
 					* zDirection);
 			LOG.finer(String.format("originZ: %d, prevZ: %d, touch: %f, offset: %f, spacing: %d", originZ, previousSphereZ,

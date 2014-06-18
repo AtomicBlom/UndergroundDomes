@@ -9,11 +9,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Dome implements ILineIntersectable {
-	private List<DomeFloor> domeFloors = new LinkedList<DomeFloor>();
+    public DomePurpose purpose;
+    private List<DomeFloor> domeFloors = new LinkedList<DomeFloor>();
     private Point3D location;
     private int diameter;
-
-	public DomePurpose purpose;
 
     public Dome(Point3D location, int diameter) {
         this.diameter = diameter;
@@ -35,13 +34,13 @@ public class Dome implements ILineIntersectable {
     public void addFloor(DomeFloor floor) {
         domeFloors.add(floor);
     }
-    
+
     public DomeFloor getFloor(int floor) {
-    	return domeFloors.get(floor);
+        return domeFloors.get(floor);
     }
 
-	@Override
-	public boolean intersects(Line line) {
-		return GeometryHelper.lineIntersectsSphere(line, location, getRadius());
-	}
+    @Override
+    public boolean intersects(Line line) {
+        return GeometryHelper.lineIntersectsSphere(line, location, getRadius());
+    }
 }

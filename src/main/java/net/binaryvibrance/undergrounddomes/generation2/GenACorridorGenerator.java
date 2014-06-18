@@ -55,14 +55,14 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 				List<DomeEntrance> entrances = new ArrayList<DomeEntrance>(Arrays.asList(new DomeEntrance[] { domeCorridorEntrance, primaryCorridorEntrance,
 						secondaryCorridorEntrance }));
 
-				int appliedEntrances = 0;
+				int entrancesInUse = 0;
 				for (DomeEntrance entrance : entrances) {
 					if (entrance.isInUse()) {
-						++appliedEntrances;
+						++entrancesInUse;
 					}
 				}
 
-				switch (appliedEntrances) {
+				switch (entrancesInUse) {
 				case 0:
 					on0AppliedEntrances(entrances, domes, averagePoint);
 					break;
@@ -125,13 +125,22 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 
 	private void on1AppliedEntrance(List<DomeEntrance> entrances, List<Dome> domes, Point3D averagePoint) {
 		DomeEntrance existingEntrance;
+
+        DomeEntrance firstEntrance = null;
+        DomeEntrance secondEntrance = null;
+
 		for (DomeEntrance entrance : entrances) {
 			if (entrance.isInUse()) {
 				existingEntrance = entrance;
 				continue;
 			}
-			
-			
+			if (!entrance.isInUse() && firstEntrance == null) {
+				firstEntrance = entrance;
+				continue;
+			}
+            if (!entrance.isInUse() && firstEntrance != null) {
+                secondEntrance = entrance;
+            }
 		}
 	}
 

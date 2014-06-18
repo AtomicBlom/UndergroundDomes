@@ -1,5 +1,7 @@
 package net.binaryvibrance.undergrounddomes;
 
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import net.binaryvibrance.undergrounddomes.commands.DomeHeightCommand;
 import net.binaryvibrance.undergrounddomes.generation.DomeGenerator;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 import net.binaryvibrance.undergrounddomes.proxy.CommonProxy;
@@ -11,6 +13,9 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.command.ICommandManager;
+import net.minecraft.command.ServerCommandManager;
+import net.minecraft.server.MinecraftServer;
 
 @Mod(modid = Constants.Mod.MOD_ID, name = Constants.Mod.MOD_NAME, version = Constants.Mod.MOD_VERSION)
 public class UndergroundDomes {
@@ -33,11 +38,17 @@ public class UndergroundDomes {
 		Constants.Blocks.LIGHT_RECEPTOR.selfRegister();
 		proxy.registerTileEntities();
 		proxy.initRenderingAndTextures();
-	}
+
+    }
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 
 	}
+
+    @EventHandler
+    public void serverLoad(FMLServerStartingEvent event) {
+        event.registerServerCommand(new DomeHeightCommand());
+    }
 
 }

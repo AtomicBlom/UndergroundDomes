@@ -91,7 +91,7 @@ public class SphereInstance extends Point3D {
 		SphereAtom[][][] atoms = sphereAtoms.getAtoms();
 
         Block glowStoneBlock = GameData.getBlockRegistry().getObject("glowstone");
-        Block ironBlock = GameData.getBlockRegistry().getObject("iron_block");
+        Block ironBlock = GameData.getBlockRegistry().getObject("tnt");
         Block airBlock = GameData.getBlockRegistry().getObject("air");
 
 		for (int z = 0; z < diameter; ++z) {

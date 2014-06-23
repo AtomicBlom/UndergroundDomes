@@ -1,8 +1,9 @@
 package net.binaryvibrance.helpers.maths;
 
+import net.binaryvibrance.undergrounddomes.generation2.contracts.ILineIntersectable;
 import net.minecraft.util.Vec3;
 
-public class Line {
+public class Line implements ILineIntersectable {
 	@Override
 	public String toString() {
 		return "Line [" + start + "] => [" + end + "]";
@@ -16,14 +17,13 @@ public class Line {
 		this.end = end;
 	}
 
-	public Line() {
-		this.start = new Point3D(0, 0, 0);
-		this.end = new Point3D(0, 0, 0);
-	}
-
 	public Vec3 getRenderVector() {
 		Vec3 vector = end.subtract(start);
 		return vector.normalize();
 	}
 
+	@Override
+	public boolean intersects(Line line) {
+		return false;
+	}
 }

@@ -6,6 +6,7 @@ import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.generation2.contracts.ILineIntersectable;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -14,37 +15,52 @@ public class Corridor {
     CorridorTerminus start;
     CorridorTerminus end;
     List<Point3D> intermediatePoints;
-    protected Corridor() {
+
+	public Corridor(CorridorTerminus startTerminus,
+                    CorridorTerminus endTerminus,
+                    CompassDirection initialDirection) {
+
+	    start = startTerminus;
+	    end = endTerminus;
+
+	    Point3D midPoint = GeometryHelper.getMidPoint(
+			    startTerminus.getLocation(), endTerminus.getLocation(),
+			    initialDirection);
+
+	    intermediatePoints = new LinkedList<Point3D>();
+	    intermediatePoints.add(midPoint);
+
     }
 
-    public static boolean tryCreateBetween(
-            CorridorTerminus startTerminus,
-            CorridorTerminus endTerminus,
-            CompassDirection initialDirection,
-            List<? extends ILineIntersectable> obstacles) {
-        Corridor newCorridor = new Corridor();
-        newCorridor.start = startTerminus;
-        newCorridor.end = endTerminus;
+	public ILineIntersectable getFirstIntersectingObstacle(List<? extends ILineIntersectable> obstacles) {
 
-        boolean successful = true;
+		List<Line> allPoints = getAllLines();
 
-        Point3D midPoint = GeometryHelper.getMidPoint(
-                startTerminus.getLocation(), endTerminus.getLocation(),
-                initialDirection);
-        newCorridor.intermediatePoints.add(midPoint);
 
-        for (ILineIntersectable obstacle : obstacles) {
-            Line startLine = new Line(startTerminus.getLocation(), midPoint);
-            Line endLine = new Line(endTerminus.getLocation(), midPoint);
+		for (ILineIntersectable obstacle : obstacles) {
+			for (Line line : allPoints) {
+				if (obstacle.intersects(line)) {
+					LOG.info(String.format("Corridor %s intersects with obstacle %s", this, obstacle));
+					return obstacle;
+				}
+			}
+		}
 
-            if (obstacle.intersects(startLine) || obstacle.intersects(endLine)) {
-                LOG.info(String.format("Corridor %s intersects with obstacle %s",
-                        newCorridor, obstacle));
-                successful = false;
-                break;
-            }
-        }
+		return null;
+	}
 
-        return successful;
-    }
+	private List<Line> getAllLines() {
+		List<Point3D> linePoints = new LinkedList<Point3D>();
+		List<Line> lines = new LinkedList<Line>();
+		linePoints.addAll(intermediatePoints);
+		linePoints.add(end.getLocation());
+
+		Point3D lineStart = start.getLocation();
+		for (Point3D lineEnd : linePoints) {
+			lines.add(new Line(lineStart, lineEnd));
+			lineStart = lineEnd;
+		}
+
+		return lines;
+	}
 }

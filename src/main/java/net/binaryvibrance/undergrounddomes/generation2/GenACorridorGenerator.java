@@ -55,65 +55,46 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 				List<DomeEntrance> entrances = new ArrayList<DomeEntrance>(Arrays.asList(new DomeEntrance[] { domeCorridorEntrance, primaryCorridorEntrance,
 						secondaryCorridorEntrance }));
 
-				int entrancesInUse = 0;
+				CorridorTerminus centrePointTerminus = new CorridorTerminus();
+				centrePointTerminus.setLocation(averagePoint);
+
+				//Step 1, would corridors intersect other spheres?
+				List<KeyValuePair<DomeEntrance, CorridorTerminus>> entriesToCreate = new ArrayList<KeyValuePair<DomeEntrance, CorridorTerminus>>();
+				boolean valid = true;
 				for (DomeEntrance entrance : entrances) {
-					if (entrance.isInUse()) {
-						++entrancesInUse;
+					CorridorTerminus entranceTerminus = new CorridorTerminus();
+					Corridor corridor = new Corridor(entranceTerminus, centrePointTerminus, entrance.getCompassDirection());
+
+					if (corridor.getFirstIntersectingObstacle(domes) != null) {
+						valid = false;
+						break;
+					} else {
+
 					}
+
+					/*var validCorridor = Corridor.tryCreateBetween(entranceTerminus, centrePointTerminus, entrance.getCompassDirection(), domes);
+
+					if (validCorridor != null) {
+						entriesToCreate.add(new KeyValuePair<DomeEntrance, CorridorTerminus>(entrance, entranceTerminus));
+					} else {
+						valid = false;
+						break;
+					}*/
 				}
 
-				switch (entrancesInUse) {
-				case 0:
-					on0AppliedEntrances(entrances, domes, averagePoint);
-					break;
-				case 1:
-					// Create a corridor between the domes that don't have one
-					// and then link that corridor to the first
-					on1AppliedEntrance(entrances, domes, averagePoint);
-					break;
-				case 2:
-					// Create a corridor between the dome that doesn't have a
-					// corridor and the existing corridors
-					on2AppliedEntrances(entrances, domes, averagePoint);
-					break;
-				case 3:
-					// Ensure that the corridors are linked together in some way
-					on3AppliedEntrances(entrances, domes, averagePoint);
-					break;
+				if (valid) {
+					//Step 2: If we can, then Check each corridor to see if it should be attached to an existing corridor.
+					for (KeyValuePair<DomeEntrance, CorridorTerminus> kvp : entriesToCreate) {
+						kvp.key.setTerminus(kvp.value);
+					}
 				}
-				/*
-				 * 
-				 * for (DomeEntrance entrance : entrances) { if
-				 * (entrance.isInUse()) continue; if (appliedEntrances == 2 &&
-				 * !entrance.isInUse()) {
-				 * entrance.setNewEndpoint(replacementJoin); } for (Dome
-				 * compareDome : domes) { if
-				 * (GeometryHelper.lineIntersectsSphere(entrance.lineToCorridor,
-				 * compareDome.getLocation(), compareDome.getRadius())) {
-				 * LOG.info(String.format(
-				 * "Corridor %s intersects with dome %s",
-				 * entrance.lineToCorridor, compareDome)); valid = false; break;
-				 * } if
-				 * (GeometryHelper.lineIntersectsSphere(entrance.lineToOrigin,
-				 * compareDome.getLocation(), compareDome.getRadius())) {
-				 * LOG.info(String.format(
-				 * "Corridor %s intersects with dome %s", entrance.lineToOrigin,
-				 * compareDome)); valid = false; break; } } if (!valid) { break;
-				 * }
-				 * 
-				 * allPaths.add(entrance.lineToCorridor);
-				 * allPaths.add(entrance.lineToOrigin); entrance.markApplied();
-				 * }
-				 * 
-				 * if (valid) { corridorPaths.addAll(allPaths); break; }
-				 */
 			}
 		}
 
 		return new ArrayList<Corridor>();
 	}
 
-	private void on3AppliedEntrances(List<DomeEntrance> entrances, List<Dome> domes, Point3D averagePoint) {
+	/*private void on3AppliedEntrances(List<DomeEntrance> entrances, List<Dome> domes, Point3D averagePoint) {
 		// TODO Auto-generated method stub
 
 	}
@@ -166,7 +147,7 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 				kvp.key.setTerminus(kvp.value);
 			}
 		}
-	}
+	}*/
 
 	private DomeEntrance getClosestCorridorEntrance(Dome sphere, Point3D averagePoint) {
 		DomeFloor baseFloor = sphere.getFloor(0);

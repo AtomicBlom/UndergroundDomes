@@ -113,7 +113,7 @@ public class GenADomeGenerator implements IDomeGenerator {
 	}
 
 	private Dome getPotentialDome(Dome previousDome) {
-		final int minCoridorSpacing = 6;
+		final int minCorridorSpacing = 6;
 		int originX;
 		int originZ;
 
@@ -125,7 +125,7 @@ public class GenADomeGenerator implements IDomeGenerator {
 		final int zDirection = random.nextBoolean() ? -1 : 1;
 		final boolean firstDirectionIsXAxis = random.nextBoolean();
 		final double firstDimensionOffset = radius + random.nextInt(12);
-		final int newSpacing = minCoridorSpacing + random.nextInt(8);
+		final int newSpacing = minCorridorSpacing + random.nextInt(8);
 
 		final int previousDomeDiameter = previousDome != null ? previousDome.getDiameter() : 0;
 		final int previousDomeX = previousDome != null ? previousDome.getLocation().xCoord : 0;
@@ -134,15 +134,15 @@ public class GenADomeGenerator implements IDomeGenerator {
 		final double touchingDistance = previousDomeDiameter / 2.0f + radius;
 		// FIXME: Do I even need to do this? Corridors aren't created here anymore.
 		if (firstDirectionIsXAxis) {
-			originZ = (int) (previousDomeZ + (firstDimensionOffset + minCoridorSpacing) * zDirection);
-			originX = (int) (previousDomeX + (minCoridorSpacing
+			originZ = (int) (previousDomeZ + (firstDimensionOffset + minCorridorSpacing) * zDirection);
+			originX = (int) (previousDomeX + (minCorridorSpacing
 					+ Math.sqrt(Math.pow(Math.max(touchingDistance, firstDimensionOffset + 1), 2) - Math.pow(firstDimensionOffset, 2)) + newSpacing)
 					* xDirection);
 			LOG.finer(String.format("originX: %d, prevX: %d, touch: %f, offset: %f, spacing: %d", originX, previousDomeX,
 					touchingDistance, firstDimensionOffset, newSpacing));
 		} else {
-			originX = (int) (previousDomeX + (firstDimensionOffset + minCoridorSpacing) * xDirection);
-			originZ = (int) (previousDomeZ + (minCoridorSpacing
+			originX = (int) (previousDomeX + (firstDimensionOffset + minCorridorSpacing) * xDirection);
+			originZ = (int) (previousDomeZ + (minCorridorSpacing
 					+ Math.sqrt(Math.pow(Math.max(touchingDistance, firstDimensionOffset + 1), 2) - Math.pow(firstDimensionOffset, 2)) + newSpacing)
 					* zDirection);
 			LOG.finer(String.format("originZ: %d, prevZ: %d, touch: %f, offset: %f, spacing: %d", originZ, previousDomeZ,

@@ -1,6 +1,7 @@
 package net.binaryvibrance.undergrounddomes.generation2.model;
 
 import net.binaryvibrance.undergrounddomes.generation2.GenACorridorRenderer;
+import net.binaryvibrance.undergrounddomes.generation2.GenADomeRenderer;
 import net.binaryvibrance.undergrounddomes.generation2.contracts.IAtomFieldRenderer;
 import net.binaryvibrance.undergrounddomes.generation2.contracts.ICorridorGenerator;
 import net.binaryvibrance.undergrounddomes.generation2.contracts.IDomeGenerator;
@@ -19,7 +20,9 @@ public class DomeSet {
     private IDomeGenerator domeGenerator;
     private ICorridorGenerator corridorGenerator;
 
-    public DomeSet(IDomeGenerator domeGenerator, ICorridorGenerator corridorGenerator) {
+    public DomeSet(
+		    IDomeGenerator domeGenerator,
+		    ICorridorGenerator corridorGenerator) {
 
         this.domeGenerator = domeGenerator;
         this.corridorGenerator = corridorGenerator;
@@ -36,17 +39,21 @@ public class DomeSet {
         t.run();
     }
 
-    private void startGeneration() {
+    public void startGeneration() {
+	    atomField = new AtomField();
         domes = domeGenerator.Generate();
         corridors = corridorGenerator.generate(domes);
 
-        IAtomFieldRenderer renderer = new GenACorridorRenderer(corridors);
+	    IAtomFieldRenderer renderer;
+	    renderer = new GenADomeRenderer(domes);
+		renderer.RenderToAtomField(atomField);
+        renderer = new GenACorridorRenderer(corridors);
         renderer.RenderToAtomField(atomField);
 
         ready.set(true);
     }
 
-    public synchronized boolean tryAquireLock() {
+    public synchronized boolean tryAcquireLock() {
         if (ready.get()) {
             if (!inUse) {
                 inUse = true;

@@ -1,34 +1,35 @@
 package net.binaryvibrance.undergrounddomes.generation2;
 
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Logger;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.registry.GameData;
 import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.Configuration;
-import net.binaryvibrance.undergrounddomes.generation2.contracts.ICorridorGenerator;
-import net.binaryvibrance.undergrounddomes.generation2.contracts.IDomeGenerator;
+import net.binaryvibrance.undergrounddomes.generation2.contracts.INotifyDomeGenerationComplete;
 import net.binaryvibrance.undergrounddomes.generation2.model.Atom;
-import net.binaryvibrance.undergrounddomes.generation2.model.AtomElement;
-import net.binaryvibrance.undergrounddomes.generation2.model.AtomField;
-import net.binaryvibrance.undergrounddomes.generation2.model.DomeSet;
+import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import cpw.mods.fml.common.IWorldGenerator;
 
-public class WorldGenerator implements IWorldGenerator {
+public class WorldGenerator implements IWorldGenerator, INotifyDomeGenerationComplete {
 
+	private static final Logger LOG = LogHelper.getLogger();
 	private final Configuration _configuration;
 
 	public WorldGenerator() {
 		_configuration = Configuration.getConfiguration();
 	}
 
-	private DomeSet currentDomeSet;
-	private final Object domeSetLock = new Object();
+	private Queue<DomeRequestResult> readyResults = new ConcurrentLinkedQueue<DomeRequestResult>();
+
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world,
 			IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
@@ -38,52 +39,56 @@ public class WorldGenerator implements IWorldGenerator {
 		switch (world.provider.dimensionId) {
 			case 0:
 				if (chunkX % 16 == 0 && chunkZ % 16 == 0) {
-					generateSurface(world, chunkX, chunkZ, chunkGenerator, chunkProvider);
+					generateSurface(world, chunkX, chunkZ, chunkProvider);
 				}
 				break;
 		}
 
 	}
 
-	private void generateSurface(World world, int x, int z, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
+	private void generateSurface(World world, int x, int z, IChunkProvider chunkProvider) {
 		//TODO: batch multiple generations
 		//      I'm expecting MystCraft to cause interesting cpu load here.
 		//TODO: recover from server shutdown.
 		//      Persist base calculations and data to nbt
 		//TODO: gracefully handle exceptions in generation code
 
-		Random r = new Random();
-		r.setSeed(1 + x ^ 31 + z ^ 17 + world.getWorldInfo().getSeed() ^ 13);
-
-		IDomeGenerator domeGenerator = _configuration.getDefaultDomeGenerator();
-		domeGenerator.setRandom(r);
-		ICorridorGenerator corridorGenerator = _configuration.getDefaultCorridorGenerator();
-		corridorGenerator.setRandom(r);
-
-		DomeSet domeSet;
-		domeSet = new DomeSet(x, z, domeGenerator,corridorGenerator);
+		DomeRequest domeRequest;
+		domeRequest = new DomeRequest(x, z, world, chunkProvider, this);
 
 		if (_configuration.getMultiThreaded()) {
-			synchronized(domeSetLock) {
-				if (currentDomeSet == null) {
-					currentDomeSet = domeSet;
-					currentDomeSet.startGenerationAsync();
-				}
-			}
+			domeRequest.startGenerationAsync();
 		} else {
-			domeSet.startGeneration();
-			AtomField atomField = domeSet.getAtomField();
+			domeRequest.startGeneration();
+		}
+	}
 
-			List<DomeSet.ChunkData> requiredChunks = domeSet.getRequiredChunks();
-			for (DomeSet.ChunkData chunk : requiredChunks) {
-				Point3D chunkLocation = chunk.getChunkLocation();
-				chunkProvider.provideChunk(chunkLocation.xCoord, chunkLocation.zCoord);
-				populateChunk(chunk, world);
+
+	@Override
+	public void OnComplete(DomeRequestResult requestResult) {
+		readyResults.offer(requestResult);
+	}
+
+	@SubscribeEvent
+	public synchronized void OnTick(TickEvent event) {
+		if (!readyResults.isEmpty()) {
+			DomeRequestResult requestResult = readyResults.peek();
+			World world = requestResult.getWorld();
+
+			DomeRequest.ChunkData chunkData = requestResult.getNextChunkData();
+			if (chunkData != null) {
+				Point3D chunkLocation = chunkData.getChunkLocation();
+				LOG.fine("Processing chunk at chunkLocation");
+				requestResult.getChunkProvider().provideChunk(chunkLocation.xCoord, chunkLocation.zCoord);
+				populateChunk(chunkData, requestResult.getWorld());
+			}
+			if (!requestResult.hasMoreChunkData()) {
+				readyResults.poll();
 			}
 		}
 	}
 
-	private void populateChunk(DomeSet.ChunkData chunk, World world) {
+	private void populateChunk(DomeRequest.ChunkData chunk, World world) {
 		Point3D chunkLocation = chunk.getChunkLocation();
 		int realX = chunkLocation.xCoord * 16;
 		int realZ = chunkLocation.zCoord * 16;
@@ -120,18 +125,4 @@ public class WorldGenerator implements IWorldGenerator {
 			}
 		}
 	}
-
-	@SubscribeEvent
-	public void OnTick(TickEvent event) {
-
-		if (_configuration.getMultiThreaded()) {
-			if (currentDomeSet.tryAcquireLock()) {
-				DomeSet domeSet = currentDomeSet;
-				currentDomeSet = null;
-				//TODO: for a single completed dome set, render a single chunk worth of atoms.
-				AtomField atomField = domeSet.getAtomField();
-			}
-		}
-	}
-	
 }

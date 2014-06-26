@@ -11,3 +11,4 @@ public interface ICorridorGenerator {
 	List<Corridor> generate(List<Dome> domes);
 	void setRandom(Random random);
 }
+

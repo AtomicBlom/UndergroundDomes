@@ -6,10 +6,12 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 import net.binaryvibrance.helpers.maths.Point3D;
+import net.binaryvibrance.undergrounddomes.generation2.contracts.DomeGeneratorResult;
 import net.binaryvibrance.undergrounddomes.generation2.contracts.IDomeGenerator;
 import net.binaryvibrance.undergrounddomes.generation2.model.Dome;
 import net.binaryvibrance.undergrounddomes.generation2.model.DomeFloor;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
+import net.minecraft.util.Vec3;
 
 
 public class GenADomeGenerator implements IDomeGenerator {
@@ -19,15 +21,44 @@ public class GenADomeGenerator implements IDomeGenerator {
 	private Random random;
 
 	@Override
-	public List<Dome> Generate() {
+	public DomeGeneratorResult generate() {
 		List<Dome> domes;
 		domes = createDomeChain();
 		//Process Dome purpose
-		return domes;
+		Point3D size = normalizeForAtomField(domes);
+		//FIXME: need to
+		return new DomeGeneratorResult(domes, size);
 	}
-	
+
+	private Point3D normalizeForAtomField(List<Dome> domes) {
+		int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
+		int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
+		for (Dome dome : domes) {
+			int domeMinX = (int)(dome.getLocation().x - dome.getRadius());
+			minX = Math.min(minX, domeMinX);
+			int domeMaxX = (int)(dome.getLocation().x + dome.getRadius());
+			maxX = Math.max(maxX, domeMaxX);
+
+			int domeMinY = (int)(dome.getLocation().y - dome.getRadius());
+			minY = Math.min(minY, domeMinY);
+			int domeMaxY = (int)(dome.getLocation().y + dome.getRadius());
+			maxY = Math.max(maxY, domeMaxY);
+
+			int domeMinZ = (int)(dome.getLocation().z - dome.getRadius());
+			minZ = Math.min(minZ, domeMinZ);
+			int domeMaxZ = (int)(dome.getLocation().z + dome.getRadius());
+			maxZ = Math.max(maxZ, domeMaxZ);
+		}
+
+		for (Dome dome : domes) {
+			dome.getLocation().move(Vec3.createVectorHelper(-minX, -minY, -minZ));
+		}
+
+		return new Point3D(maxX - minX, maxY - minY, maxZ - minZ);
+	}
+
 	@Override
-	public void SetRandom(Random random) {
+	public void setRandom(Random random) {
 		this.random = random;
 	}
 	
@@ -99,11 +130,7 @@ public class GenADomeGenerator implements IDomeGenerator {
 	private boolean isValid(Dome dome, List<Dome> chain) {
 		for (Dome existingDome : chain) {
 			double checkDistance = dome.getLocation().distance(existingDome.getLocation());
-			/*
-			 * double checkDistance = Math.pow(dome.x - existingDome.x, 2) +
-			 * Math.pow(dome.y - existingDome.y, 2) + Math.pow(dome.z -
-			 * existingDome.z, 2);
-			 */
+
 			double minimumDistance = Math.pow(dome.getRadius() + existingDome.getRadius(), 2);
 			if (checkDistance < minimumDistance)
 				return false;

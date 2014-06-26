@@ -1,18 +1,19 @@
 package net.binaryvibrance.undergrounddomes.generation2.model;
 
 import net.binaryvibrance.helpers.maths.Point3D;
+import net.minecraft.util.Vec3;
 
 public class DomeEntrance {
     private DomeFloor floor;
     private CorridorTerminus corridorExit;
     private boolean inUse = false;
-    private Point3D location;
+    private Vec3 locationOffset;
     private CompassDirection compassDirection;
 
-    public DomeEntrance(DomeFloor floor, CompassDirection compassDirection, Point3D location) {
+    public DomeEntrance(DomeFloor floor, CompassDirection compassDirection, Vec3 locationOffset) {
         this.floor = floor;
         this.compassDirection = compassDirection;
-        this.location = location;
+        this.locationOffset = locationOffset;
     }
 
     public CorridorTerminus getTerminus() {
@@ -29,7 +30,7 @@ public class DomeEntrance {
     }
 
     public Point3D getLocation() {
-        return location;
+        return this.getFloor().getDome().getLocation().add(locationOffset);
     }
 
     public boolean isInUse() {

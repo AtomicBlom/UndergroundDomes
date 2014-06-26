@@ -7,6 +7,6 @@ import net.binaryvibrance.undergrounddomes.generation2.model.Dome;
 
 public interface IDomeGenerator {
 
-	List<Dome> Generate();
-	void SetRandom(Random random);
+	DomeGeneratorResult generate();
+	void setRandom(Random random);
 }

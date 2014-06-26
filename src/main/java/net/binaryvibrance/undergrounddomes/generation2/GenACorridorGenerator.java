@@ -1,11 +1,6 @@
 package net.binaryvibrance.undergrounddomes.generation2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.logging.Logger;
 
 import net.binaryvibrance.helpers.KeyValuePair;
@@ -62,7 +57,9 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 				List<KeyValuePair<DomeEntrance, CorridorTerminus>> entriesToCreate = new ArrayList<KeyValuePair<DomeEntrance, CorridorTerminus>>();
 				boolean valid = true;
 				for (DomeEntrance entrance : entrances) {
+
 					CorridorTerminus entranceTerminus = new CorridorTerminus();
+					entranceTerminus.setLocation(entrance.getLocation());
 					Corridor corridor = new Corridor(entranceTerminus, centrePointTerminus, entrance.getCompassDirection());
 
 					if (corridor.getFirstIntersectingObstacle(domes) != null) {
@@ -92,6 +89,11 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 		}
 
 		return new ArrayList<Corridor>();
+	}
+
+	@Override
+	public void setRandom(Random random) {
+
 	}
 
 	/*private void on3AppliedEntrances(List<DomeEntrance> entrances, List<Dome> domes, Point3D averagePoint) {

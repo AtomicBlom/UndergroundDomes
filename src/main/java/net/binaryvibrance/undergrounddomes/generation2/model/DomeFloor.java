@@ -7,15 +7,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DomeFloor {
-    private final int level;
+	private final Dome dome;
+	private final int level;
     private Map<CompassDirection, DomeEntrance> entrances;
 
     public DomeFloor(Dome dome, int level) {
-        this.level = level;
+	    this.dome = dome;
+	    this.level = level;
 
         entrances = new HashMap<CompassDirection, DomeEntrance>();
-        //TODO: Calculate Dome Entrance location
-
         //From http://mathforum.org/dr.math/faq/formulas/faq.sphere.html
         //r = (h^2+r'^2)/(2h)
         double levelRadius = (Math.pow(dome.getRadius(), 2) + Math.pow(level, 2)) / (level * 2);
@@ -23,20 +23,20 @@ public class DomeFloor {
         DomeEntrance northEntrance = new DomeEntrance(
                 this,
                 CompassDirection.NORTH,
-                new Point3D(0, 0, 0).add(Vector3.multiply(Vector3.NORTH, levelRadius)));
+		        Vector3.multiply(Vector3.NORTH, levelRadius));
         DomeEntrance southEntrance = new DomeEntrance(
                 this,
                 CompassDirection.SOUTH,
-                new Point3D(0, 0, 0).add(Vector3.multiply(Vector3.SOUTH, levelRadius)));
+		        Vector3.multiply(Vector3.SOUTH, levelRadius));
 
         DomeEntrance eastEntrance = new DomeEntrance(
                 this,
                 CompassDirection.EAST,
-                new Point3D(0, 0, 0).add(Vector3.multiply(Vector3.EAST, levelRadius)));
+		        Vector3.multiply(Vector3.EAST, levelRadius));
         DomeEntrance westEntrance = new DomeEntrance(
                 this,
                 CompassDirection.WEST,
-                new Point3D(0, 0, 0).add(Vector3.multiply(Vector3.WEST, levelRadius)));
+		        Vector3.multiply(Vector3.WEST, levelRadius));
 
         entrances.put(CompassDirection.NORTH, northEntrance);
         entrances.put(CompassDirection.SOUTH, southEntrance);
@@ -51,4 +51,8 @@ public class DomeFloor {
     public int getLevel() {
         return level;
     }
+
+	public Dome getDome() {
+		return dome;
+	}
 }

@@ -4,16 +4,13 @@ import net.binaryvibrance.helpers.maths.GeometryHelper;
 import net.binaryvibrance.helpers.maths.Line;
 import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.generation2.contracts.ILineIntersectable;
-import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class Corridor {
-    private static final Logger LOG = LogHelper.getLogger();
-    CorridorTerminus start;
-    CorridorTerminus end;
+    private CorridorTerminus start;
+    private CorridorTerminus end;
     List<Point3D> intermediatePoints;
 
 	public Corridor(CorridorTerminus startTerminus,
@@ -26,6 +23,12 @@ public class Corridor {
 	    Point3D midPoint = GeometryHelper.getMidPoint(
 			    startTerminus.getLocation(), endTerminus.getLocation(),
 			    initialDirection);
+
+		if (midPoint.xCoord < 0 || midPoint.yCoord < 0 || midPoint.zCoord < 0) {
+			midPoint = GeometryHelper.getMidPoint(
+					startTerminus.getLocation(), endTerminus.getLocation(),
+					initialDirection);
+		}
 
 	    intermediatePoints = new LinkedList<Point3D>();
 	    intermediatePoints.add(midPoint);
@@ -40,7 +43,6 @@ public class Corridor {
 		for (ILineIntersectable obstacle : obstacles) {
 			for (Line line : allPoints) {
 				if (obstacle.intersects(line)) {
-					LOG.info(String.format("Corridor %s intersects with obstacle %s", this, obstacle));
 					return obstacle;
 				}
 			}
@@ -49,18 +51,31 @@ public class Corridor {
 		return null;
 	}
 
-	private List<Line> getAllLines() {
+	public List<Line> getAllLines() {
 		List<Point3D> linePoints = new LinkedList<Point3D>();
 		List<Line> lines = new LinkedList<Line>();
 		linePoints.addAll(intermediatePoints);
-		linePoints.add(end.getLocation());
+		linePoints.add(getEnd().getLocation());
 
-		Point3D lineStart = start.getLocation();
+		Point3D lineStart = getStart().getLocation();
 		for (Point3D lineEnd : linePoints) {
 			lines.add(new Line(lineStart, lineEnd));
 			lineStart = lineEnd;
 		}
 
 		return lines;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Corridor (%s -> %s)", getStart().getLocation(), getEnd().getLocation() );
+	}
+
+	public CorridorTerminus getStart() {
+		return start;
+	}
+
+	public CorridorTerminus getEnd() {
+		return end;
 	}
 }

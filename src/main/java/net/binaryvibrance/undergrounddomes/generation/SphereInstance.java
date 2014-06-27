@@ -19,7 +19,6 @@ public class SphereInstance extends Point3D {
 		return "SphereInstance [diameter=" + diameter + ", x=" + xCoord + ", y=" + yCoord + ", z=" + zCoord + "]";
 	}
 
-	private static final Logger LOG = LogHelper.getLogger();
 	private static final int MIN_FLOOR_SIZE = 5;
 	private final int diameter;
 	private final float radius;
@@ -38,7 +37,7 @@ public class SphereInstance extends Point3D {
 
 		int available = (int) ((diameter - 2) * 0.75); // Don't include walls
 		int maxFloors = (int) Math.floor(available / (float) MIN_FLOOR_SIZE);
-		LOG.info("MaxFloors: " + maxFloors);
+		LogHelper.info("MaxFloors: " + maxFloors);
 		int actualFloors = maxFloors;// == 1 ? 1 : random.nextInt(maxFloors - 1)
 										// + 1;
 		int interval = (int) Math.ceil(available / actualFloors);
@@ -46,11 +45,11 @@ public class SphereInstance extends Point3D {
 
 		int baseHeight = diameter - available - 2;
 		definedFloors.add(new SphereFloor(this, baseHeight));
-		LOG.info(String.format("Floor 0 at level %d", baseHeight));
+		LogHelper.info(String.format("Floor 0 at level %d", baseHeight));
 		for (int floor = 1; floor < actualFloors; ++floor) {
 			int floorVariance = random.nextBoolean() ? 1 : -1;
 			int floorStart = baseHeight + floor * interval + variance * floorVariance;
-			LOG.info(String.format("Floor %d at level %d", floor, floorStart));
+			LogHelper.info(String.format("Floor %d at level %d", floor, floorStart));
 			definedFloors.add(new SphereFloor(this, floorStart));
 		}
 

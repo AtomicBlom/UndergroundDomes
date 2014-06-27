@@ -15,8 +15,6 @@ import net.minecraft.util.Vec3;
 
 
 public class GenADomeGenerator implements IDomeGenerator {
-	
-	private static final Logger LOG = LogHelper.getLogger();
     private static final int MIN_FLOOR_SIZE = 5;
 	private Random random;
 
@@ -89,7 +87,7 @@ public class GenADomeGenerator implements IDomeGenerator {
 			}
 			createFloors(dome);
             Point3D location = dome.getLocation();
-			LOG.info(String.format("Dome %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, domeChainLength, location.xCoord, location.yCoord,
+			LogHelper.info(String.format("Dome %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, domeChainLength, location.xCoord, location.yCoord,
                     location.zCoord, dome.getDiameter()));
 			chain.add(dome);
 
@@ -165,18 +163,18 @@ public class GenADomeGenerator implements IDomeGenerator {
 			originX = (int) (previousDomeX + (minCorridorSpacing
 					+ Math.sqrt(Math.pow(Math.max(touchingDistance, firstDimensionOffset + 1), 2) - Math.pow(firstDimensionOffset, 2)) + newSpacing)
 					* xDirection);
-			LOG.finer(String.format("originX: %d, prevX: %d, touch: %f, offset: %f, spacing: %d", originX, previousDomeX,
+			LogHelper.trace(String.format("originX: %d, prevX: %d, touch: %f, offset: %f, spacing: %d", originX, previousDomeX,
 					touchingDistance, firstDimensionOffset, newSpacing));
 		} else {
 			originX = (int) (previousDomeX + (firstDimensionOffset + minCorridorSpacing) * xDirection);
 			originZ = (int) (previousDomeZ + (minCorridorSpacing
 					+ Math.sqrt(Math.pow(Math.max(touchingDistance, firstDimensionOffset + 1), 2) - Math.pow(firstDimensionOffset, 2)) + newSpacing)
 					* zDirection);
-			LOG.finer(String.format("originZ: %d, prevZ: %d, touch: %f, offset: %f, spacing: %d", originZ, previousDomeZ,
+			LogHelper.trace(String.format("originZ: %d, prevZ: %d, touch: %f, offset: %f, spacing: %d", originZ, previousDomeZ,
 					touchingDistance, firstDimensionOffset, newSpacing));
 		}
 
-		LOG.info(String.format("Dome @ (%d,%d,%d) d:%d", originX, 0, originZ, diameter));
+		LogHelper.trace(String.format("Dome @ (%d,%d,%d) d:%d", originX, 0, originZ, diameter));
 		Dome dome = new Dome(new Point3D(originX, 0, originZ), diameter);
 		return dome;
 	}
@@ -184,7 +182,7 @@ public class GenADomeGenerator implements IDomeGenerator {
     public void createFloors(Dome dome) {
         int available = (int) ((dome.getDiameter() - 2) * 0.75); // Don't include walls
         int maxFloors = (int) Math.floor(available / (float) MIN_FLOOR_SIZE);
-        LOG.info("MaxFloors: " + maxFloors);
+	    LogHelper.trace("MaxFloors: " + maxFloors);
         int actualFloors = maxFloors;// == 1 ? 1 : random.nextInt(maxFloors - 1)
         // + 1;
         int interval = (int) Math.ceil(available / actualFloors);
@@ -192,11 +190,11 @@ public class GenADomeGenerator implements IDomeGenerator {
 
         int baseHeight = dome.getDiameter() - available - 2;
         dome.addFloor(new DomeFloor(dome, baseHeight));
-        LOG.info(String.format("Floor 0 at level %d", baseHeight));
+	    LogHelper.info(String.format("Floor 0 at level %d", baseHeight));
         for (int floor = 1; floor < actualFloors; ++floor) {
             int floorVariance = random.nextBoolean() ? 1 : -1;
             int floorStart = baseHeight + floor * interval + variance * floorVariance;
-            LOG.info(String.format("Floor %d at level %d", floor, floorStart));
+	        LogHelper.info(String.format("Floor %d at level %d", floor, floorStart));
             dome.addFloor(new DomeFloor(dome, floorStart));
         }
     }

@@ -40,8 +40,8 @@ public class GenADomeRenderer implements IAtomFieldRenderer {
 			for (Atom[][] zAtoms : renderedDome.getAtoms()) {
 				for (Atom[] yAtoms : zAtoms) {
 					for (Atom atom : yAtoms) {
-						if (atom != null) {
-							field.SetAtomAt(atom.xCoord + minX, atom.yCoord + minY, atom.zCoord + minZ, AtomElement.Wall);
+						if (atom != null && atom.getAtomElement() != AtomElement.Untouched) {
+							field.SetAtomAt(atom.xCoord + minX, atom.yCoord + minY, atom.zCoord + minZ, atom.getAtomElement());
 						}
 					}
 				}
@@ -50,20 +50,18 @@ public class GenADomeRenderer implements IAtomFieldRenderer {
 
 	}
 
-
-	private static final Logger LOG = LogHelper.getLogger();
 	private static final HashMap<Integer, PreRenderedDome> cachedSpheres = new HashMap<Integer, PreRenderedDome>();
 
 	public static PreRenderedDome construct(int diameter) {
 		PreRenderedDome sphere = null;
 		if (cachedSpheres.containsKey(diameter)) {
-			LOG.info(String.format("Found pre-calculated atoms for diameter %d", diameter));
+			LogHelper.info(String.format("Found pre-calculated atoms for diameter %d", diameter));
 			sphere = cachedSpheres.get(diameter);
 		} else {
-			LOG.info(String.format("Pre-calculating atoms for diameter %d", diameter));
+			LogHelper.info(String.format("Pre-calculating atoms for diameter %d", diameter));
 			sphere = new PreRenderedDome(diameter);
 			cachedSpheres.put(diameter, sphere);
-			LOG.info(String.format("Pre-calculation for diameter %d complete", diameter));
+			LogHelper.info(String.format("Pre-calculation for diameter %d complete", diameter));
 		}
 		return sphere;
 	}

@@ -9,8 +9,6 @@ import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 import net.minecraft.util.Vec3;
 
 public class EntranceToCorridor {
-	private static final Logger LOG = LogHelper.getLogger();
-
 	public final Line lineToCorridor;
 	public final Line lineToOrigin;
 	public final Point3D entranceLocation;
@@ -68,12 +66,12 @@ public class EntranceToCorridor {
 			x = newEndpoint.xCoord;
 			z = lineToCorridor.start.zCoord;
 		}
-		LOG.info(String.format("Moving Line %s", lineToOrigin));
-		LOG.info(String.format("Previous Render Vector: %s", originVector));
+		LogHelper.info(String.format("Moving Line %s", lineToOrigin));
+		LogHelper.info(String.format("Previous Render Vector: %s", originVector));
 		lineToOrigin.start.set(x, lineToOrigin.end.y, z);
 		lineToOrigin.end.set(newEndpoint);
-		LOG.info(String.format("To Line %s", lineToOrigin));
-		LOG.info(String.format("new Render Vector: %s", lineToOrigin.getRenderVector()));
+		LogHelper.info(String.format("To Line %s", lineToOrigin));
+		LogHelper.info(String.format("new Render Vector: %s", lineToOrigin.getRenderVector()));
 		// TODO: This needs an implementation.
 		// What this needs to do is recalculate the join location
 	}

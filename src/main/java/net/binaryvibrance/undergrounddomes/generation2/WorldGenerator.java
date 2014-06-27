@@ -1,27 +1,26 @@
 package net.binaryvibrance.undergrounddomes.generation2;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Random;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Logger;
-
+import cpw.mods.fml.common.IWorldGenerator;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;
 import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.relauncher.Side;
 import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.Configuration;
 import net.binaryvibrance.undergrounddomes.generation2.contracts.INotifyDomeGenerationComplete;
 import net.binaryvibrance.undergrounddomes.generation2.model.Atom;
+import net.binaryvibrance.undergrounddomes.generation2.model.AtomElement;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
-import cpw.mods.fml.common.IWorldGenerator;
+
+import java.util.Queue;
+import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class WorldGenerator implements IWorldGenerator, INotifyDomeGenerationComplete {
-
-	private static final Logger LOG = LogHelper.getLogger();
 	private final Configuration _configuration;
 
 	public WorldGenerator() {
@@ -47,8 +46,6 @@ public class WorldGenerator implements IWorldGenerator, INotifyDomeGenerationCom
 	}
 
 	private void generateSurface(World world, int x, int z, IChunkProvider chunkProvider) {
-		//TODO: batch multiple generations
-		//      I'm expecting MystCraft to cause interesting cpu load here.
 		//TODO: recover from server shutdown.
 		//      Persist base calculations and data to nbt
 		//TODO: gracefully handle exceptions in generation code
@@ -69,16 +66,22 @@ public class WorldGenerator implements IWorldGenerator, INotifyDomeGenerationCom
 		readyResults.offer(requestResult);
 	}
 
+	long currentTick;
+
 	@SubscribeEvent
 	public synchronized void OnTick(TickEvent event) {
-		if (!readyResults.isEmpty()) {
+		if (event.side == Side.SERVER && !readyResults.isEmpty()) {
+			/*currentTick++;
+			if (currentTick % 10 != 0) {
+				return;
+			}*/
 			DomeRequestResult requestResult = readyResults.peek();
 			World world = requestResult.getWorld();
 
 			DomeRequest.ChunkData chunkData = requestResult.getNextChunkData();
 			if (chunkData != null) {
 				Point3D chunkLocation = chunkData.getChunkLocation();
-				LOG.fine("Processing chunk at chunkLocation");
+				LogHelper.info("Processing chunk at " + chunkLocation);
 				requestResult.getChunkProvider().provideChunk(chunkLocation.xCoord, chunkLocation.zCoord);
 				populateChunk(chunkData, requestResult.getWorld());
 			}
@@ -96,23 +99,37 @@ public class WorldGenerator implements IWorldGenerator, INotifyDomeGenerationCom
 
 		Atom[][][] atoms = chunk.getAtoms();
 
-		Block glowStoneBlock = GameData.getBlockRegistry().getObject("glowstone");
-		Block ironBlock = GameData.getBlockRegistry().getObject("tnt");
-		Block airBlock = GameData.getBlockRegistry().getObject("air");
+		FMLControlledNamespacedRegistry<Block> blockRegistry = GameData.getBlockRegistry();
+		Block floorBlock = blockRegistry.getObject("glowstone");
+		Block wallBlock = blockRegistry.getObject("tnt");
+		Block interiorBlock = blockRegistry.getObject("air");
+		Block debugBlock = blockRegistry.getObject("gold_block");
+		Block corridorFloorBlock = blockRegistry.getObject("iron_block");
 
 		for (int z = 0; z < atoms.length; ++z) {
 			for (int y = 0; y < atoms[z].length; ++y) {
 				for (int x = 0; x < atoms[z][y].length; ++x) {
 					Block block;
-					switch (atoms[z][y][x].getAtomElement()) {
+					Atom atom = atoms[z][y][x];
+					AtomElement element = AtomElement.Untouched;
+					if (atom != null) {
+						element = atom.getAtomElement();
+					}
+					switch (element) {
 						case Wall:
-							block = ironBlock;
+							block = wallBlock;
 							break;
 						case Interior:
-							block = airBlock;
+							block = interiorBlock;
 							break;
 						case Floor:
-							block = glowStoneBlock;
+							block = floorBlock;
+							break;
+						case CorridorFloor:
+							block = corridorFloorBlock;
+							break;
+						case Debug:
+							block = debugBlock;
 							break;
 						case Untouched:
 							continue;

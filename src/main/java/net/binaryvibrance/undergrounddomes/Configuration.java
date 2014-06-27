@@ -37,7 +37,7 @@ public class Configuration {
 
 	public boolean getMultiThreaded() {
 		//FIXME: Allow this to be set when I've figured out how to support this properly.
-		return false;
+		return true;
 	}
 
 	public IDomeGenerator getDefaultDomeGenerator() {

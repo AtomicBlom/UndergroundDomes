@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import net.binaryvibrance.helpers.KeyValuePair;
 import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.generation2.contracts.ICorridorGenerator;
+import net.binaryvibrance.undergrounddomes.generation2.contracts.ILineIntersectable;
 import net.binaryvibrance.undergrounddomes.generation2.model.CompassDirection;
 import net.binaryvibrance.undergrounddomes.generation2.model.Corridor;
 import net.binaryvibrance.undergrounddomes.generation2.model.CorridorTerminus;
@@ -16,27 +17,38 @@ import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 
 public class GenACorridorGenerator implements ICorridorGenerator {
 
-	private static final Logger LOG = LogHelper.getLogger();
-
 	@Override
 	public List<Corridor> generate(List<Dome> domes) {
 		int currentDome = 1;
 		// List<Dome> domeChain = this.domeChain.getChain();
 		int domeCount = domes.size();
 
+		List<Corridor> validCorridors = new LinkedList<Corridor>();
+
+		//This particular implementation of the corridor generator loops over each dome
+		//for each dome, it attempts to build 3 corridors between it's 2 closest neighbours.
+		//The corridors are not allowed to pass through another dome.
+
+		//TODO: If a corridor passes through another corridor, join them together
+
 		for (Dome dome : domes) {
-			LOG.info(String.format("Creating corridors for dome %d/%d", currentDome++, domeCount));
+			LogHelper.info(String.format("Creating corridors for dome %d/%d %s", currentDome++, domeCount, dome));
 			// Calculate Nearest Neighbours
 			DomeNearestNeighbour snn = new DomeNearestNeighbour(dome);
 			for (Dome neighbourDome : domes) {
 				snn.addNeighbour(neighbourDome);
+
 			}
 
 			// Build corridor between nearest triad
 
+
+
 			Dome primary = null;
 			for (Dome secondary : snn) {
+				LogHelper.info("Secondary Dome " + secondary);
 				if (primary == null) {
+					LogHelper.info("... is actually the primary.");
 					primary = secondary;
 					continue;
 				}
@@ -56,17 +68,27 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 				//Step 1, would corridors intersect other spheres?
 				List<KeyValuePair<DomeEntrance, CorridorTerminus>> entriesToCreate = new ArrayList<KeyValuePair<DomeEntrance, CorridorTerminus>>();
 				boolean valid = true;
+
+				List<Dome> obstacles = new LinkedList<Dome>();
+				for (Dome d : domes) {
+					if (d != dome && d != primary && d != secondary) {
+						obstacles.add(d);
+					}
+				}
+
+				List<Corridor> potentialValidCorridors = new LinkedList<Corridor>();
 				for (DomeEntrance entrance : entrances) {
 
 					CorridorTerminus entranceTerminus = new CorridorTerminus();
 					entranceTerminus.setLocation(entrance.getLocation());
 					Corridor corridor = new Corridor(entranceTerminus, centrePointTerminus, entrance.getCompassDirection());
-
-					if (corridor.getFirstIntersectingObstacle(domes) != null) {
+					ILineIntersectable obstacle = corridor.getFirstIntersectingObstacle(obstacles);
+					if (obstacle != null) {
 						valid = false;
+						LogHelper.info(String.format("%s intersects with obstacle %s", corridor, obstacle));
 						break;
 					} else {
-
+						potentialValidCorridors.add(corridor);
 					}
 
 					/*var validCorridor = Corridor.tryCreateBetween(entranceTerminus, centrePointTerminus, entrance.getCompassDirection(), domes);
@@ -81,14 +103,17 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 
 				if (valid) {
 					//Step 2: If we can, then Check each corridor to see if it should be attached to an existing corridor.
+					LogHelper.info("Found a non-colliding corridor");
 					for (KeyValuePair<DomeEntrance, CorridorTerminus> kvp : entriesToCreate) {
 						kvp.key.setTerminus(kvp.value);
 					}
+					validCorridors.addAll(potentialValidCorridors);
+					break;
 				}
 			}
 		}
 
-		return new ArrayList<Corridor>();
+		return validCorridors;
 	}
 
 	@Override

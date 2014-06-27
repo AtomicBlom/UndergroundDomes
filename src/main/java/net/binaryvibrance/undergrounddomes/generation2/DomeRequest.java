@@ -6,6 +6,7 @@ import net.binaryvibrance.undergrounddomes.generation2.contracts.*;
 import net.binaryvibrance.undergrounddomes.generation2.model.Atom;
 import net.binaryvibrance.undergrounddomes.generation2.model.AtomField;
 import net.binaryvibrance.undergrounddomes.generation2.model.Corridor;
+import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 
@@ -74,18 +75,28 @@ public class DomeRequest {
     }
 
     public void startGeneration() {
+	    LogHelper.info("Generating Domes");
 	    domes = domeGenerator.generate();
+	    LogHelper.info("Generating Corridors");
+
 	    List<Corridor> corridors = corridorGenerator.generate(domes.getDomes());
 
 	    atomField = new AtomField(domes.getSize());
 
 	    IAtomFieldRenderer renderer;
+	    LogHelper.info("Rendering Domes");
+
 	    renderer = new GenADomeRenderer(domes.getDomes());
 		renderer.RenderToAtomField(atomField);
-        renderer = new GenACorridorRenderer(corridors);
+	    LogHelper.info("Rendering Corridors");
+
+	    renderer = new GenACorridorRenderer(corridors);
+
         renderer.RenderToAtomField(atomField);
 
 	    List<ChunkData> results = new LinkedList<ChunkData>();
+
+	    LogHelper.info("Splitting AtomField into Chunks");
 
 	    for (int z = 0; z < atomField.getSize().z; z += 16) {
 		    for (int x = 0; x < atomField.getSize().x; x += 16) {
@@ -106,7 +117,7 @@ public class DomeRequest {
 	    }
 
 	    result.setChunkData(results);
-
+	    LogHelper.info("Generation Complete");
 	    notify.OnComplete(result);
     }
 }

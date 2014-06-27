@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 public class Point3D {
 	@Override
 	public String toString() {
-		return "Point3D [x=" + x + ", y=" + y + ", z=" + z + ", dimension=" + dimension + "]";
+		return "Point3D [" + x + "," + y + "," + z + "]";
 	}
 
 	public double x;

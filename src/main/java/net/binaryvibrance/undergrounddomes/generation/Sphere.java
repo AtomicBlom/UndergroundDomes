@@ -17,19 +17,18 @@ public class Sphere {
 		calculateAtoms(diameter);
 	}
 
-	private static final Logger LOG = LogHelper.getLogger();
 	private static final HashMap<Integer, Sphere> cachedSpheres = new HashMap<Integer, Sphere>();
 
 	public static Sphere construct(int diameter) {
 		Sphere sphere = null;
 		if (cachedSpheres.containsKey(diameter)) {
-			LOG.info(String.format("Found precalculated atoms for diameter %d", diameter));
+			LogHelper.info(String.format("Found precalculated atoms for diameter %d", diameter));
 			sphere = cachedSpheres.get(diameter);
 		} else {
-			LOG.info(String.format("Precalculating atoms for diameter %d", diameter));
+			LogHelper.info(String.format("Precalculating atoms for diameter %d", diameter));
 			sphere = new Sphere(diameter);
 			cachedSpheres.put(diameter, sphere);
-			LOG.info(String.format("Precalculation for diameter %d complete", diameter));
+			LogHelper.info(String.format("Precalculation for diameter %d complete", diameter));
 		}
 		return sphere;
 	}

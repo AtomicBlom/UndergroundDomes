@@ -15,7 +15,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class SphereChain {
-	private static final Logger LOG = LogHelper.getLogger();
     private final Configuration _configuration;
 
     int sphereChainLength;
@@ -61,7 +60,7 @@ public class SphereChain {
 				break;
 			}
 			sphere.createFloors(random);
-			LOG.info(String.format("Sphere %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, sphereChainLength, sphere.xCoord, sphere.yCoord,
+			LogHelper.info(String.format("Sphere %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, sphereChainLength, sphere.xCoord, sphere.yCoord,
 					sphere.zCoord, sphere.getDiameter()));
 			chain.add(sphere);
 
@@ -144,18 +143,18 @@ public class SphereChain {
 			originX = (int) (previousSphereX + (minCorridorSpacing
 					+ Math.sqrt(Math.pow(Math.max(touchingDistance, firstDimensionOffset + 1), 2) - Math.pow(firstDimensionOffset, 2)) + newSpacing)
 					* xDirection);
-			LOG.finer(String.format("originX: %d, prevX: %d, touch: %f, offset: %f, spacing: %d", originX, previousSphereX,
+			LogHelper.trace(String.format("originX: %d, prevX: %d, touch: %f, offset: %f, spacing: %d", originX, previousSphereX,
 					touchingDistance, firstDimensionOffset, newSpacing));
 		} else {
 			originX = (int) (previousSphereX + (firstDimensionOffset + minCorridorSpacing) * xDirection);
 			originZ = (int) (previousSphereZ + (minCorridorSpacing
 					+ Math.sqrt(Math.pow(Math.max(touchingDistance, firstDimensionOffset + 1), 2) - Math.pow(firstDimensionOffset, 2)) + newSpacing)
 					* zDirection);
-			LOG.finer(String.format("originZ: %d, prevZ: %d, touch: %f, offset: %f, spacing: %d", originZ, previousSphereZ,
+			LogHelper.trace(String.format("originZ: %d, prevZ: %d, touch: %f, offset: %f, spacing: %d", originZ, previousSphereZ,
 					touchingDistance, firstDimensionOffset, newSpacing));
 		}
 
-		LOG.info(String.format("Sphere @ (%d,%d,%d) d:%d", originX, 0, originZ, diameter));
+		LogHelper.info(String.format("Sphere @ (%d,%d,%d) d:%d", originX, 0, originZ, diameter));
 		SphereInstance sphere = new SphereInstance(new Point3D(originX, 0, originZ), diameter);
 		return sphere;
 	}
@@ -187,7 +186,7 @@ public class SphereChain {
 		int chainLength = chain.size();
 		int current = 1;
 		for (SphereInstance sphere : chain) {
-			LOG.info(String.format("Rendering Sphere %d/%d at (%d,%d,%d) diameter %d", current++, chainLength, sphere.xCoord + startX,
+			LogHelper.info(String.format("Rendering Sphere %d/%d at (%d,%d,%d) diameter %d", current++, chainLength, sphere.xCoord + startX,
 					heightOffset, sphere.zCoord + startZ, sphere.getDiameter()));
 			sphere.render(world, Vec3.createVectorHelper(startX, heightOffset, startZ));
 		}

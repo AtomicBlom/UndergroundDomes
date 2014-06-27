@@ -43,4 +43,9 @@ public class Dome implements ILineIntersectable {
     public boolean intersects(Line line) {
         return GeometryHelper.lineIntersectsSphere(line, location, getRadius());
     }
+
+	@Override
+	public String toString() {
+		return String.format("Dome (%s Diameter %d)", location, diameter);
+	}
 }

@@ -17,7 +17,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class CorridorGen {
-	private static final Logger LOG = LogHelper.getLogger();
 	private final SphereChain sphereChain;
 
 	List<Line> corridorPaths = new LinkedList<Line>();
@@ -33,7 +32,7 @@ public class CorridorGen {
 		List<SphereInstance> sphereChain = this.sphereChain.getChain();
 
 		for (SphereInstance sphere : sphereChain) {
-			LOG.info(String.format("Creating corridors for sphere %d/%d", currentSphere++, sphereCount));
+			LogHelper.info(String.format("Creating corridors for sphere %d/%d", currentSphere++, sphereCount));
 			// Calculate Nearest Neighbours
 			SphereNearestNeighbour snn = new SphereNearestNeighbour(sphere);
 			for (SphereInstance neighbourSphere : sphereChain) {
@@ -78,12 +77,12 @@ public class CorridorGen {
 					}
 					for (SphereInstance compareSphere : sphereChain) {
 						if (compareSphere.intersectsLine(entrance.lineToCorridor)) {
-							LOG.info(String.format("Corridor %s intersects with sphere %s", entrance.lineToCorridor, compareSphere));
+							LogHelper.info(String.format("Corridor %s intersects with sphere %s", entrance.lineToCorridor, compareSphere));
 							valid = false;
 							break;
 						}
 						if (compareSphere.intersectsLine(entrance.lineToOrigin)) {
-							LOG.info(String.format("Corridor %s intersects with sphere %s", entrance.lineToOrigin, compareSphere));
+							LogHelper.info(String.format("Corridor %s intersects with sphere %s", entrance.lineToOrigin, compareSphere));
 							valid = false;
 							break;
 						}
@@ -168,7 +167,7 @@ public class CorridorGen {
         Block goldBlock = GameData.getBlockRegistry().getObject("gold_block");
 
 		for (Line path : corridorPaths) {
-			LOG.info(String.format("Creating Line %d/%d %s", currentLine++, maxLines, path.toString()));
+			LogHelper.info(String.format("Creating Line %d/%d %s", currentLine++, maxLines, path.toString()));
 			Vec3 vector = path.getRenderVector();
 			Point3D currentPoint = path.start;
 			do {

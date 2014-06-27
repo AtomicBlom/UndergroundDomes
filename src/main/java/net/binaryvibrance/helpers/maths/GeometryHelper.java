@@ -60,11 +60,18 @@ public class GeometryHelper {
 
 	public static Point3D getMidPoint(Point3D firstPoint, Point3D secondPoint, CompassDirection initialDirection) {
 		Vec3 vector = initialDirection.ToVec3().normalize();
-		Point3D maskedPoint = new Point3D(
+		/*Point3D maskedPoint = new Point3D(
 				(firstPoint.xCoord * (1 - Math.abs(vector.xCoord))) + vector.xCoord * secondPoint.xCoord,
 				(firstPoint.yCoord * (1 - Math.abs(vector.yCoord))) + vector.yCoord * secondPoint.yCoord, 
 				(firstPoint.zCoord * (1 - Math.abs(vector.zCoord))) + vector.zCoord * secondPoint.zCoord 
-			);
+			);*/
+
+		Point3D maskedPoint = new Point3D(
+				(firstPoint.xCoord * (1 - Math.abs(vector.xCoord))) + secondPoint.xCoord * Math.abs(vector.xCoord),
+				(firstPoint.yCoord * (1 - Math.abs(vector.yCoord))) + secondPoint.yCoord * Math.abs(vector.yCoord),
+				(firstPoint.zCoord * (1 - Math.abs(vector.zCoord))) + secondPoint.zCoord * Math.abs(vector.zCoord)
+		);
+
 		return maskedPoint;				
 	}
 }

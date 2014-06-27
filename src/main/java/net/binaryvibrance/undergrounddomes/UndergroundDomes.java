@@ -8,8 +8,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.binaryvibrance.undergrounddomes.commands.DomeHeightCommand;
-import net.binaryvibrance.undergrounddomes.generation2.WorldGenerator;
-import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
+import net.binaryvibrance.undergrounddomes.generation.WorldGenerator;
 import net.binaryvibrance.undergrounddomes.proxy.CommonProxy;
 
 @Mod(modid = Constants.Mod.MOD_ID, name = Constants.Mod.MOD_NAME, version = Constants.Mod.MOD_VERSION)

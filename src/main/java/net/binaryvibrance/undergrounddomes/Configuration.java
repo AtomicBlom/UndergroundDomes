@@ -1,9 +1,9 @@
 package net.binaryvibrance.undergrounddomes;
 
-import net.binaryvibrance.undergrounddomes.generation2.GenACorridorGenerator;
-import net.binaryvibrance.undergrounddomes.generation2.GenADomeGenerator;
-import net.binaryvibrance.undergrounddomes.generation2.contracts.ICorridorGenerator;
-import net.binaryvibrance.undergrounddomes.generation2.contracts.IDomeGenerator;
+import net.binaryvibrance.undergrounddomes.generation.GenACorridorGenerator;
+import net.binaryvibrance.undergrounddomes.generation.GenADomeGenerator;
+import net.binaryvibrance.undergrounddomes.generation.contracts.ICorridorGenerator;
+import net.binaryvibrance.undergrounddomes.generation.contracts.IDomeGenerator;
 
 /**
  * Tracks the configuration and configurable runtime instances.

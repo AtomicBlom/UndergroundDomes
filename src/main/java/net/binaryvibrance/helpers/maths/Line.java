@@ -1,6 +1,6 @@
 package net.binaryvibrance.helpers.maths;
 
-import net.binaryvibrance.undergrounddomes.generation2.contracts.ILineIntersectable;
+import net.binaryvibrance.undergrounddomes.generation.contracts.ILineIntersectable;
 import net.minecraft.util.Vec3;
 
 public class Line implements ILineIntersectable {

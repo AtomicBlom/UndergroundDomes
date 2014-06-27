@@ -1,6 +1,6 @@
 package net.binaryvibrance.helpers.maths;
 
-import net.binaryvibrance.undergrounddomes.generation2.model.CompassDirection;
+import net.binaryvibrance.undergrounddomes.generation.model.CompassDirection;
 import net.minecraft.util.Vec3;
 
 public class GeometryHelper {
@@ -157,7 +157,7 @@ public class GeometryHelper {
 	{
 		double a = (linePointB.y - linePointA.y) / (linePointB.x - linePointB.x);
 		double b = linePointA.y - a * linePointA.x;
-		if ( Math.abs(point.y - (a*point.x+b)) < EPSILON)
+		if ( Math.abs(point.y - (a * point.x + b)) < EPSILON)
 		{
 			return true;
 		}

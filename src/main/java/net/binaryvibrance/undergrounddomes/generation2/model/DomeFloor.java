@@ -17,8 +17,8 @@ public class DomeFloor {
 
         entrances = new HashMap<CompassDirection, DomeEntrance>();
         //From http://mathforum.org/dr.math/faq/formulas/faq.sphere.html
-        //r = (h^2+r'^2)/(2h)
-        double levelRadius =Math.round((Math.pow(dome.getRadius(), 2) + Math.pow(level, 2)) / (level * 2));
+        //r = (h^2+r'^2)/(2h)`
+        double levelRadius =Math.floor((Math.pow(level, 2) + Math.pow(dome.getRadius() - 0.5, 2)) / (2 * level)) + 1;
 
         DomeEntrance northEntrance = new DomeEntrance(
                 this,

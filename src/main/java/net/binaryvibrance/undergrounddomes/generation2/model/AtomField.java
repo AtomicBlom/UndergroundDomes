@@ -60,8 +60,13 @@ public class AtomField {
 		for (int z = minZ, zPos = 0; z < maxZ; ++z, ++zPos) {
 			for (int y = 0; y < size.y; ++y) {
 				for (int x = minX, xPos = 0; x < maxX; ++x, ++xPos) {
-					//System.arraycopy(atomField[z][y], minX, slice[z][y], 0, xLength);
-					slice[zPos][y][xPos] = atomField[z][y][x];
+					Atom atom = atomField[z][y][x];
+					slice[zPos][y][xPos] = atom;
+					/*
+					//Debug, creates a glass bounding box around the field
+					if (atom == null || atom.getAtomElement() == AtomElement.Untouched) {
+						slice[zPos][y][xPos] = new Atom(AtomElement.Debug, x, y, z);
+					}*/
 				}
 			}
 		}

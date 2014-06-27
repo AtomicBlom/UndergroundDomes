@@ -16,6 +16,8 @@ import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -33,7 +35,7 @@ public class WorldGenerator implements IWorldGenerator, INotifyDomeGenerationCom
 	public void generate(Random random, int chunkX, int chunkZ, World world,
 			IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
 
-		//TODO: determine if domeSet is appropriate for this biome
+		//TODO: determine if* domeSet is appropriate for this biome
 		//      I'm thinking high altitude biomes?
 		switch (world.provider.dimensionId) {
 			case 0:
@@ -100,11 +102,14 @@ public class WorldGenerator implements IWorldGenerator, INotifyDomeGenerationCom
 		Atom[][][] atoms = chunk.getAtoms();
 
 		FMLControlledNamespacedRegistry<Block> blockRegistry = GameData.getBlockRegistry();
-		Block floorBlock = blockRegistry.getObject("glowstone");
-		Block wallBlock = blockRegistry.getObject("tnt");
-		Block interiorBlock = blockRegistry.getObject("air");
-		Block debugBlock = blockRegistry.getObject("gold_block");
-		Block corridorFloorBlock = blockRegistry.getObject("iron_block");
+		Dictionary<AtomElement, Block> blockMapping = new Hashtable<AtomElement, Block>();
+		blockMapping.put(AtomElement.Floor, blockRegistry.getObject("glowstone"));
+		blockMapping.put(AtomElement.Wall, blockRegistry.getObject("mossy_cobblestone"));
+		blockMapping.put(AtomElement.Interior, blockRegistry.getObject("air"));
+		blockMapping.put(AtomElement.CorridorFloor, blockRegistry.getObject("iron_block"));
+		blockMapping.put(AtomElement.CorridorMidpoint, blockRegistry.getObject("gold_block"));
+		blockMapping.put(AtomElement.CorridorEntrance, blockRegistry.getObject("diamond_block"));
+		blockMapping.put(AtomElement.Debug, blockRegistry.getObject("glass"));
 
 		for (int z = 0; z < atoms.length; ++z) {
 			for (int y = 0; y < atoms[z].length; ++y) {
@@ -115,26 +120,10 @@ public class WorldGenerator implements IWorldGenerator, INotifyDomeGenerationCom
 					if (atom != null) {
 						element = atom.getAtomElement();
 					}
-					switch (element) {
-						case Wall:
-							block = wallBlock;
-							break;
-						case Interior:
-							block = interiorBlock;
-							break;
-						case Floor:
-							block = floorBlock;
-							break;
-						case CorridorFloor:
-							block = corridorFloorBlock;
-							break;
-						case Debug:
-							block = debugBlock;
-							break;
-						case Untouched:
-							continue;
-						default:
-							continue;
+
+					block = blockMapping.get(element);
+					if (block == null) {
+						continue;
 					}
 
 					world.setBlock(x + realX, y + realY, z + realZ, block, 0, 2);

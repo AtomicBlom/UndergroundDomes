@@ -32,16 +32,27 @@ public class GenADomeRenderer implements IAtomFieldRenderer {
 	@Override
 	public void RenderToAtomField(AtomField field) {
 		for (Dome dome : domes) {
+			int firstFloorLevel = dome.getFloor(0).getLevel();
 			//FIXME: Render domes to the atomfield
 			PreRenderedDome renderedDome = construct(dome.getDiameter());
-			int minX = (int)(dome.getLocation().x - dome.getRadius());
-			int minY = (int)(dome.getLocation().y - dome.getRadius());
-			int minZ = (int)(dome.getLocation().z - dome.getRadius());
+			int minX = (int)(dome.getLocation().x - dome.getRadius() + 0.5);
+			int minY = (int)(dome.getLocation().y - dome.getRadius() + 0.5);
+			int minZ = (int)(dome.getLocation().z - dome.getRadius() + 0.5);
 			for (Atom[][] zAtoms : renderedDome.getAtoms()) {
-				for (Atom[] yAtoms : zAtoms) {
+				for (int y = firstFloorLevel; y < zAtoms.length; y++) {
+					Atom[] yAtoms = zAtoms[y];
+					boolean isFloor = dome.isFloorLevel(y);
+
 					for (Atom atom : yAtoms) {
-						if (atom != null && atom.getAtomElement() != AtomElement.Untouched) {
-							field.SetAtomAt(atom.xCoord + minX, atom.yCoord + minY, atom.zCoord + minZ, atom.getAtomElement());
+						if (atom != null) {
+							AtomElement atomElement = atom.getAtomElement();
+							if (isFloor && atomElement == AtomElement.Interior) {
+								atomElement = AtomElement.Floor;
+							}
+
+							if (atomElement != AtomElement.Untouched) {
+								field.SetAtomAt(atom.xCoord + minX, atom.yCoord + minY, atom.zCoord + minZ, atomElement);
+							}
 						}
 					}
 				}
@@ -54,15 +65,15 @@ public class GenADomeRenderer implements IAtomFieldRenderer {
 
 	public static PreRenderedDome construct(int diameter) {
 		PreRenderedDome sphere = null;
-		if (cachedSpheres.containsKey(diameter)) {
+		/*if (cachedSpheres.containsKey(diameter)) {
 			LogHelper.info(String.format("Found pre-calculated atoms for diameter %d", diameter));
 			sphere = cachedSpheres.get(diameter);
-		} else {
+		} else {*/
 			LogHelper.info(String.format("Pre-calculating atoms for diameter %d", diameter));
 			sphere = new PreRenderedDome(diameter);
 			cachedSpheres.put(diameter, sphere);
 			LogHelper.info(String.format("Pre-calculation for diameter %d complete", diameter));
-		}
+		//}
 		return sphere;
 	}
 
@@ -88,20 +99,22 @@ public class GenADomeRenderer implements IAtomFieldRenderer {
 		protected Atom[][][] atoms;
 
 		private static Atom[][][] calculateAtoms(int diameter) {
-			Atom[][][] atoms = new Atom[diameter + 1][diameter + 1][diameter + 1];
+			Atom[][][] atoms = new Atom[diameter+1][diameter+1][diameter+1];
 			LinkedList<Atom> matchedAtoms;
-			float radius = diameter / 2;
-			double desiredWidth = Math.pow(radius, 2);
+			double radius = diameter / 2.0d;
+			double rSquared = Math.pow(radius, 2);
 			Point3D sphereCentre = new Point3D(radius, radius, radius);
 			matchedAtoms = new LinkedList<Atom>();
 
 			// Pass 1: Determine Sphere Atoms
-			for (int scanZ = 0; scanZ < diameter; ++scanZ) {
-				for (int scanY = 0; scanY < diameter; ++scanY) {
-					for (int scanX = 0; scanX < diameter; ++scanX) {
-						double dist = Math.pow(scanX - sphereCentre.x, 2) + Math.pow(scanY - sphereCentre.y, 2)
-								+ Math.pow(scanZ - sphereCentre.z, 2);
-						if (dist < desiredWidth) {
+			for (int scanZ = 0; scanZ < diameter + 1; ++scanZ) {
+				for (int scanY = 0; scanY < diameter + 1; ++scanY) {
+				//int scanY = (diameter - 1) / 2;
+					for (int scanX = 0; scanX < diameter + 1; ++scanX) {
+						double dist = Math.pow((sphereCentre.x - 0.5) - scanX, 2)
+								+ Math.pow((sphereCentre.y - 0.5) - scanY, 2)
+								+ Math.pow((sphereCentre.z - 0.5) - scanZ, 2);
+						if (dist < rSquared) {
 							Atom atom = new Atom(AtomElement.Interior, scanX, scanY, scanZ);
 							atoms[scanZ][scanY][scanX] = atom;
 							matchedAtoms.add(atom);
@@ -118,13 +131,15 @@ public class GenADomeRenderer implements IAtomFieldRenderer {
 				for (Vec3 vector : Vector3.NEIGHBOURS) {
 					Point3D check = atom.add(vector);
 
-					if (check.x >= 0 && check.x <= diameter && check.y >= 0 && check.y <= diameter && check.z >= 0 && check.z <= diameter) {
+					if (check.x >= 0 && check.x < diameter && check.y >= 0 && check.y < diameter && check.z >= 0 && check.z < diameter) {
 						Atom checkParticle = atoms[check.zCoord][check.yCoord][check.xCoord];
 						if (checkParticle == null) {
 							neighboursNotSet++;
 						} else {
 							neighboursSet++;
 						}
+					} else {
+						neighboursNotSet++;
 					}
 				}
 				if (neighboursSet > 0 && neighboursNotSet > 0) {

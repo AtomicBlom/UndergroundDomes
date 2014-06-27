@@ -39,6 +39,15 @@ public class Dome implements ILineIntersectable {
         return domeFloors.get(floor);
     }
 
+	public boolean isFloorLevel (int level) {
+		for (DomeFloor floor : domeFloors) {
+			if (floor.getLevel() == level) {
+				return true;
+			}
+		}
+		return false;
+	}
+
     @Override
     public boolean intersects(Line line) {
         return GeometryHelper.lineIntersectsSphere(line, location, getRadius());

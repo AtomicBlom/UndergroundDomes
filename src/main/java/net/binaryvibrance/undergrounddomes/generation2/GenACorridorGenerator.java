@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import net.binaryvibrance.helpers.KeyValuePair;
+import net.binaryvibrance.helpers.maths.GeometryHelper;
+import net.binaryvibrance.helpers.maths.Line;
 import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.generation2.contracts.ICorridorGenerator;
 import net.binaryvibrance.undergrounddomes.generation2.contracts.ILineIntersectable;
@@ -41,9 +43,6 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 			}
 
 			// Build corridor between nearest triad
-
-
-
 			Dome primary = null;
 			for (Dome secondary : snn) {
 				LogHelper.info("Secondary Dome " + secondary);
@@ -71,9 +70,9 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 
 				List<Dome> obstacles = new LinkedList<Dome>();
 				for (Dome d : domes) {
-					if (d != dome && d != primary && d != secondary) {
+					//if (d != dome && d != primary && d != secondary) {
 						obstacles.add(d);
-					}
+					//}
 				}
 
 				List<Corridor> potentialValidCorridors = new LinkedList<Corridor>();
@@ -107,6 +106,42 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 					for (KeyValuePair<DomeEntrance, CorridorTerminus> kvp : entriesToCreate) {
 						kvp.key.setTerminus(kvp.value);
 					}
+
+					List<CorridorLinePair> allValidLines = new LinkedList<CorridorLinePair>();
+					for (Corridor corridor : validCorridors) {
+						for (Line line : corridor.getAllLines()) {
+							allValidLines.add(new CorridorLinePair(line, corridor));
+						}
+					}
+
+					for (Corridor corridor : potentialValidCorridors) {
+						for (Line line : corridor.getAllLines()) {
+							Point3D usedIntersection = null;
+							CorridorLinePair usedCorridorLinePair = null;
+							double distanceCheck = Double.MAX_VALUE;
+							boolean intersected = false;
+
+							for (CorridorLinePair validLine : allValidLines) {
+								Point3D intersection = GeometryHelper.getLineIntersectionXZ(line, validLine.getLine());
+								if (intersection != null) {
+									double distance = corridor.getStart().getLocation().distance(intersection);
+									if (distance < distanceCheck) {
+										usedCorridorLinePair = validLine;
+										usedIntersection = intersection;
+										distanceCheck = distance;
+										intersected = true;
+									}
+								}
+							}
+
+							if (intersected) {
+								//If we've found an intersection, update the first line matched and break the rest.
+								corridor.IntersectWith(usedCorridorLinePair.getCorridor(), usedIntersection);
+								break;
+							}
+						}
+					}
+
 					validCorridors.addAll(potentialValidCorridors);
 					break;
 				}
@@ -256,5 +291,24 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 			return iterator;
 		}
 
+	}
+
+	private class CorridorLinePair {
+		private final Line line;
+		private final Corridor corridor;
+
+		public CorridorLinePair(Line line, Corridor corridor) {
+
+			this.line = line;
+			this.corridor = corridor;
+		}
+
+		public Line getLine() {
+			return line;
+		}
+
+		public Corridor getCorridor() {
+			return corridor;
+		}
 	}
 }

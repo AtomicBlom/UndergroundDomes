@@ -78,4 +78,28 @@ public class Corridor {
 	public CorridorTerminus getEnd() {
 		return end;
 	}
+
+	public void IntersectWith(Corridor otherCorridor, Point3D usedIntersection) {
+		CorridorTerminus newTerminus = new CorridorTerminus();
+		newTerminus.setLocation(usedIntersection);
+		newTerminus.addToCorridor(this);
+		newTerminus.addToCorridor(otherCorridor);
+
+		//Figure out which points to remove
+
+		Point3D lineStart = getStart().getLocation();
+		int removeFrom = 0;
+		for (Point3D lineEnd : intermediatePoints) {
+			if (!GeometryHelper.IsPointOnLine(lineStart, lineEnd, usedIntersection)) {
+				removeFrom++;
+			}
+			lineStart = lineEnd;
+		}
+		for (int i = removeFrom; i < intermediatePoints.size(); i++) {
+			intermediatePoints.remove(removeFrom);
+		}
+
+		end = newTerminus;
+
+	}
 }

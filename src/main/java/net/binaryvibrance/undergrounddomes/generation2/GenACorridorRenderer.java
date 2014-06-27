@@ -32,13 +32,14 @@ public class GenACorridorRenderer implements IAtomFieldRenderer {
 					field.SetAtomAt(currentPoint.xCoord, currentPoint.yCoord, currentPoint.zCoord, AtomElement.CorridorFloor);
 					currentPoint = currentPoint.add(vector);
 				} while (!currentPoint.equals(line.end));
-				field.SetAtomAt(currentPoint.xCoord, currentPoint.yCoord, currentPoint.zCoord, AtomElement.Debug);
+				field.SetAtomAt(line.start.xCoord, line.start.yCoord, line.start.zCoord, AtomElement.CorridorMidpoint);
+				field.SetAtomAt(line.end.xCoord, line.end.yCoord, line.end.zCoord, AtomElement.CorridorMidpoint);
 			}
 
 			Point3D startLocation = corridor.getStart().getLocation();
-			field.SetAtomAt(startLocation.xCoord, startLocation.yCoord, startLocation.zCoord, AtomElement.Debug);
+			field.SetAtomAt(startLocation.xCoord, startLocation.yCoord, startLocation.zCoord, AtomElement.CorridorEntrance);
 			Point3D endLocation = corridor.getEnd().getLocation();
-			field.SetAtomAt(endLocation.xCoord, endLocation.yCoord, endLocation.zCoord, AtomElement.Debug);
+			field.SetAtomAt(endLocation.xCoord, endLocation.yCoord, endLocation.zCoord, AtomElement.CorridorEntrance);
 		}
 	}
 

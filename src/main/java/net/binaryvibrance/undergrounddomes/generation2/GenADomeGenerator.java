@@ -24,7 +24,6 @@ public class GenADomeGenerator implements IDomeGenerator {
 		domes = createDomeChain();
 		//Process Dome purpose
 		Point3D size = normalizeForAtomField(domes);
-		//FIXME: need to
 		return new DomeGeneratorResult(domes, size);
 	}
 
@@ -32,20 +31,21 @@ public class GenADomeGenerator implements IDomeGenerator {
 		int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
 		int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
 		for (Dome dome : domes) {
-			int domeMinX = (int)(dome.getLocation().x - dome.getRadius());
+			double r = dome.getRadius();
+			int domeMinX = (int)(dome.getLocation().x - r);
 			minX = Math.min(minX, domeMinX);
-			int domeMaxX = (int)(dome.getLocation().x + dome.getRadius());
-			maxX = Math.max(maxX, domeMaxX);
+			int domeMaxX = (int)(dome.getLocation().x + r);
+			maxX = Math.max(maxX, domeMaxX + 1);
 
-			int domeMinY = (int)(dome.getLocation().y - dome.getRadius());
+			int domeMinY = (int)(dome.getLocation().y - r);
 			minY = Math.min(minY, domeMinY);
-			int domeMaxY = (int)(dome.getLocation().y + dome.getRadius());
-			maxY = Math.max(maxY, domeMaxY);
+			int domeMaxY = (int)(dome.getLocation().y + r);
+			maxY = Math.max(maxY, domeMaxY + 1);
 
-			int domeMinZ = (int)(dome.getLocation().z - dome.getRadius());
+			int domeMinZ = (int)(dome.getLocation().z - r);
 			minZ = Math.min(minZ, domeMinZ);
-			int domeMaxZ = (int)(dome.getLocation().z + dome.getRadius());
-			maxZ = Math.max(maxZ, domeMaxZ);
+			int domeMaxZ = (int)(dome.getLocation().z + r);
+			maxZ = Math.max(maxZ, domeMaxZ + 1);
 		}
 
 		for (Dome dome : domes) {
@@ -142,8 +142,8 @@ public class GenADomeGenerator implements IDomeGenerator {
 		int originX;
 		int originZ;
 
-		int diameter = random.nextInt(16) + 10;
-		diameter = diameter + diameter % 2;
+		int diameter = random.nextInt(8) * 2 + 9;
+		//diameter = diameter + diameter % 2;
 		final double radius = diameter / 2.0f;
 
 		final int xDirection = random.nextBoolean() ? -1 : 1;
@@ -198,6 +198,4 @@ public class GenADomeGenerator implements IDomeGenerator {
             dome.addFloor(new DomeFloor(dome, floorStart));
         }
     }
-
-
 }

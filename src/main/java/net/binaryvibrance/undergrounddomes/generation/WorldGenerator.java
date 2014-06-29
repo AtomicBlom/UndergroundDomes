@@ -7,7 +7,7 @@ import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;
 import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.relauncher.Side;
 import net.binaryvibrance.helpers.maths.Point3D;
-import net.binaryvibrance.undergrounddomes.Configuration;
+import net.binaryvibrance.undergrounddomes.configuration.ConfigurationHandler;
 import net.binaryvibrance.undergrounddomes.generation.contracts.INotifyDomeGenerationComplete;
 import net.binaryvibrance.undergrounddomes.generation.model.Atom;
 import net.binaryvibrance.undergrounddomes.generation.model.AtomElement;
@@ -23,10 +23,10 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class WorldGenerator implements IWorldGenerator, INotifyDomeGenerationComplete {
-	private final Configuration _configuration;
+	private final ConfigurationHandler _configuration;
 
 	public WorldGenerator() {
-		_configuration = Configuration.getConfiguration();
+		_configuration = ConfigurationHandler.instance();
 	}
 
 	private Queue<DomeRequestResult> readyResults = new ConcurrentLinkedQueue<DomeRequestResult>();
@@ -55,7 +55,7 @@ public class WorldGenerator implements IWorldGenerator, INotifyDomeGenerationCom
 		DomeRequest domeRequest;
 		domeRequest = new DomeRequest(x, z, world, chunkProvider, this);
 
-		if (_configuration.getMultiThreaded()) {
+		if (_configuration.getMultiThreadedWorldGen()) {
 			domeRequest.startGenerationAsync();
 		} else {
 			domeRequest.startGeneration();

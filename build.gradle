@@ -22,7 +22,7 @@ group= "net.binaryvibrance.undergrounddomes" // http://maven.apache.org/guides/m
 archivesBaseName = "bvdomes"
 
 minecraft {
-    version = "1.7.2-10.12.2.1124"
+    version = "1.7.2-10.12.2.1147"
     assetDir = "eclipse/assets"
 }
 

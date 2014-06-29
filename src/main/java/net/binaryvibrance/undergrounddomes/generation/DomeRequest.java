@@ -1,7 +1,7 @@
 package net.binaryvibrance.undergrounddomes.generation;
 
 import net.binaryvibrance.helpers.maths.Point3D;
-import net.binaryvibrance.undergrounddomes.Configuration;
+import net.binaryvibrance.undergrounddomes.configuration.ConfigurationHandler;
 import net.binaryvibrance.undergrounddomes.generation.contracts.*;
 import net.binaryvibrance.undergrounddomes.generation.model.Atom;
 import net.binaryvibrance.undergrounddomes.generation.model.AtomField;
@@ -29,7 +29,7 @@ public class DomeRequest {
 		this.chunkX = chunkX;
 		this.chunkZ = chunkZ;
 		this.notify = notify;
-		Configuration _configuration = Configuration.getConfiguration();
+		ConfigurationHandler _configuration = ConfigurationHandler.instance();
 
 		Random r = new Random();
 		r.setSeed(1 +chunkX ^ 31 + chunkZ ^ 17 + world.getWorldInfo().getSeed() ^ 13);

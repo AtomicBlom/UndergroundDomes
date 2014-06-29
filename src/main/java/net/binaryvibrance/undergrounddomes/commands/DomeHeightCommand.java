@@ -1,6 +1,6 @@
 package net.binaryvibrance.undergrounddomes.commands;
 
-import net.binaryvibrance.undergrounddomes.Configuration;
+import net.binaryvibrance.undergrounddomes.configuration.ConfigurationHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,7 +22,7 @@ public class DomeHeightCommand extends CommandBase {
 
     @Override
     public void processCommand(ICommandSender commandSender, String[] arguments) {
-        Configuration config = Configuration.getConfiguration();
+        ConfigurationHandler config = ConfigurationHandler.instance();
         int domeHeight = Integer.parseInt(arguments[0]);
         config.setDomeHeight(domeHeight);
         if (commandSender instanceof EntityPlayer) {

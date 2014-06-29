@@ -10,6 +10,7 @@ public final class Constants {
 		public static final String MOD_VERSION = "0.0.1";
 		public static final String CLIENT_SIDE_PROXY = "net.binaryvibrance.undergrounddomes.proxy.ClientProxy";
 		public static final String SERVER_SIDE_PROXY = "net.binaryvibrance.undergrounddomes.proxy.ServerProxy";
+		public static final String GUI_FACTORY_CLASS = "net.binaryvibrance.undergrounddomes.gui.GuiFactory";
 	}
 
 	public final static class Blocks {

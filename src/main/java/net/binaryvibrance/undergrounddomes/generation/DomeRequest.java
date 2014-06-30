@@ -41,40 +41,22 @@ public class DomeRequest {
 
 		this.domeGenerator = domeGenerator;
         this.corridorGenerator = corridorGenerator;
-		this.result = new DomeRequestResult(world, chunkProvider, chunkX, chunkZ);
+		this.result = new DomeRequestResult(world, chunkProvider);
     }
-
-	public class ChunkData {
-		private final Point3D chunkLocation;
-		private final Atom[][][] atoms;
-
-		public ChunkData(Point3D chunkLocation, Atom[][][] atoms) {
-
-			this.chunkLocation = chunkLocation;
-			this.atoms = atoms;
-		}
-
-		public Point3D getChunkLocation() {
-			return chunkLocation;
-		}
-
-		public Atom[][][] getAtoms() {
-			return atoms;
-		}
-	}
 
 	public void startGenerationAsync() {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                startGeneration();
+	            startGeneration();
+	            notify.OnComplete(result);
             }
         });
         t.setName("Dome Generation");
         t.run();
     }
 
-    public void startGeneration() {
+    public DomeRequestResult startGeneration() {
 	    LogHelper.info("Generating Domes");
 	    domes = domeGenerator.generate();
 	    LogHelper.info("Generating Corridors");
@@ -94,7 +76,7 @@ public class DomeRequest {
 
         renderer.RenderToAtomField(atomField);
 
-	    List<ChunkData> results = new LinkedList<ChunkData>();
+	    List<DomeRequestResult.ChunkData> results = new LinkedList<DomeRequestResult.ChunkData>();
 
 	    LogHelper.info("Splitting AtomField into Chunks");
 
@@ -111,13 +93,13 @@ public class DomeRequest {
 				    continue;
 			    }
 			    Atom[][][] atoms = atomField.getSlice(x, z, maxX, maxZ);
-			    ChunkData data = new ChunkData(chunkLocation, atoms);
+			    DomeRequestResult.ChunkData data = new DomeRequestResult.ChunkData(chunkLocation, atoms);
 			    results.add(data);
 		    }
 	    }
 
 	    result.setChunkData(results);
 	    LogHelper.info("Generation Complete");
-	    notify.OnComplete(result);
+	    return result;
     }
 }

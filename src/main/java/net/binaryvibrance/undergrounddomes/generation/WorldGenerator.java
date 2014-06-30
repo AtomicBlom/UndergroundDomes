@@ -5,7 +5,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;
 import cpw.mods.fml.common.registry.GameData;
-import cpw.mods.fml.relauncher.Side;
 import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.configuration.ConfigurationHandler;
 import net.binaryvibrance.undergrounddomes.generation.contracts.INotifyDomeGenerationComplete;
@@ -23,19 +22,13 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class WorldGenerator implements IWorldGenerator, INotifyDomeGenerationComplete {
-	private final ConfigurationHandler _configuration;
-
-	public WorldGenerator() {
-		_configuration = ConfigurationHandler.instance();
-	}
-
 	private Queue<DomeRequestResult> readyResults = new ConcurrentLinkedQueue<DomeRequestResult>();
 
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world,
 			IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
 
-		//TODO: determine if* domeSet is appropriate for this biome
+		//TODO: determine if domeSet is appropriate for this biome
 		//      I'm thinking high altitude biomes?
 		switch (world.provider.dimensionId) {
 			case 0:
@@ -51,14 +44,17 @@ public class WorldGenerator implements IWorldGenerator, INotifyDomeGenerationCom
 		//TODO: recover from server shutdown.
 		//      Persist base calculations and data to nbt
 		//TODO: gracefully handle exceptions in generation code
-
+		ConfigurationHandler configuration = ConfigurationHandler.instance();
 		DomeRequest domeRequest;
 		domeRequest = new DomeRequest(x, z, world, chunkProvider, this);
 
-		if (_configuration.getMultiThreadedWorldGen()) {
+		if (configuration.getMultiThreadedWorldGen()) {
 			domeRequest.startGenerationAsync();
 		} else {
-			domeRequest.startGeneration();
+			DomeRequestResult generationResult = domeRequest.startGeneration();
+			while (generationResult.hasMoreChunkData()) {
+				processGenerationResult(generationResult);
+			}
 		}
 	}
 
@@ -71,37 +67,43 @@ public class WorldGenerator implements IWorldGenerator, INotifyDomeGenerationCom
 	long currentTick;
 
 	@SubscribeEvent
-	public synchronized void OnTick(TickEvent event) {
-		if (event.side == Side.SERVER && !readyResults.isEmpty()) {
-			/*currentTick++;
-			if (currentTick % 10 != 0) {
+	public synchronized void OnTick(TickEvent.ServerTickEvent event) {
+		if (!readyResults.isEmpty()) {
+			//Yield, only update 4 times a second.
+			currentTick++;
+			if (currentTick % 5 != 0) {
 				return;
-			}*/
-			DomeRequestResult requestResult = readyResults.peek();
-			World world = requestResult.getWorld();
-
-			DomeRequest.ChunkData chunkData = requestResult.getNextChunkData();
-			if (chunkData != null) {
-				Point3D chunkLocation = chunkData.getChunkLocation();
-				LogHelper.info("Processing chunk at " + chunkLocation);
-				requestResult.getChunkProvider().provideChunk(chunkLocation.xCoord, chunkLocation.zCoord);
-				populateChunk(chunkData, requestResult.getWorld());
 			}
+
+			DomeRequestResult requestResult = readyResults.peek();
+			processGenerationResult(requestResult);
 			if (!requestResult.hasMoreChunkData()) {
 				readyResults.poll();
 			}
 		}
 	}
 
-	private void populateChunk(DomeRequest.ChunkData chunk, World world) {
+	private void processGenerationResult(DomeRequestResult requestResult) {
+		DomeRequestResult.ChunkData chunkData = requestResult.getNextChunkData();
+		if (chunkData != null) {
+			Point3D chunkLocation = chunkData.getChunkLocation();
+			LogHelper.info("Processing chunk at %s", chunkLocation);
+			requestResult.getChunkProvider().provideChunk(chunkLocation.xCoord, chunkLocation.zCoord);
+			populateChunk(chunkData, requestResult.getWorld());
+		}
+	}
+
+	private void populateChunk(DomeRequestResult.ChunkData chunk, World world) {
+		ConfigurationHandler configuration = ConfigurationHandler.instance();
 		Point3D chunkLocation = chunk.getChunkLocation();
 		int realX = chunkLocation.xCoord * 16;
 		int realZ = chunkLocation.zCoord * 16;
-		int realY = _configuration.getDomeHeight();
+		int realY = configuration.getDomeHeight();
 
 		Atom[][][] atoms = chunk.getAtoms();
 
 		FMLControlledNamespacedRegistry<Block> blockRegistry = GameData.getBlockRegistry();
+		//TODO: Abstract this out, it's getting a bit clunky
 		Dictionary<AtomElement, Block> blockMapping = new Hashtable<AtomElement, Block>();
 		blockMapping.put(AtomElement.Floor, blockRegistry.getObject("glowstone"));
 		blockMapping.put(AtomElement.Wall, blockRegistry.getObject("mossy_cobblestone"));

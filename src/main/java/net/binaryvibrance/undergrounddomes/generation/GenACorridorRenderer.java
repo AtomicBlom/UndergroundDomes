@@ -13,7 +13,6 @@ import net.minecraft.util.Vec3;
 
 public class GenACorridorRenderer implements IAtomFieldRenderer {
 
-	@SuppressWarnings("unused")
 	private List<Corridor> corridors;
 
 	public GenACorridorRenderer(List<Corridor> corridors) {
@@ -23,9 +22,9 @@ public class GenACorridorRenderer implements IAtomFieldRenderer {
 	@Override
 	public void RenderToAtomField(AtomField field) {
 		for (Corridor corridor : corridors) {
-			LogHelper.info(String.format("    Rendering corridor %s", corridor));
+			LogHelper.info("    Rendering corridor %s", corridor);
 			for (Line line : corridor.getAllLines()) {
-				LogHelper.info(String.format("        Rendering line %s", line));
+				LogHelper.info("        Rendering line %s", line);
 				Vec3 vector = line.getRenderVector();
 				Point3D currentPoint = line.start;
 				do {

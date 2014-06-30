@@ -63,16 +63,16 @@ public class GenADomeRenderer implements IAtomFieldRenderer {
 	private static final HashMap<Integer, PreRenderedDome> cachedSpheres = new HashMap<Integer, PreRenderedDome>();
 
 	public static PreRenderedDome construct(int diameter) {
-		PreRenderedDome sphere = null;
-		/*if (cachedSpheres.containsKey(diameter)) {
-			LogHelper.info(String.format("Found pre-calculated atoms for diameter %d", diameter));
+		PreRenderedDome sphere;
+		if (cachedSpheres.containsKey(diameter)) {
+			LogHelper.info("Found pre-calculated atoms for diameter %d", diameter);
 			sphere = cachedSpheres.get(diameter);
-		} else {*/
-			LogHelper.info(String.format("Pre-calculating atoms for diameter %d", diameter));
+		} else {
+			LogHelper.info("Pre-calculating atoms for diameter %d", diameter);
 			sphere = new PreRenderedDome(diameter);
 			cachedSpheres.put(diameter, sphere);
-			LogHelper.info(String.format("Pre-calculation for diameter %d complete", diameter));
-		//}
+			LogHelper.info("Pre-calculation for diameter %d complete", diameter);
+		}
 		return sphere;
 	}
 
@@ -83,10 +83,6 @@ public class GenADomeRenderer implements IAtomFieldRenderer {
 		}
 
 		private int diameter;
-
-		public int getDiameter() {
-			return diameter;
-		}
 
 		public Atom[][][] getAtoms() {
 			if (atoms == null) {

@@ -86,17 +86,14 @@ public class GenADomeGenerator implements IDomeGenerator {
 			}
 			createFloors(dome);
             Point3D location = dome.getLocation();
-			LogHelper.info(String.format("Dome %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, domeChainLength, location.xCoord, location.yCoord,
-                    location.zCoord, dome.getDiameter()));
+			LogHelper.info("Dome %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, domeChainLength, location.xCoord, location.yCoord,
+                    location.zCoord, dome.getDiameter());
 			chain.add(dome);
-
-			//heightOffset = Math.max(heightOffset, (int) dome.getRadius() + 1);
 
 			previousDome = dome;
 			buildLength++;
 		}
 
-		//domeChainLength = chain.size();
         return chain;
 	}
 	
@@ -142,7 +139,6 @@ public class GenADomeGenerator implements IDomeGenerator {
 		int originZ;
 
 		int diameter = random.nextInt(8) * 2 + 9;
-		//diameter = diameter + diameter % 2;
 		final double radius = diameter / 2.0f;
 
 		final int xDirection = random.nextBoolean() ? -1 : 1;
@@ -156,24 +152,27 @@ public class GenADomeGenerator implements IDomeGenerator {
 		final int previousDomeZ = previousDome != null ? previousDome.getLocation().zCoord : 0;
 
 		final double touchingDistance = previousDomeDiameter / 2.0f + radius;
+
+		// TODO: I'd like to try my hand a trigonometry for this again, probably positioning spheres at +/- 135 degrees of the previous sphere.
+
 		// FIXME: Do I even need to do this? Corridors aren't created here anymore.
 		if (firstDirectionIsXAxis) {
 			originZ = (int) (previousDomeZ + (firstDimensionOffset + minCorridorSpacing) * zDirection);
 			originX = (int) (previousDomeX + (minCorridorSpacing
 					+ Math.sqrt(Math.pow(Math.max(touchingDistance, firstDimensionOffset + 1), 2) - Math.pow(firstDimensionOffset, 2)) + newSpacing)
 					* xDirection);
-			LogHelper.trace(String.format("originX: %d, prevX: %d, touch: %f, offset: %f, spacing: %d", originX, previousDomeX,
-					touchingDistance, firstDimensionOffset, newSpacing));
+			LogHelper.trace("originX: %d, prevX: %d, touch: %f, offset: %f, spacing: %d", originX, previousDomeX,
+					touchingDistance, firstDimensionOffset, newSpacing);
 		} else {
 			originX = (int) (previousDomeX + (firstDimensionOffset + minCorridorSpacing) * xDirection);
 			originZ = (int) (previousDomeZ + (minCorridorSpacing
 					+ Math.sqrt(Math.pow(Math.max(touchingDistance, firstDimensionOffset + 1), 2) - Math.pow(firstDimensionOffset, 2)) + newSpacing)
 					* zDirection);
-			LogHelper.trace(String.format("originZ: %d, prevZ: %d, touch: %f, offset: %f, spacing: %d", originZ, previousDomeZ,
-					touchingDistance, firstDimensionOffset, newSpacing));
+			LogHelper.trace("originZ: %d, prevZ: %d, touch: %f, offset: %f, spacing: %d", originZ, previousDomeZ,
+					touchingDistance, firstDimensionOffset, newSpacing);
 		}
 
-		LogHelper.trace(String.format("Dome @ (%d,%d,%d) d:%d", originX, 0, originZ, diameter));
+		LogHelper.trace("Dome @ (%d,%d,%d) d:%d", originX, 0, originZ, diameter);
 		Dome dome = new Dome(new Point3D(originX, 0, originZ), diameter);
 		return dome;
 	}
@@ -189,11 +188,11 @@ public class GenADomeGenerator implements IDomeGenerator {
 
         int baseHeight = dome.getDiameter() - available - 2;
         dome.addFloor(new DomeFloor(dome, baseHeight));
-	    LogHelper.info(String.format("Floor 0 at level %d", baseHeight));
+	    LogHelper.info("Floor 0 at level %d", baseHeight);
         for (int floor = 1; floor < actualFloors; ++floor) {
             int floorVariance = random.nextBoolean() ? 1 : -1;
             int floorStart = baseHeight + floor * interval + variance * floorVariance;
-	        LogHelper.info(String.format("Floor %d at level %d", floor, floorStart));
+	        LogHelper.info("Floor %d at level %d", floor, floorStart);
             dome.addFloor(new DomeFloor(dome, floorStart));
         }
     }

@@ -1,5 +1,7 @@
 package net.binaryvibrance.undergrounddomes.generation;
 
+import net.binaryvibrance.helpers.maths.Point3D;
+import net.binaryvibrance.undergrounddomes.generation.model.Atom;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 
@@ -14,17 +16,13 @@ public class DomeRequestResult {
 
 	private final World world;
 	private final IChunkProvider chunkProvider;
-	private final int chunkX;
-	private final int chunkZ;
-	private Queue<DomeRequest.ChunkData> chunkData;
+	private Queue<ChunkData> chunkData;
 
-	public DomeRequestResult(World world, IChunkProvider chunkProvider, int chunkX, int chunkZ) {
+	public DomeRequestResult(World world, IChunkProvider chunkProvider) {
 
 		this.world = world;
 		this.chunkProvider = chunkProvider;
-		this.chunkX = chunkX;
-		this.chunkZ = chunkZ;
-		this.chunkData = new LinkedList<DomeRequest.ChunkData>();
+		this.chunkData = new LinkedList<ChunkData>();
 	}
 
 	public World getWorld() {
@@ -35,15 +33,7 @@ public class DomeRequestResult {
 		return chunkProvider;
 	}
 
-	public int getChunkX() {
-		return chunkX;
-	}
-
-	public int getChunkZ() {
-		return chunkZ;
-	}
-
-	public void setChunkData(List<DomeRequest.ChunkData> chunkData) {
+	public void setChunkData(List<ChunkData> chunkData) {
 		this.chunkData.addAll(chunkData);
 	}
 
@@ -51,10 +41,29 @@ public class DomeRequestResult {
 		return !chunkData.isEmpty();
 	}
 
-	public DomeRequest.ChunkData getNextChunkData() {
+	public ChunkData getNextChunkData() {
 		if (chunkData.isEmpty()) {
 			return null;
 		}
 		return chunkData.remove();
+	}
+
+	public static class ChunkData {
+		private final Point3D chunkLocation;
+		private final Atom[][][] atoms;
+
+		public ChunkData(Point3D chunkLocation, Atom[][][] atoms) {
+
+			this.chunkLocation = chunkLocation;
+			this.atoms = atoms;
+		}
+
+		public Point3D getChunkLocation() {
+			return chunkLocation;
+		}
+
+		public Atom[][][] getAtoms() {
+			return atoms;
+		}
 	}
 }

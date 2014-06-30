@@ -33,12 +33,11 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 		//TODO: If a corridor passes through another corridor, join them together
 
 		for (Dome dome : domes) {
-			LogHelper.info(String.format("Creating corridors for dome %d/%d %s", currentDome++, domeCount, dome));
+			LogHelper.info("Creating corridors for dome %d/%d %s", currentDome++, domeCount, dome);
 			// Calculate Nearest Neighbours
 			DomeNearestNeighbour snn = new DomeNearestNeighbour(dome);
 			for (Dome neighbourDome : domes) {
 				snn.addNeighbour(neighbourDome);
-
 			}
 
 			// Build corridor between nearest triad
@@ -83,7 +82,7 @@ public class GenACorridorGenerator implements ICorridorGenerator {
 					ILineIntersectable obstacle = corridor.getFirstIntersectingObstacle(obstacles);
 					if (obstacle != null) {
 						valid = false;
-						LogHelper.info(String.format("%s intersects with obstacle %s", corridor, obstacle));
+						LogHelper.info("%s intersects with obstacle %s", corridor, obstacle);
 						break;
 					} else {
 						potentialValidCorridors.add(corridor);

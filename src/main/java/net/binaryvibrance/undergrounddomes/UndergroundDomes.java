@@ -20,9 +20,6 @@ public class UndergroundDomes {
 	@SidedProxy(clientSide = Constants.Mod.CLIENT_SIDE_PROXY, serverSide = Constants.Mod.SERVER_SIDE_PROXY)
 	public static CommonProxy proxy;
 
-	private static ConfigurationHandler configurationHandler;
-
-	//IWorldGenerator worldGenerator = new DomeGenerator();
 	IWorldGenerator worldGenerator = new WorldGenerator();
 
 	@EventHandler

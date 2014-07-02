@@ -144,7 +144,7 @@ public class DomeGenerator implements IDomeGenerator {
 		final int xDirection = random.nextBoolean() ? -1 : 1;
 		final int zDirection = random.nextBoolean() ? -1 : 1;
 		final boolean firstDirectionIsXAxis = random.nextBoolean();
-		final double firstDimensionOffset = radius + random.nextInt(12);
+		final double firstDimensionOffset = radius + random.nextInt(12) + minCorridorSpacing;
 		final int newSpacing = minCorridorSpacing + random.nextInt(8);
 
 		final int previousDomeDiameter = previousDome != null ? previousDome.getDiameter() : 0;

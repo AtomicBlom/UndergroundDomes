@@ -7,13 +7,7 @@ import net.binaryvibrance.helpers.maths.GeometryHelper;
 import net.binaryvibrance.helpers.maths.Line;
 import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.generation.contracts.ICorridorGenerator;
-import net.binaryvibrance.undergrounddomes.generation.contracts.ILineIntersectable;
-import net.binaryvibrance.undergrounddomes.generation.model.CompassDirection;
-import net.binaryvibrance.undergrounddomes.generation.model.Corridor;
-import net.binaryvibrance.undergrounddomes.generation.model.CorridorTerminus;
-import net.binaryvibrance.undergrounddomes.generation.model.Dome;
-import net.binaryvibrance.undergrounddomes.generation.model.DomeEntrance;
-import net.binaryvibrance.undergrounddomes.generation.model.DomeFloor;
+import net.binaryvibrance.undergrounddomes.generation.model.*;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 
 public class CorridorGenerator implements ICorridorGenerator {
@@ -24,7 +18,7 @@ public class CorridorGenerator implements ICorridorGenerator {
 		// List<Dome> domeChain = this.domeChain.getChain();
 		int domeCount = domes.size();
 
-		List<Corridor> validCorridors = new LinkedList<Corridor>();
+		List<Corridor> directCorridors = new LinkedList<Corridor>();
 
 		//This particular implementation of the corridor generator loops over each dome
 		//for each dome, it attempts to build 3 corridors between it's 2 closest neighbours.
@@ -56,97 +50,122 @@ public class CorridorGenerator implements ICorridorGenerator {
 				DomeEntrance primaryCorridorEntrance = getClosestCorridorEntrance(primary, averagePoint);
 				DomeEntrance secondaryCorridorEntrance = getClosestCorridorEntrance(secondary, averagePoint);
 
+				LogHelper.info("Dome 1 Entrance: %s", domeCorridorEntrance);
+				LogHelper.info("Dome 2 Entrance: %s", primaryCorridorEntrance);
+				LogHelper.info("Dome 3 Entrance: %s", secondaryCorridorEntrance);
+				LogHelper.info("Midpoint       : %s", averagePoint);
+
 				List<DomeEntrance> entrances = new ArrayList<DomeEntrance>(Arrays.asList(new DomeEntrance[] { domeCorridorEntrance, primaryCorridorEntrance,
 						secondaryCorridorEntrance }));
 
-				CorridorTerminus centrePointTerminus = new CorridorTerminus();
-				centrePointTerminus.setLocation(averagePoint);
+				CorridorTerminus centrePointTerminus = new CorridorTerminus(averagePoint);
 
 				//Step 1, would corridors intersect other spheres?
-				List<KeyValuePair<DomeEntrance, CorridorTerminus>> entriesToCreate = new ArrayList<KeyValuePair<DomeEntrance, CorridorTerminus>>();
-				boolean valid = true;
-
-				List<Dome> obstacles = new LinkedList<Dome>();
-				for (Dome d : domes) {
-					//if (d != dome && d != primary && d != secondary) {
-						obstacles.add(d);
-					//}
-				}
-
+				List<KeyValuePair<DomeEntrance, CorridorTerminus>> entrancesToAssign = new ArrayList<KeyValuePair<DomeEntrance, CorridorTerminus>>();
 				List<Corridor> potentialValidCorridors = new LinkedList<Corridor>();
+
+				boolean valid = true;
 				for (DomeEntrance entrance : entrances) {
 
-					CorridorTerminus entranceTerminus = new CorridorTerminus();
-					entranceTerminus.setLocation(entrance.getLocation());
-					Corridor corridor = new Corridor(entranceTerminus, centrePointTerminus, entrance.getCompassDirection());
-					ILineIntersectable obstacle = corridor.getFirstIntersectingObstacle(obstacles);
-					if (obstacle != null) {
-						valid = false;
-						LogHelper.info("%s intersects with obstacle %s", corridor, obstacle);
+					CorridorTerminus entranceTerminus = new CorridorTerminus(entrance.getLocation());
+
+					CompassDirection entranceDirection = entrance.getCompassDirection();
+
+					Point3D midPoint = GeometryHelper.getMidPoint(entranceTerminus.getLocation(), centrePointTerminus.getLocation(), entranceDirection);
+					CorridorTerminus midpointTerminus = new CorridorTerminus(midPoint);
+
+					Corridor entranceToMidpointCorridor = new Corridor(entranceTerminus, midpointTerminus);
+					Corridor midpointToCentrePointCorridor = new Corridor(midpointTerminus, centrePointTerminus);
+
+					if (!CorridorHelper.CollidesWith(entranceToMidpointCorridor, domes) && !CorridorHelper.CollidesWith(midpointToCentrePointCorridor, domes)) {
+
+						potentialValidCorridors.add(entranceToMidpointCorridor);
+						potentialValidCorridors.add(midpointToCentrePointCorridor);
+
+						entrancesToAssign.add(new KeyValuePair<DomeEntrance, CorridorTerminus>(entrance, entranceTerminus));
 						break;
-					} else {
-						potentialValidCorridors.add(corridor);
 					}
-
-					/*var validCorridor = Corridor.tryCreateBetween(entranceTerminus, centrePointTerminus, entrance.getCompassDirection(), domes);
-
-					if (validCorridor != null) {
-						entriesToCreate.add(new KeyValuePair<DomeEntrance, CorridorTerminus>(entrance, entranceTerminus));
-					} else {
-						valid = false;
-						break;
-					}*/
 				}
 
 				if (valid) {
 					//Step 2: If we can, then Check each corridor to see if it should be attached to an existing corridor.
 					LogHelper.info("Found a non-colliding corridor");
-					for (KeyValuePair<DomeEntrance, CorridorTerminus> kvp : entriesToCreate) {
+					for (KeyValuePair<DomeEntrance, CorridorTerminus> kvp : entrancesToAssign) {
 						kvp.key.setTerminus(kvp.value);
-					}
-
-					List<CorridorLinePair> allValidLines = new LinkedList<CorridorLinePair>();
-					for (Corridor corridor : validCorridors) {
-						for (Line line : corridor.getAllLines()) {
-							allValidLines.add(new CorridorLinePair(line, corridor));
-						}
+						kvp.value.addSpoke(kvp.key);
 					}
 
 					for (Corridor corridor : potentialValidCorridors) {
-						for (Line line : corridor.getAllLines()) {
-							Point3D usedIntersection = null;
-							CorridorLinePair usedCorridorLinePair = null;
-							double distanceCheck = Double.MAX_VALUE;
-							boolean intersected = false;
+						Corridor usedCorridor = null;
+						double distanceCheck = Double.MAX_VALUE;
+						boolean intersected = false;
 
-							for (CorridorLinePair validLine : allValidLines) {
-								Point3D intersection = GeometryHelper.getLineIntersectionXZ(line, validLine.getLine());
-								if (intersection != null) {
-									double distance = corridor.getStart().getLocation().distance(intersection);
-									if (distance < distanceCheck) {
-										usedCorridorLinePair = validLine;
-										usedIntersection = intersection;
-										distanceCheck = distance;
-										intersected = true;
-									}
+						for (Corridor confirmedCorridor : directCorridors) {
+							Point3D intersection = CorridorHelper.checkCollision(corridor, confirmedCorridor);
+							if (intersection != null) {
+								double distance = corridor.getStart().getLocation().distance(intersection);
+								if (distance < distanceCheck) {
+									usedCorridor = confirmedCorridor;
+									distanceCheck = distance;
+									intersected = true;
 								}
 							}
+						}
 
-							if (intersected) {
-								//If we've found an intersection, update the first line matched and break the rest.
-								corridor.IntersectWith(usedCorridorLinePair.getCorridor(), usedIntersection);
-								break;
-							}
+						if (intersected) {
+							//If we've found an intersection, update the first line matched and break the rest.
+							CorridorHelper.IntersectWith(corridor, usedCorridor);
+							break;
 						}
 					}
 
-					validCorridors.addAll(potentialValidCorridors);
+					directCorridors.addAll(potentialValidCorridors);
 					break;
 				}
 			}
 		}
 
-		return validCorridors;
+		Set<CorridorTerminus> exploredTerminus = new HashSet<CorridorTerminus>();
+		Set<Corridor> corridorsToRender = new HashSet<Corridor>();
+		Queue<CorridorTerminus> jobQueue = new LinkedList<CorridorTerminus>();
+		for (Dome dome : domes) {
+			for (DomeFloor floor : dome.getFloors()) {
+				for (DomeEntrance entrance : floor.getEntrances()) {
+					if (entrance.isInUse()) {
+						jobQueue.add(entrance.getTerminus());
+					}
+				}
+			}
+		}
+
+		while (!jobQueue.isEmpty()) {
+			CorridorTerminus terminus = jobQueue.poll();
+			if (exploredTerminus.contains(terminus)) { continue; }
+			exploredTerminus.add(terminus);
+			for (ITerminusSpoke spoke : terminus.getSpokes()) {
+				if (spoke instanceof Corridor) {
+					Corridor corridor = (Corridor)spoke;
+					CorridorTerminus start = corridor.getStart();
+					CorridorTerminus end = corridor.getEnd();
+					if (start.getSpokeCount() > 1 && end.getSpokeCount() > 1) {
+						if (!exploredTerminus.contains(start)) {
+							jobQueue.add(start);
+						}
+						if (!exploredTerminus.contains(end)) {
+							jobQueue.add(end);
+						}
+						corridorsToRender.add(corridor);
+					} else {
+						LogHelper.info("Excluded corridor %s because it doesn't seem to be attached to anything");
+					}
+				}
+			}
+		}
+
+		LinkedList<Corridor> corridors = new LinkedList<Corridor>(corridorsToRender);
+		LogHelper.info("Created %d corridors", corridors.size());
+
+		return corridors;
 	}
 
 	@Override

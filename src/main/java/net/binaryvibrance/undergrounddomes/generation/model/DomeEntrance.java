@@ -3,9 +3,9 @@ package net.binaryvibrance.undergrounddomes.generation.model;
 import net.binaryvibrance.helpers.maths.Point3D;
 import net.minecraft.util.Vec3;
 
-public class DomeEntrance {
+public class DomeEntrance implements ITerminusSpoke {
     private DomeFloor floor;
-    private CorridorTerminus corridorExit;
+    private CorridorTerminus exitTerminus;
     private boolean inUse = false;
     private Vec3 locationOffset;
     private CompassDirection compassDirection;
@@ -17,12 +17,11 @@ public class DomeEntrance {
     }
 
     public CorridorTerminus getTerminus() {
-        return this.corridorExit;
+        return this.exitTerminus;
     }
 
     public void setTerminus(CorridorTerminus terminus) {
-        this.corridorExit = terminus;
-        inUse = terminus != null;
+        this.exitTerminus = terminus;
     }
 
     public DomeFloor getFloor() {
@@ -34,15 +33,20 @@ public class DomeEntrance {
     }
 
     public boolean isInUse() {
-        return inUse;
-    }
-
-    public void setInUse() {
-        inUse = true;
+        return exitTerminus != null;
     }
 
     public CompassDirection getCompassDirection() {
         return compassDirection;
     }
 
+	@Override
+	public String toString() {
+		return "DomeEntrance{" +
+				"floor=" + floor.getLevel() +
+				", location=" + getLocation() +
+				", compassDirection=" + compassDirection +
+				", inUse=" + inUse +
+				'}';
+	}
 }

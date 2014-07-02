@@ -57,4 +57,8 @@ public class Dome implements ILineIntersectable {
 	public String toString() {
 		return String.format("Dome (%s Diameter %d)", location, diameter);
 	}
+
+	public DomeFloor[] getFloors() {
+		return domeFloors.toArray(new DomeFloor[domeFloors.size()]);
+	}
 }

@@ -23,17 +23,18 @@ public class CorridorRenderer implements IAtomFieldRenderer {
 	public void RenderToAtomField(AtomField field) {
 		for (Corridor corridor : corridors) {
 			LogHelper.info("    Rendering corridor %s", corridor);
-			for (Line line : corridor.getAllLines()) {
-				LogHelper.info("        Rendering line %s", line);
-				Vec3 vector = line.getRenderVector();
-				Point3D currentPoint = line.start;
-				do {
-					field.SetAtomAt(currentPoint.xCoord, currentPoint.yCoord, currentPoint.zCoord, AtomElement.CorridorFloor);
-					currentPoint = currentPoint.add(vector);
-				} while (!currentPoint.equals(line.end));
-				field.SetAtomAt(line.start.xCoord, line.start.yCoord, line.start.zCoord, AtomElement.CorridorMidpoint);
-				field.SetAtomAt(line.end.xCoord, line.end.yCoord, line.end.zCoord, AtomElement.CorridorMidpoint);
-			}
+
+			Line line = CorridorHelper.getLineFromCorridor(corridor);
+			LogHelper.info("        Rendering line %s", line);
+			Vec3 vector = line.getRenderVector();
+			Point3D currentPoint = line.start;
+			do {
+				field.SetAtomAt(currentPoint.xCoord, currentPoint.yCoord, currentPoint.zCoord, AtomElement.CorridorFloor);
+				currentPoint = currentPoint.add(vector);
+			} while (!currentPoint.equals(line.end));
+
+			field.SetAtomAt(line.start.xCoord, line.start.yCoord, line.start.zCoord, AtomElement.CorridorMidpoint);
+			field.SetAtomAt(line.end.xCoord, line.end.yCoord, line.end.zCoord, AtomElement.CorridorMidpoint);
 
 			Point3D startLocation = corridor.getStart().getLocation();
 			field.SetAtomAt(startLocation.xCoord, startLocation.yCoord, startLocation.zCoord, AtomElement.CorridorEntrance);

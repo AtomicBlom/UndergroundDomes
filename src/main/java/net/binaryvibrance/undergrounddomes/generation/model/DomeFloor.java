@@ -2,6 +2,7 @@ package net.binaryvibrance.undergrounddomes.generation.model;
 
 import net.binaryvibrance.helpers.maths.Vector3;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,5 +54,9 @@ public class DomeFloor {
 
 	public Dome getDome() {
 		return dome;
+	}
+
+	public Collection<DomeEntrance> getEntrances() {
+		return entrances.values();
 	}
 }

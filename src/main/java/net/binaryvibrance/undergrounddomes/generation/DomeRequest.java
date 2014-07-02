@@ -55,7 +55,7 @@ public class DomeRequest {
             }
         });
         t.setName("Dome Generation");
-        t.run();
+        t.start();
     }
 
     public DomeRequestResult startGeneration() {

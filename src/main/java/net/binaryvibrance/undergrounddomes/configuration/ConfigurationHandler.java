@@ -7,8 +7,8 @@ import java.io.File;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.Mod;
 import net.binaryvibrance.undergrounddomes.Constants;
-import net.binaryvibrance.undergrounddomes.generation.GenACorridorGenerator;
-import net.binaryvibrance.undergrounddomes.generation.GenADomeGenerator;
+import net.binaryvibrance.undergrounddomes.generation.v1.CorridorGenerator;
+import net.binaryvibrance.undergrounddomes.generation.v1.DomeGenerator;
 import net.binaryvibrance.undergrounddomes.generation.contracts.ICorridorGenerator;
 import net.binaryvibrance.undergrounddomes.generation.contracts.IDomeGenerator;
 import net.minecraftforge.common.config.Configuration;
@@ -69,10 +69,10 @@ public class ConfigurationHandler {
 
 	//Non persisted settings
 	public IDomeGenerator getDefaultDomeGenerator() {
-		return new GenADomeGenerator();
+		return new DomeGenerator();
 	}
 
 	public ICorridorGenerator getDefaultCorridorGenerator() {
-		return new GenACorridorGenerator();
+		return new CorridorGenerator();
 	}
 }

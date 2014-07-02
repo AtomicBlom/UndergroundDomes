@@ -6,6 +6,8 @@ import net.binaryvibrance.undergrounddomes.generation.contracts.*;
 import net.binaryvibrance.undergrounddomes.generation.model.Atom;
 import net.binaryvibrance.undergrounddomes.generation.model.AtomField;
 import net.binaryvibrance.undergrounddomes.generation.model.Corridor;
+import net.binaryvibrance.undergrounddomes.generation.v1.CorridorRenderer;
+import net.binaryvibrance.undergrounddomes.generation.v1.DomeRenderer;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -68,11 +70,11 @@ public class DomeRequest {
 	    IAtomFieldRenderer renderer;
 	    LogHelper.info("Rendering Domes");
 
-	    renderer = new GenADomeRenderer(domes.getDomes());
+	    renderer = new DomeRenderer(domes.getDomes());
 		renderer.RenderToAtomField(atomField);
 	    LogHelper.info("Rendering Corridors");
 
-	    renderer = new GenACorridorRenderer(corridors);
+	    renderer = new CorridorRenderer(corridors);
 
         renderer.RenderToAtomField(atomField);
 

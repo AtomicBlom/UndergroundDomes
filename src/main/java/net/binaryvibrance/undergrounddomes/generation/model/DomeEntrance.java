@@ -45,6 +45,7 @@ public class DomeEntrance implements ITerminusSpoke {
 		return "DomeEntrance{" +
 				"floor=" + floor.getLevel() +
 				", location=" + getLocation() +
+				", dome=" + floor.getDome().getLocation() +
 				", compassDirection=" + compassDirection +
 				", inUse=" + inUse +
 				'}';

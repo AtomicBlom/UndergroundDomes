@@ -62,9 +62,9 @@ public abstract class CorridorHelper {
 		ILineIntersectable obstacle = CorridorHelper.getFirstIntersectingObstacle(corridor, obstacles);
 		if (obstacle != null) {
 			LogHelper.info("%s intersects with obstacle %s", corridor, obstacle);
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 
 	}
 

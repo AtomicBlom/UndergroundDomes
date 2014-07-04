@@ -7,8 +7,10 @@ import net.binaryvibrance.helpers.maths.GeometryHelper;
 import net.binaryvibrance.helpers.maths.Line;
 import net.binaryvibrance.helpers.maths.Point3D;
 import net.binaryvibrance.undergrounddomes.generation.contracts.ICorridorGenerator;
+import net.binaryvibrance.undergrounddomes.generation.contracts.ILineIntersectable;
 import net.binaryvibrance.undergrounddomes.generation.model.*;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
+import sun.rmi.runtime.Log;
 
 public class CorridorGenerator implements ICorridorGenerator {
 
@@ -66,6 +68,8 @@ public class CorridorGenerator implements ICorridorGenerator {
 
 				boolean valid = true;
 				for (DomeEntrance entrance : entrances) {
+					//FIXME: What if an entrance is already in use? Can we reuse the corridors already?
+
 
 					CorridorTerminus entranceTerminus = new CorridorTerminus(entrance.getLocation());
 
@@ -77,19 +81,28 @@ public class CorridorGenerator implements ICorridorGenerator {
 					Corridor entranceToMidpointCorridor = new Corridor(entranceTerminus, midpointTerminus);
 					Corridor midpointToCentrePointCorridor = new Corridor(midpointTerminus, centrePointTerminus);
 
-					if (!CorridorHelper.CollidesWith(entranceToMidpointCorridor, domes) && !CorridorHelper.CollidesWith(midpointToCentrePointCorridor, domes)) {
+					List<Dome> entranceObstacles = new LinkedList<Dome>();
+					for (Dome intersectable : domes) {
+						if (intersectable != entrance.getFloor().getDome()) {
+							entranceObstacles.add(intersectable);
+						}
+					}
 
+					if (!CorridorHelper.CollidesWith(entranceToMidpointCorridor, entranceObstacles) && !CorridorHelper.CollidesWith(midpointToCentrePointCorridor, domes)) {
+						LogHelper.info("corridor %s seems valid", entranceToMidpointCorridor);
+						LogHelper.info("corridor %s seems valid", midpointToCentrePointCorridor);
 						potentialValidCorridors.add(entranceToMidpointCorridor);
 						potentialValidCorridors.add(midpointToCentrePointCorridor);
 
 						entrancesToAssign.add(new KeyValuePair<DomeEntrance, CorridorTerminus>(entrance, entranceTerminus));
-						break;
+					} else {
+						LogHelper.info("Corridor pair collided, excluding");
 					}
 				}
-
+				valid = potentialValidCorridors.size() >= 2;
 				if (valid) {
 					//Step 2: If we can, then Check each corridor to see if it should be attached to an existing corridor.
-					LogHelper.info("Found a non-colliding corridor");
+					LogHelper.info("Found %d non-colliding corridors", potentialValidCorridors.size());
 					for (KeyValuePair<DomeEntrance, CorridorTerminus> kvp : entrancesToAssign) {
 						kvp.key.setTerminus(kvp.value);
 						kvp.value.addSpoke(kvp.key);
@@ -156,7 +169,7 @@ public class CorridorGenerator implements ICorridorGenerator {
 						}
 						corridorsToRender.add(corridor);
 					} else {
-						LogHelper.info("Excluded corridor %s because it doesn't seem to be attached to anything");
+						LogHelper.info("Excluded corridor %s because it doesn't seem to be attached to anything", corridor);
 					}
 				}
 			}

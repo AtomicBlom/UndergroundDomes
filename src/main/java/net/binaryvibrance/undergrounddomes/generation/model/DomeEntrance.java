@@ -1,16 +1,17 @@
 package net.binaryvibrance.undergrounddomes.generation.model;
 
 import net.binaryvibrance.helpers.maths.Point3D;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.Vec3i;
 
 public class DomeEntrance implements ITerminusSpoke {
     private DomeFloor floor;
     private CorridorTerminus exitTerminus;
     private boolean inUse = false;
-    private Vec3 locationOffset;
-    private CompassDirection compassDirection;
+    private Vec3i locationOffset;
+    private EnumFacing compassDirection;
 
-    public DomeEntrance(DomeFloor floor, CompassDirection compassDirection, Vec3 locationOffset) {
+    public DomeEntrance(DomeFloor floor, EnumFacing compassDirection, Vec3i locationOffset) {
         this.floor = floor;
         this.compassDirection = compassDirection;
         this.locationOffset = locationOffset;
@@ -36,7 +37,7 @@ public class DomeEntrance implements ITerminusSpoke {
         return exitTerminus != null;
     }
 
-    public CompassDirection getCompassDirection() {
+    public EnumFacing getCompassDirection() {
         return compassDirection;
     }
 

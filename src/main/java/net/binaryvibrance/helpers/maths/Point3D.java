@@ -1,6 +1,7 @@
 package net.binaryvibrance.helpers.maths;
 
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
 public class Point3D {
@@ -40,14 +41,14 @@ public class Point3D {
 		this.y = y;
 		this.z = z;
 		this.world = world;
-		dimension = world != null ? world.getWorldInfo().getVanillaDimension() : Integer.MIN_VALUE;
+		dimension = world != null ? world.provider.getDimension() : Integer.MIN_VALUE;
 		setCoords();
 	}
 
-	public void move(Vec3 vector) {
-		x += vector.xCoord;
-		y += vector.yCoord;
-		z += vector.zCoord;
+	public void move(Vec3i vector) {
+		x += vector.getX();
+		y += vector.getY();
+		z += vector.getZ();
 		setCoords();
 	}
 
@@ -65,12 +66,16 @@ public class Point3D {
 		setCoords();
 	}
 
-	public Point3D add(Vec3 vector) {
-		return new Point3D(x + vector.xCoord, y + vector.yCoord, z + vector.zCoord, world);
+	public Point3D add(Vec3i vector) {
+		return new Point3D(x + vector.getX(), y + vector.getY(), z + vector.getZ(), world);
 	}
 
-	public Vec3 subtract(Point3D point) {
-		return Vec3.createVectorHelper(x - point.x, y - point.y, z - point.z);
+	public Point3D add(EnumFacing facing) {
+		return new Point3D(x + facing.getFrontOffsetX(), y + facing.getFrontOffsetY(), z + facing.getFrontOffsetZ(), world);
+	}
+
+	public Vec3i subtract(Point3D point) {
+		return new Vec3i(x - point.x, y - point.y, z - point.z);
 	}
 
 	public double distance(Point3D point) {

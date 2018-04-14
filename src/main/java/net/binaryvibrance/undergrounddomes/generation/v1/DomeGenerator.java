@@ -10,7 +10,7 @@ import net.binaryvibrance.undergrounddomes.generation.contracts.IDomeGenerator;
 import net.binaryvibrance.undergrounddomes.generation.model.Dome;
 import net.binaryvibrance.undergrounddomes.generation.model.DomeFloor;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3i;
 
 
 public class DomeGenerator implements IDomeGenerator {
@@ -48,7 +48,7 @@ public class DomeGenerator implements IDomeGenerator {
 		}
 
 		for (Dome dome : domes) {
-			dome.getLocation().move(Vec3.createVectorHelper(-minX, -minY, -minZ));
+			dome.getLocation().move(new Vec3i(-minX, -minY, -minZ));
 		}
 
 		return new Point3D(maxX - minX, maxY - minY, maxZ - minZ);
@@ -86,7 +86,7 @@ public class DomeGenerator implements IDomeGenerator {
 			}
 			createFloors(dome);
             Point3D location = dome.getLocation();
-			LogHelper.info("Dome %d/%d @ (%d,%d,%d) d:%d", buildLength + 1, domeChainLength, location.xCoord, location.yCoord,
+			LogHelper.info("Dome {}/{} @ ({},{},{}) d:{}", buildLength + 1, domeChainLength, location.xCoord, location.yCoord,
                     location.zCoord, dome.getDiameter());
 			chain.add(dome);
 
@@ -188,11 +188,11 @@ public class DomeGenerator implements IDomeGenerator {
 
         int baseHeight = dome.getDiameter() - available - 2;
         dome.addFloor(new DomeFloor(dome, baseHeight));
-	    LogHelper.info("Floor 0 at level %d", baseHeight);
+	    LogHelper.info("Floor 0 at level {}", baseHeight);
         for (int floor = 1; floor < actualFloors; ++floor) {
             int floorVariance = random.nextBoolean() ? 1 : -1;
             int floorStart = baseHeight + floor * interval + variance * floorVariance;
-	        LogHelper.info("Floor %d at level %d", floor, floorStart);
+	        LogHelper.info("Floor {} at level {}", floor, floorStart);
             dome.addFloor(new DomeFloor(dome, floorStart));
         }
     }

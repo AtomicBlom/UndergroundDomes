@@ -1,0 +1,5 @@
+tile.argonLight.name=Argon Light
+tile.lightReceptor.name=Light Receptor
+
+bvdomes.config.multiThreadedWorldGen=Multi Threaded World Generation
+bvdomes.config.domeHeight=Dome World Level

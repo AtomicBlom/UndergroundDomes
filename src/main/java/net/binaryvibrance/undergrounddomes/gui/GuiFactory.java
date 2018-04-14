@@ -1,32 +1,35 @@
 package net.binaryvibrance.undergrounddomes.gui;
 
-import cpw.mods.fml.client.IModGuiFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.fml.client.IModGuiFactory;
 
 import java.util.Set;
 
 /**
  * Created by CodeWarrior on 30/06/2014.
  */
-public class GuiFactory implements IModGuiFactory {
+public class GuiFactory implements IModGuiFactory
+{
 	@Override
 	public void initialize(Minecraft minecraftInstance) {
 
 	}
 
 	@Override
-	public Class<? extends GuiScreen> mainConfigGuiClass() {
-		return ConfigGui.class;
+	public boolean hasConfigGui()
+	{
+		return false;
+	}
+
+	@Override
+	public GuiScreen createConfigGui(GuiScreen parentScreen)
+	{
+		return new ConfigGui(parentScreen);
 	}
 
 	@Override
 	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-		return null;
-	}
-
-	@Override
-	public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
 		return null;
 	}
 }

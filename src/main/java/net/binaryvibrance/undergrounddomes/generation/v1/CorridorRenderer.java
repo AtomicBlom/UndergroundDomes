@@ -9,7 +9,7 @@ import net.binaryvibrance.undergrounddomes.generation.model.AtomElement;
 import net.binaryvibrance.undergrounddomes.generation.model.AtomField;
 import net.binaryvibrance.undergrounddomes.generation.model.Corridor;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3i;
 
 public class CorridorRenderer implements IAtomFieldRenderer {
 
@@ -22,11 +22,11 @@ public class CorridorRenderer implements IAtomFieldRenderer {
 	@Override
 	public void RenderToAtomField(AtomField field) {
 		for (Corridor corridor : corridors) {
-			LogHelper.info("    Rendering corridor %s", corridor);
+			LogHelper.info("    Rendering corridor {}", corridor);
 
 			Line line = CorridorHelper.getLineFromCorridor(corridor);
-			LogHelper.info("        Rendering line %s", line);
-			Vec3 vector = line.getRenderVector();
+			LogHelper.info("        Rendering line {}", line);
+			Vec3i vector = line.getRenderVector();
 			Point3D currentPoint = line.start;
 			do {
 				field.SetAtomAt(currentPoint.xCoord, currentPoint.yCoord, currentPoint.zCoord, AtomElement.CorridorFloor);

@@ -1,92 +1,72 @@
 package net.binaryvibrance.undergrounddomes.helpers;
 
-import net.binaryvibrance.undergrounddomes.Constants;
-import cpw.mods.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
 public class LogHelper
 {
-	public static void log(Level logLevel, Object object)
-	{
-
-		FMLLog.log(Constants.Mod.MOD_ID, logLevel, String.valueOf(object));
-	}
-
-	public static void log(Level logLevel, String format, Object... object)
-	{
-		FMLLog.log(Constants.Mod.MOD_ID, logLevel, format, object);
-	}
+	private static Logger modLog = null;
 
 	public static void all(Object object)
 	{
-		log(Level.ALL, object);
+		modLog.log(Level.ALL, object);
 	}
 
 	public static void debug(Object object)
 	{
-		log(Level.DEBUG, object);
+		modLog.log(Level.DEBUG, object);
 	}
 	public static void debug(String format, Object... parameters)
 	{
-		log(Level.DEBUG, format, parameters);
+		modLog.log(Level.DEBUG, format, parameters);
 	}
 
 	public static void error(Object object)
 	{
-		log(Level.ERROR, object);
+		modLog.log(Level.ERROR, object);
 	}
 	public static void error(String format, Object... parameters)
 	{
-		log(Level.ERROR, format, parameters);
+		modLog.log(Level.ERROR, format, parameters);
 	}
 
 	public static void fatal(Object object)
 	{
-		log(Level.FATAL, object);
+		modLog.log(Level.FATAL, object);
 	}
 
 	public static void info(Object object)
 	{
-		log(Level.INFO, object);
+		modLog.log(Level.INFO, object);
 	}
 
 	public static void info(String format, Object... parameters) {
-		log(Level.INFO, format, parameters);
+		modLog.log(Level.INFO, format, parameters);
 	}
 
 	public static void off(Object object)
 	{
-		log(Level.OFF, object);
+		modLog.log(Level.OFF, object);
 	}
 
 	public static void trace(Object object)
 	{
-		log(Level.TRACE, object);
+		modLog.log(Level.TRACE, object);
 	}
 
 	public static void trace(String format, Object... parameters)
 	{
-		log(Level.TRACE, format, parameters);
+		modLog.log(Level.TRACE, format, parameters);
 	}
 
 	public static void warn(Object object)
 	{
-		log(Level.WARN, object);
+		modLog.log(Level.WARN, object);
+	}
+
+	public static void setLog(Logger modLog)
+	{
+
+		LogHelper.modLog = modLog;
 	}
 }
-
-/*public class LogHelper {
-	private static final Logger LOGGER = Logger.getLogger();
-
-	public static void init() {
-
-		//LOGGER.setParent(FMLLog.getLogger());
-		if (DeveloperOptions.DETAILED_LOGGING) {
-			LOGGER.setLevel(Level.ALL);
-		}
-	}
-
-	public static Logger getLogger() {
-		return LOGGER;
-	}
-}*/

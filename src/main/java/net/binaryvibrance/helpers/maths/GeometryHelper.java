@@ -1,12 +1,13 @@
 package net.binaryvibrance.helpers.maths;
 
-import net.binaryvibrance.undergrounddomes.generation.model.CompassDirection;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
 public class GeometryHelper {
 	public static boolean lineIntersectsSphere(Line line, Point3D sphereLocation, double sphereRadius) {
-		Vec3 d = line.end.subtract(line.start);
-		Vec3 f = line.start.subtract(sphereLocation);
+		Vec3d d = new Vec3d(line.end.subtract(line.start));
+		Vec3d f = new Vec3d(line.start.subtract(sphereLocation));
 		double r = sphereRadius;
 
 		double a = d.dotProduct(d);
@@ -58,13 +59,11 @@ public class GeometryHelper {
 
 	}
 
-	public static Point3D getMidPoint(Point3D firstPoint, Point3D secondPoint, CompassDirection initialDirection) {
-		Vec3 vector = initialDirection.ToVec3().normalize();
-
+	public static Point3D getMidPoint(Point3D firstPoint, Point3D secondPoint, EnumFacing initialDirection) {
 		Point3D maskedPoint = new Point3D(
-				(firstPoint.xCoord * (1 - Math.abs(vector.xCoord))) + secondPoint.xCoord * Math.abs(vector.xCoord),
-				(firstPoint.yCoord * (1 - Math.abs(vector.yCoord))) + secondPoint.yCoord * Math.abs(vector.yCoord),
-				(firstPoint.zCoord * (1 - Math.abs(vector.zCoord))) + secondPoint.zCoord * Math.abs(vector.zCoord)
+				(firstPoint.xCoord * (1 - Math.abs(initialDirection.getFrontOffsetX()))) + secondPoint.xCoord * Math.abs(initialDirection.getFrontOffsetX()),
+				(firstPoint.yCoord * (1 - Math.abs(initialDirection.getFrontOffsetY()))) + secondPoint.yCoord * Math.abs(initialDirection.getFrontOffsetY()),
+				(firstPoint.zCoord * (1 - Math.abs(initialDirection.getFrontOffsetZ()))) + secondPoint.zCoord * Math.abs(initialDirection.getFrontOffsetZ())
 		);
 
 		return maskedPoint;				

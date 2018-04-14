@@ -1,11 +1,7 @@
 package net.binaryvibrance.undergrounddomes.configuration;
 
-//import net.binaryvibrance.undergrounddomes.Configuration;
-
 import java.io.File;
 
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.Mod;
 import net.binaryvibrance.undergrounddomes.Constants;
 import net.binaryvibrance.undergrounddomes.generation.v1.CorridorGenerator;
 import net.binaryvibrance.undergrounddomes.generation.v1.DomeGenerator;
@@ -13,6 +9,8 @@ import net.binaryvibrance.undergrounddomes.generation.contracts.ICorridorGenerat
 import net.binaryvibrance.undergrounddomes.generation.contracts.IDomeGenerator;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Mod;
 
 /**
  * Created by CodeWarrior on 30/06/2014.
@@ -50,7 +48,7 @@ public class ConfigurationHandler {
 
 	@Mod.EventHandler
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-		if (event.modID.equals(Constants.Mod.MOD_ID)) {
+		if (event.getModID().equals(Constants.Mod.MOD_ID)) {
 			syncConfig();
 		}
 	}

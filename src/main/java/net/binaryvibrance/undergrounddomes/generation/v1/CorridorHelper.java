@@ -61,7 +61,7 @@ public abstract class CorridorHelper {
 	public static boolean CollidesWith(Corridor corridor, List<Dome> obstacles) {
 		ILineIntersectable obstacle = CorridorHelper.getFirstIntersectingObstacle(corridor, obstacles);
 		if (obstacle != null) {
-			LogHelper.info("%s intersects with obstacle %s", corridor, obstacle);
+			LogHelper.info("{} intersects with obstacle {}", corridor, obstacle);
 			return true;
 		}
 		return false;

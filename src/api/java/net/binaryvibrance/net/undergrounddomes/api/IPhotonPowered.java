@@ -1,8 +1,8 @@
 package net.binaryvibrance.net.undergrounddomes.api;
 
-import net.minecraft.util.Direction;
+import net.minecraft.util.EnumFacing;
 
 public interface IPhotonPowered {
-	public void OnAdjacentPhotonLevelChanged(Direction direction, float powerLevel);
+	public void OnAdjacentPhotonLevelChanged(EnumFacing direction, float powerLevel);
 
 }

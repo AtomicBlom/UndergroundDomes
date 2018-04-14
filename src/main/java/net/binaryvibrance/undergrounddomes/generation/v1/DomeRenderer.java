@@ -1,14 +1,13 @@
 package net.binaryvibrance.undergrounddomes.generation.v1;
 
 import net.binaryvibrance.helpers.maths.Point3D;
-import net.binaryvibrance.helpers.maths.Vector3;
 import net.binaryvibrance.undergrounddomes.generation.contracts.IAtomFieldRenderer;
 import net.binaryvibrance.undergrounddomes.generation.model.Atom;
 import net.binaryvibrance.undergrounddomes.generation.model.AtomElement;
 import net.binaryvibrance.undergrounddomes.generation.model.AtomField;
 import net.binaryvibrance.undergrounddomes.generation.model.Dome;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumFacing;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -65,13 +64,13 @@ public class DomeRenderer implements IAtomFieldRenderer {
 	public static PreRenderedDome construct(int diameter) {
 		PreRenderedDome sphere;
 		if (cachedSpheres.containsKey(diameter)) {
-			LogHelper.info("Found pre-calculated atoms for diameter %d", diameter);
+			LogHelper.info("Found pre-calculated atoms for diameter {}", diameter);
 			sphere = cachedSpheres.get(diameter);
 		} else {
-			LogHelper.info("Pre-calculating atoms for diameter %d", diameter);
+			LogHelper.info("Pre-calculating atoms for diameter {}", diameter);
 			sphere = new PreRenderedDome(diameter);
 			cachedSpheres.put(diameter, sphere);
-			LogHelper.info("Pre-calculation for diameter %d complete", diameter);
+			LogHelper.info("Pre-calculation for diameter {} complete", diameter);
 		}
 		return sphere;
 	}
@@ -123,7 +122,7 @@ public class DomeRenderer implements IAtomFieldRenderer {
 				int neighboursSet = 0;
 				int neighboursNotSet = 0;
 
-				for (Vec3 vector : Vector3.NEIGHBOURS) {
+				for (EnumFacing vector : EnumFacing.VALUES) {
 					Point3D check = atom.add(vector);
 
 					if (check.x >= 0 && check.x < diameter && check.y >= 0 && check.y < diameter && check.z >= 0 && check.z < diameter) {

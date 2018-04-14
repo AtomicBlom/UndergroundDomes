@@ -10,6 +10,7 @@ import net.binaryvibrance.undergrounddomes.generation.contracts.ICorridorGenerat
 import net.binaryvibrance.undergrounddomes.generation.contracts.ILineIntersectable;
 import net.binaryvibrance.undergrounddomes.generation.model.*;
 import net.binaryvibrance.undergrounddomes.helpers.LogHelper;
+import net.minecraft.util.EnumFacing;
 import sun.rmi.runtime.Log;
 
 public class CorridorGenerator implements ICorridorGenerator {
@@ -29,7 +30,7 @@ public class CorridorGenerator implements ICorridorGenerator {
 		//TODO: If a corridor passes through another corridor, join them together
 
 		for (Dome dome : domes) {
-			LogHelper.info("Creating corridors for dome %d/%d %s", currentDome++, domeCount, dome);
+			LogHelper.info("Creating corridors for dome {}/{} {}", currentDome++, domeCount, dome);
 			// Calculate Nearest Neighbours
 			DomeNearestNeighbour snn = new DomeNearestNeighbour(dome);
 			for (Dome neighbourDome : domes) {
@@ -52,10 +53,10 @@ public class CorridorGenerator implements ICorridorGenerator {
 				DomeEntrance primaryCorridorEntrance = getClosestCorridorEntrance(primary, averagePoint);
 				DomeEntrance secondaryCorridorEntrance = getClosestCorridorEntrance(secondary, averagePoint);
 
-				LogHelper.info("Dome 1 Entrance: %s", domeCorridorEntrance);
-				LogHelper.info("Dome 2 Entrance: %s", primaryCorridorEntrance);
-				LogHelper.info("Dome 3 Entrance: %s", secondaryCorridorEntrance);
-				LogHelper.info("Midpoint       : %s", averagePoint);
+				LogHelper.info("Dome 1 Entrance: {}", domeCorridorEntrance);
+				LogHelper.info("Dome 2 Entrance: {}", primaryCorridorEntrance);
+				LogHelper.info("Dome 3 Entrance: {}", secondaryCorridorEntrance);
+				LogHelper.info("Midpoint       : {}", averagePoint);
 
 				List<DomeEntrance> entrances = new ArrayList<DomeEntrance>(Arrays.asList(new DomeEntrance[] { domeCorridorEntrance, primaryCorridorEntrance,
 						secondaryCorridorEntrance }));
@@ -73,7 +74,7 @@ public class CorridorGenerator implements ICorridorGenerator {
 
 					CorridorTerminus entranceTerminus = new CorridorTerminus(entrance.getLocation());
 
-					CompassDirection entranceDirection = entrance.getCompassDirection();
+					EnumFacing entranceDirection = entrance.getCompassDirection();
 
 					Point3D midPoint = GeometryHelper.getMidPoint(entranceTerminus.getLocation(), centrePointTerminus.getLocation(), entranceDirection);
 					CorridorTerminus midpointTerminus = new CorridorTerminus(midPoint);
@@ -89,8 +90,8 @@ public class CorridorGenerator implements ICorridorGenerator {
 					}
 
 					if (!CorridorHelper.CollidesWith(entranceToMidpointCorridor, entranceObstacles) && !CorridorHelper.CollidesWith(midpointToCentrePointCorridor, domes)) {
-						LogHelper.info("corridor %s seems valid", entranceToMidpointCorridor);
-						LogHelper.info("corridor %s seems valid", midpointToCentrePointCorridor);
+						LogHelper.info("corridor {} seems valid", entranceToMidpointCorridor);
+						LogHelper.info("corridor {} seems valid", midpointToCentrePointCorridor);
 						potentialValidCorridors.add(entranceToMidpointCorridor);
 						potentialValidCorridors.add(midpointToCentrePointCorridor);
 
@@ -102,7 +103,7 @@ public class CorridorGenerator implements ICorridorGenerator {
 				valid = potentialValidCorridors.size() >= 2;
 				if (valid) {
 					//Step 2: If we can, then Check each corridor to see if it should be attached to an existing corridor.
-					LogHelper.info("Found %d non-colliding corridors", potentialValidCorridors.size());
+					LogHelper.info("Found {} non-colliding corridors", potentialValidCorridors.size());
 					for (KeyValuePair<DomeEntrance, CorridorTerminus> kvp : entrancesToAssign) {
 						kvp.key.setTerminus(kvp.value);
 						kvp.value.addSpoke(kvp.key);
@@ -169,14 +170,14 @@ public class CorridorGenerator implements ICorridorGenerator {
 						}
 						corridorsToRender.add(corridor);
 					} else {
-						LogHelper.info("Excluded corridor %s because it doesn't seem to be attached to anything", corridor);
+						LogHelper.info("Excluded corridor {} because it doesn't seem to be attached to anything", corridor);
 					}
 				}
 			}
 		}
 
 		LinkedList<Corridor> corridors = new LinkedList<Corridor>(corridorsToRender);
-		LogHelper.info("Created %d corridors", corridors.size());
+		LogHelper.info("Created {} corridors", corridors.size());
 
 		return corridors;
 	}
@@ -243,10 +244,10 @@ public class CorridorGenerator implements ICorridorGenerator {
 
 	private DomeEntrance getClosestCorridorEntrance(Dome sphere, Point3D averagePoint) {
 		DomeFloor baseFloor = sphere.getFloor(0);
-		DomeEntrance northPointEntrance = baseFloor.getEntrance(CompassDirection.NORTH);
-		DomeEntrance southPointEntrance = baseFloor.getEntrance(CompassDirection.SOUTH);
-		DomeEntrance eastPointEntrance = baseFloor.getEntrance(CompassDirection.EAST);
-		DomeEntrance westPointEntrance = baseFloor.getEntrance(CompassDirection.WEST);
+		DomeEntrance northPointEntrance = baseFloor.getEntrance(EnumFacing.NORTH);
+		DomeEntrance southPointEntrance = baseFloor.getEntrance(EnumFacing.SOUTH);
+		DomeEntrance eastPointEntrance = baseFloor.getEntrance(EnumFacing.EAST);
+		DomeEntrance westPointEntrance = baseFloor.getEntrance(EnumFacing.WEST);
 
 		Point3D northPointLocation = northPointEntrance.getLocation();
 		Point3D southPointLocation = southPointEntrance.getLocation();
